@@ -15,7 +15,23 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+package org.apache.metron.parsers.integration;
 
-describe('AlertSearchDirective', () => {
+import org.apache.metron.parsers.integration.validation.SampleDataValidation;
 
-});
+import java.util.ArrayList;
+import java.util.List;
+
+public class JSONMapWrappedQueryIntegrationTest extends ParserIntegrationTest {
+  @Override
+  String getSensorType() {
+    return "jsonMapWrappedQuery";
+  }
+
+  @Override
+  List<ParserValidation> getValidations() {
+    return new ArrayList<ParserValidation>() {{
+      add(new SampleDataValidation());
+    }};
+  }
+}

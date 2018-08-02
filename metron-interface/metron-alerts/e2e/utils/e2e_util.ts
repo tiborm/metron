@@ -1,67 +1,97 @@
+/**
+ * Licensed to the Apache Software Foundation (ASF) under one
+ * or more contributor license agreements.  See the NOTICE file
+ * distributed with this work for additional information
+ * regarding copyright ownership.  The ASF licenses this file
+ * to you under the Apache License, Version 2.0 (the
+ * "License"); you may not use this file except in compliance
+ * with the License.  You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
 import { browser, protractor, by, element, ElementFinder } from 'protractor';
 import request = require('request');
 import fs = require('fs');
 
+const expCond = protractor.ExpectedConditions;
+
 export class UtilFun {
   public static async waitForElementPresence(element: ElementFinder): Promise<void> {
-    let EC = protractor.ExpectedConditions;
     await browser.wait(
-        EC.visibilityOf(element),
-        10000,
-        `${element.locator()} was expected to be visible`
+      expCond.visibilityOf(element),
+      10000,
+      `${element.locator()} was expected to be visible`
     );
   }
 }
 
-export function changeURL(url: string) {
-    return browser.get(url).then(() => {
-        return browser.getCurrentUrl().then((newURL) => {
-            return newURL;
-        });
+export class AutomationHelper {
+
+  static readonly ID_ATTR: String = 'data-qe-id';
+
+  static getElementByQEId(qeId: String) {
+    const attr = AutomationHelper.ID_ATTR;
+    const selector = qeId.split(' ').map(qeIdPart => `[${attr}=${qeIdPart}]`).join(' ');
+    return element(by.css(selector));
+  }
+
+  static getTextByQEId(qeId: String) {
+    const el = AutomationHelper.getElementByQEId(qeId);
+    return browser.wait(protractor.ExpectedConditions.visibilityOf(el))
+    .then(() => {
+      return el.getText();
     });
+  }
+}
+
+export function changeURL(url: string) {
+  return browser.get(url).then(() => {
+      return browser.getCurrentUrl().then((newURL) => {
+          return newURL;
+      });
+  });
 }
 
 export function waitForURL(url: string) {
-  let EC = protractor.ExpectedConditions;
-  return browser.wait(EC.urlIs(url));
+  return browser.wait(expCond.urlIs(url));
 }
 
 export function waitForText(selector, text) {
-  let EC = protractor.ExpectedConditions;
-  return browser.wait(EC.textToBePresentInElement(element(by.css(selector)), text)).catch((error) => console.log(`waitForText:`, error));;
+  return browser.wait(expCond.textToBePresentInElement(element(by.css(selector)), text)).catch((error) => console.log(`waitForText:`, error));;
 }
 
 export function waitForTextChange(element, previousText) {
-  let EC = protractor.ExpectedConditions;
   if (previousText.trim().length === 0) {
     return waitForNonEmptyText(element);
   }
-  return browser.wait(EC.not(EC.textToBePresentInElement(element, previousText))).catch((error) => console.log(`${element.locator()} waitForTextChange:`, error));
+  return browser.wait(expCond.not(expCond.textToBePresentInElement(element, previousText))).catch((error) => console.log(`${element.locator()} waitForTextChange:`, error));
 }
 
 export function waitForElementInVisibility (_element ) {
-    let EC = protractor.ExpectedConditions;
-    return browser.wait(EC.invisibilityOf(_element)).catch((error) => console.log(`${_element.locator()} waitForElementInVisibility:`, error));
+  return browser.wait(expCond.invisibilityOf(_element)).catch((error) => console.log(`${_element.locator()} waitForElementInVisibility:`, error));
 }
 
 export function waitForElementPresence (_element ) {
-    let EC = protractor.ExpectedConditions;
-    return browser.wait(EC.presenceOf(_element)).catch((error) => console.log(`${_element.locator()} waitForElementPresence:`, error));
+  return browser.wait(expCond.presenceOf(_element)).catch((error) => console.log(`${_element.locator()} waitForElementPresence:`, error));
 }
 
 export function waitForElementVisibility (_element ) {
-    let EC = protractor.ExpectedConditions;
-    return browser.wait(EC.visibilityOf(_element)).catch((error) => console.log(`${_element.locator()} waitForElementVisibility:`, error));
+  return browser.wait(expCond.visibilityOf(_element)).catch((error) => console.log(`${_element.locator()} waitForElementVisibility:`, error));
 }
 
 export function waitForElementPresenceAndvisbility(selector) {
-  let EC = protractor.ExpectedConditions;
-  return browser.wait(EC.visibilityOf(element(by.css(selector)))).catch((error) => console.log(`waitForElementPresenceAndvisbility: `, error));
+  return browser.wait(expCond.visibilityOf(element(by.css(selector)))).catch((error) => console.log(`waitForElementPresenceAndvisbility: `, error));
 }
 
 export function waitForStalenessOf (_element ) {
-    let EC = protractor.ExpectedConditions;
-    return browser.wait(EC.stalenessOf(_element)).catch((error) => console.log(`${_element.locator()} waitForStalenessOf: `, error));
+  return browser.wait(expCond.stalenessOf(_element)).catch((error) => console.log(`${_element.locator()} waitForStalenessOf: `, error));
 }
 
 export function waitForCssClass(elementFinder, desiredClass) {
