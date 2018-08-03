@@ -28,7 +28,7 @@ export class MetronDialogBox {
 
   private getCancelButton(type: DialogType): string {
     if (type === DialogType.Confirmation) {
-      return `<button type="button" class="btn btn-mine_shaft_2" data-dismiss="modal">Cancel</button>`;
+      return `<button type="button" class="btn btn-mine_shaft_2" data-dismiss="modal" data-qe-id="dialog-cancel-action">Cancel</button>`;
     }
 
     return '';
@@ -41,15 +41,15 @@ export class MetronDialogBox {
                     <div class="modal-content">
                       <div class="modal-header">
                         <span class="modal-title"><b>` + MetronDialogBox.dialogType[type] + `</b></span>
-                        <button type="button" class="close" data-dismiss="modal" aria-label="Close"> 
-                            <span aria-hidden="true">&times;</span> 
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
                         </button>
                       </div>
                       <div class="modal-body">
                         <p>` +  message + `</p>
                       </div>
                       <div class="modal-footer">
-                        <button type="button" class="btn btn-all_ports">OK</button>`
+                        <button type="button" data-qe-id="dialog-approve-action" class="btn btn-all_ports">OK</button>`
                         + cancelButtonHTML +
                       `</div>
                     </div>

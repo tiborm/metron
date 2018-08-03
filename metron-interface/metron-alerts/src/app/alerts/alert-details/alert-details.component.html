@@ -75,7 +75,7 @@
                         <ng-container *ngFor="let alert of alertSources; let i = index;" >
                             <div class="pb-2 alert-details-title"> Alert {{ i + 1 }} of {{ alertSources.length }}</div>
                             <div *ngFor="let field of alert | alertDetailsKeys" class="row ml-1">
-                                <div class="col-6 mb-1 key">{{ field }}</div>   <div class="col-6"> {{ alert[field] }} </div>
+                                <div class="col-6 mb-1 key" >{{ field }}</div>   <div class="col-6" attr.data-qe-id="{{field}}_value"> {{ alert[field] }} </div>
                             </div>
                         </ng-container>
                     </div>
@@ -83,13 +83,13 @@
                     <div *ngIf="activeTab === tabs.COMMENTS" class="my-4">
                         <div> Comments <span *ngIf="alertCommentsWrapper.length > 0"> ({{alertCommentsWrapper.length}}) </span></div>
                         <textarea class="form-control" [(ngModel)]="alertCommentStr"> </textarea>
-                        <button class="btn btn-mine_shaft_2" [disabled]="alertCommentStr.trim().length === 0" (click)="onAddComment()">ADD COMMENT</button>
+                        <button class="btn btn-mine_shaft_2" [disabled]="alertCommentStr.trim().length === 0" (click)="onAddComment()" data-qe-id="add-comment-button">ADD COMMENT</button>
                         <ng-container *ngFor="let alertCommentWrapper of alertCommentsWrapper; let i = index">
                             <hr>
                             <div class="comment-container">
-                                <i class="fa fa-trash-o" aria-hidden="true" (click)="onDeleteComment(i)"></i>
-                                <div class="comment"> {{ alertCommentWrapper.alertComment.comment }} </div>
-                                <div class="font-italic username-timestamp"> - {{ alertCommentWrapper.alertComment.username }} - {{alertCommentWrapper.displayTime}}</div>
+                                <i class="fa fa-trash-o" data-qe-id="delete-comment" aria-hidden="true" (click)="onDeleteComment(i)"></i>
+                                <div class="comment" data-qe-id="comment"> {{ alertCommentWrapper.alertComment.comment }} </div>
+                                <div class="font-italic username-timestamp" data-qe-id="username-timestamp"> - {{ alertCommentWrapper.alertComment.username }} - {{alertCommentWrapper.displayTime}}</div>
                             </div>
                         </ng-container>
                     </div>
