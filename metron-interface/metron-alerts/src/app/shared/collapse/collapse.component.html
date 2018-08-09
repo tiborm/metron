@@ -11,11 +11,11 @@
 	OR CONDITIONS OF ANY KIND, either express or implied. See the License for
   the specific language governing permissions and limitations under the License.
   -->
-<a [attr.href]="'#' + uniqueId"  data-toggle="collapse"  aria-expanded="false" [attr.aria-controls]="uniqueId" class="pr-2 collapsed"
+<a [attr.href]="'#' + uniqueId"  data-toggle="collapse"  data-qe-id="collapse-toggle" aria-expanded="false" [attr.aria-controls]="uniqueId" class="pr-2 collapsed"
    [ngClass]="{'font-size-12' : fontSize === 12, 'font-size-15' : fontSize === 15, 'border-bottom' : titleSeperator=== true}">
   {{ data.groupName | columnNameTranslate | centerEllipses: strLength  }}  <span *ngIf="countOption" class="group-items-count"> {{ data.groupItems.length }} </span>
 </a>
-<div class="collapse" [attr.id]="uniqueId" [ngClass]="{'show': data.collapsed === false}">
+<div class="collapse" data-qe-id="collapse-drawer" [attr.id]="uniqueId" [ngClass]="{'show': data.collapsed === false}">
   <div *ngIf="data.groupItems.length === 0" class="container-fluid no-data-text">
     <i> {{ 'No ' +  data.groupName  | centerEllipses: strLength }}  </i>
   </div>
