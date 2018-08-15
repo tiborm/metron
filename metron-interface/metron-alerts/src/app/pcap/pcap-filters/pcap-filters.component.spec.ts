@@ -194,12 +194,6 @@ describe('PcapFiltersComponent', () => {
     expect(component.search.emit).toHaveBeenCalled();
   });
 
-  it('Search event should contains the filter model', () => {
-    spyOn(component.search, 'emit');
-    component.onSubmit();
-    expect(component.search.emit).toHaveBeenCalledWith(component.model);
-  });
-
   // @FIXME: I've fixed this test and kept it here as is but imho
   // we should not test whether the model property has the proper type.
   // This is why we use typescript.
@@ -217,18 +211,14 @@ describe('PcapFiltersComponent', () => {
   });
 
   it('should update request on changes', () => {
+    const startTimeStr = '2220-12-12 12:12:12';
+    const endTimeStr = '2320-03-13 13:13:13';
 
-    let startTimeStr = '2220-12-12 12:12:12';
-    let endTimeStr = '2320-03-13 13:13:13';
-
-    let newModel = {
-      startTimeMs: new Date(startTimeStr).getTime(),
-      endTimeMs: new Date(endTimeStr).getTime(),
-      ipSrcPort: 9345,
-      ipDstPort: 8989
-    };
-    component.model.startTimeMs = new Date(startTimeStr).getTime();
-    component.model.endTimeMs = new Date(endTimeStr).getTime();
+    const newModel = new PcapRequest();
+    newModel.startTimeMs = new Date(startTimeStr).getTime();
+    newModel.endTimeMs = new Date(endTimeStr).getTime();
+    newModel.ipSrcPort = 9345;
+    newModel.ipDstPort = 8989;
 
     component.ngOnChanges({
       model: new SimpleChange(null, newModel, false)
@@ -236,21 +226,18 @@ describe('PcapFiltersComponent', () => {
 
     expect(component.filterForm.controls.startTime.value).toBe(startTimeStr);
     expect(component.filterForm.controls.endTime.value).toBe(endTimeStr);
-    expect(component.filterForm.controls.ipSrcPort.value).toBe(newModel.ipSrcPort);
-    expect(component.filterForm.controls.ipDstPort.value).toBe(newModel.ipDstPort);
+    expect(component.filterForm.controls.ipSrcPort.value).toBe('9345');
+    expect(component.filterForm.controls.ipDstPort.value).toBe('8989');
   });
 
   it('should update request on changes with missing port filters', () => {
 
-    let startTimeStr = '2220-12-12 12:12:12';
-    let endTimeStr = '2320-03-13 13:13:13';
+    const startTimeStr = '2220-12-12 12:12:12';
+    const endTimeStr = '2320-03-13 13:13:13';
 
-    let newModel = {
-      startTimeMs: new Date(startTimeStr).getTime(),
-      endTimeMs: new Date(endTimeStr).getTime()
-    };
-    component.model.startTimeMs = new Date(startTimeStr).getTime();
-    component.model.endTimeMs = new Date(endTimeStr).getTime();
+    let newModel = new PcapRequest();
+    newModel.startTimeMs = new Date(startTimeStr).getTime();
+    newModel.endTimeMs = new Date(endTimeStr).getTime();
 
     component.ngOnChanges({
       model: new SimpleChange(null, newModel, false)
@@ -258,8 +245,8 @@ describe('PcapFiltersComponent', () => {
 
     expect(component.filterForm.controls.startTime.value).toBe(startTimeStr);
     expect(component.filterForm.controls.endTime.value).toBe(endTimeStr);
-    expect(component.filterForm.controls.ipSrcPort.value).toBe(0);
-    expect(component.filterForm.controls.ipDstPort.value).toBe(0);
+    expect(component.filterForm.controls.ipSrcPort.value).toBe('');
+    expect(component.filterForm.controls.ipDstPort.value).toBe('');
   });
 
   describe('Filter validation', () => {

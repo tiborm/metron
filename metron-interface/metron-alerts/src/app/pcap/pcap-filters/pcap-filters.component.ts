@@ -23,8 +23,8 @@ import { DEFAULT_TIMESTAMP_FORMAT } from '../../utils/constants';
 
 import { PcapRequest } from '../model/pcap.request';
 
-const endTime = new Date();
-const startTime = new Date().setDate(endTime.getDate() - 5);
+const DEFAULT_END_TIME = new Date();
+const DEFAULT_START_TIME = new Date().setDate(DEFAULT_END_TIME.getDate() - 5);
 
 function dateRangeValidator(formControl: FormControl): ValidationErrors | null {
   if (!formControl.parent) {
@@ -39,6 +39,55 @@ function dateRangeValidator(formControl: FormControl): ValidationErrors | null {
     return { error: 'Selected date range is invalid.' };
   }
   return null;
+}
+
+export type PcapFilterFormValue = {
+  startTime: string,
+  endTime: string,
+  ipSrcAddr: string,
+  ipDstAddr: string,
+  ipSrcPort: string,
+  ipDstPort: string,
+  protocol: string,
+  includeReverse: boolean,
+  packetFilter: string
+};
+
+function transformModelToControlValue(model: PcapRequest): PcapFilterFormValue {
+  const startTimeStr = moment(Math.max(model.startTimeMs, DEFAULT_START_TIME)).format(DEFAULT_TIMESTAMP_FORMAT);
+  let endTimeStr = moment(model.endTimeMs).format(DEFAULT_TIMESTAMP_FORMAT);
+  if (isNaN((new Date(model.endTimeMs).getTime()))) {
+    // if it's an Invalid Date.
+    endTimeStr = moment(DEFAULT_END_TIME).format(DEFAULT_TIMESTAMP_FORMAT);
+  } else {
+    endTimeStr = moment(model.endTimeMs).format(DEFAULT_TIMESTAMP_FORMAT);
+  }
+
+  return {
+    startTime: startTimeStr,
+    endTime: endTimeStr,
+    ipSrcAddr: model.ipSrcAddr,
+    ipDstAddr: model.ipDstAddr,
+    ipSrcPort: model.ipSrcPort ? String(model.ipSrcPort) : '',
+    ipDstPort: model.ipDstPort ? String(model.ipDstPort) : '',
+    protocol: model.protocol,
+    includeReverse: model.includeReverse,
+    packetFilter: model.packetFilter
+  };
+}
+
+function transformControlValueToModel(control: FormGroup): PcapRequest {
+  const pcapRequest = new PcapRequest();
+  pcapRequest.startTimeMs = new Date(control.value.startTime).getTime();
+  pcapRequest.endTimeMs = new Date(control.value.endTime).getTime();
+  pcapRequest.ipSrcAddr = control.value.ipSrcAddr;
+  pcapRequest.ipDstAddr = control.value.ipDstAddr;
+  pcapRequest.ipSrcPort = +control.value.ipSrcPort || 0;
+  pcapRequest.ipDstPort = +control.value.ipDstPort || 0;
+  pcapRequest.protocol =  control.value.protocol;
+  pcapRequest.includeReverse = control.value.includeReverse;
+  pcapRequest.packetFilter = control.value.packetFilter;
+  return pcapRequest;
 }
 
 @Component({
@@ -56,8 +105,8 @@ export class PcapFiltersComponent implements OnChanges {
   private validPort: RegExp = /^([0-9]{1,4}|[1-5][0-9]{4}|6[0-4][0-9]{3}|65[0-4][0-9]{2}|655[0-2][0-9]|6553[0-5])$/;
 
   filterForm = new FormGroup({
-    startTime: new FormControl(moment(startTime).format(DEFAULT_TIMESTAMP_FORMAT), dateRangeValidator),
-    endTime: new FormControl(moment(endTime).format(DEFAULT_TIMESTAMP_FORMAT), dateRangeValidator),
+    startTime: new FormControl(moment(DEFAULT_START_TIME).format(DEFAULT_TIMESTAMP_FORMAT), dateRangeValidator),
+    endTime: new FormControl(moment(DEFAULT_END_TIME).format(DEFAULT_TIMESTAMP_FORMAT), dateRangeValidator),
     ipSrcAddr: new FormControl('', Validators.pattern(this.validIp)),
     ipSrcPort: new FormControl('', Validators.pattern(this.validPort)),
     ipDstAddr: new FormControl('', Validators.pattern(this.validIp)),
@@ -69,33 +118,14 @@ export class PcapFiltersComponent implements OnChanges {
 
   ngOnChanges(changes: SimpleChanges): void {
     if (changes['model']) {
-      const newModel: PcapRequest = Object.assign(this.model, changes['model'].currentValue);
-
-      this.filterForm.patchValue({ startTime: moment(newModel.startTimeMs).format(DEFAULT_TIMESTAMP_FORMAT) });
-      this.filterForm.patchValue({ endTime: moment(newModel.endTimeMs).format(DEFAULT_TIMESTAMP_FORMAT) });
-      this.filterForm.patchValue({ ipSrcAddr: newModel.ipSrcAddr });
-      this.filterForm.patchValue({ ipSrcPort: newModel.ipSrcPort });
-      this.filterForm.patchValue({ ipDstAddr: newModel.ipDstAddr });
-      this.filterForm.patchValue({ ipDstPort: newModel.ipDstPort });
-      this.filterForm.patchValue({ protocol: newModel.protocol });
-      this.filterForm.patchValue({ includeReverse: newModel.includeReverse });
-      this.filterForm.patchValue({ packetFilter: newModel.packetFilter });
+      const newModel: PcapRequest = changes['model'].currentValue;
+      const controlValue = transformModelToControlValue(newModel);
+      this.filterForm.setValue(controlValue);
     }
   }
 
   onSubmit() {
-    this.model = this.filterForm.value;
-
-    this.model.startTimeMs = new Date(this.filterForm.value.startTime).getTime();
-    this.model.endTimeMs = new Date(this.filterForm.value.endTime).getTime();
-
-    if (this.filterForm.value.ipSrcPort !== '') {
-      this.model.ipSrcPort = +this.filterForm.value.ipSrcPort;
-    }
-    if (this.filterForm.value.ipDstPort !== '') {
-      this.model.ipDstPort = +this.filterForm.value.ipDstPort;
-    }
-
-    this.search.emit(this.model);
+    const pcapRequest = transformControlValueToModel(this.filterForm);
+    this.search.emit(pcapRequest);
   }
 }
