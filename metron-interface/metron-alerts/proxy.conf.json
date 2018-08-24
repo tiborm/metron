@@ -1,10 +1,6 @@
 {
-  "/api/v1/pcap": {
-    "target": "http://localhost:3000",
-    "secure": false
-  },
   "/api/v1": {
-    "target": "http://localhost:3000",
+    "target": "http://node1:8082",
     "secure": false
   },
   "/logout": {
