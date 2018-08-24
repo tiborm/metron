@@ -23,14 +23,13 @@ import { DEFAULT_START_TIME, DEFAULT_END_TIME, DEFAULT_TIMESTAMP_FORMAT } from '
 
 import { PcapRequest } from '../model/pcap.request';
 
-function dateRangeValidator(formControl: FormControl): ValidationErrors | null {
-  if (!formControl.parent) {
+function dateRangeValidator(dateRangeGroup: FormGroup): ValidationErrors | null {
+  if (!dateRangeGroup.parent) {
     return null;
   }
 
-  const filterForm = formControl.parent;
-  const startTimeMs = new Date(filterForm.controls['startTime'].value).getTime();
-  const endTimeMs = new Date(filterForm.controls['endTime'].value).getTime();
+  const startTimeMs = new Date(dateRangeGroup.controls['startTime'].value).getTime();
+  const endTimeMs = new Date(dateRangeGroup.controls['endTime'].value).getTime();
 
   if (startTimeMs > endTimeMs || endTimeMs > new Date().getTime()) {
     return { error: 'Selected date range is invalid.' };
@@ -48,8 +47,10 @@ function transformPcapRequestToFormGroupValue(model: PcapRequest): PcapFilterFor
   }
 
   return {
-    startTime: startTimeStr,
-    endTime: endTimeStr,
+    dateRange: {
+      startTime: startTimeStr,
+      endTime: endTimeStr,
+    },
     ipSrcAddr: model.ipSrcAddr,
     ipDstAddr: model.ipDstAddr,
     ipSrcPort: model.ipSrcPort ? String(model.ipSrcPort) : '',
@@ -60,23 +61,25 @@ function transformPcapRequestToFormGroupValue(model: PcapRequest): PcapFilterFor
   };
 }
 
-function transformFormGroupValueToPcapRequest(control: FormGroup): PcapRequest {
+function transformFormGroupValueToPcapRequest(form: FormGroup): PcapRequest {
   const pcapRequest = new PcapRequest();
-  pcapRequest.startTimeMs = new Date(control.value.startTime).getTime();
-  pcapRequest.endTimeMs = new Date(control.value.endTime).getTime();
-  pcapRequest.ipSrcAddr = control.value.ipSrcAddr;
-  pcapRequest.ipDstAddr = control.value.ipDstAddr;
-  pcapRequest.ipSrcPort = control.value.ipSrcPort;
-  pcapRequest.ipDstPort = control.value.ipDstPort;
-  pcapRequest.protocol =  control.value.protocol;
-  pcapRequest.includeReverse = control.value.includeReverse;
-  pcapRequest.packetFilter = control.value.packetFilter;
+  pcapRequest.startTimeMs = new Date((form.controls.dateRange as FormGroup).controls.startTime.value).getTime();
+  pcapRequest.endTimeMs = new Date((form.controls.dateRange as FormGroup).controls.endTime.value).getTime();
+  pcapRequest.ipSrcAddr = form.value.ipSrcAddr;
+  pcapRequest.ipDstAddr = form.value.ipDstAddr;
+  pcapRequest.ipSrcPort = form.value.ipSrcPort;
+  pcapRequest.ipDstPort = form.value.ipDstPort;
+  pcapRequest.protocol =  form.value.protocol;
+  pcapRequest.includeReverse = form.value.includeReverse;
+  pcapRequest.packetFilter = form.value.packetFilter;
   return pcapRequest;
 }
 
 export type PcapFilterFormValue = {
-  startTime: string,
-  endTime: string,
+  dateRange: {
+    startTime: string,
+    endTime: string,
+  },
   ipSrcAddr: string,
   ipDstAddr: string,
   ipSrcPort: string,
@@ -101,8 +104,10 @@ export class PcapFiltersComponent implements OnChanges {
   private validPort: RegExp = /^([0-9]{1,4}|[1-5][0-9]{4}|6[0-4][0-9]{3}|65[0-4][0-9]{2}|655[0-2][0-9]|6553[0-5])$/;
 
   filterForm = new FormGroup({
-    startTime: new FormControl(moment(DEFAULT_START_TIME).format(DEFAULT_TIMESTAMP_FORMAT), dateRangeValidator),
-    endTime: new FormControl(moment(DEFAULT_END_TIME).format(DEFAULT_TIMESTAMP_FORMAT), dateRangeValidator),
+    dateRange: new FormGroup({
+      startTime: new FormControl(moment(DEFAULT_START_TIME).format(DEFAULT_TIMESTAMP_FORMAT)),
+      endTime: new FormControl(moment(DEFAULT_END_TIME).format(DEFAULT_TIMESTAMP_FORMAT)),
+    }, dateRangeValidator),
     ipSrcAddr: new FormControl('', Validators.pattern(this.validIp)),
     ipSrcPort: new FormControl('', Validators.pattern(this.validPort)),
     ipDstAddr: new FormControl('', Validators.pattern(this.validIp)),
