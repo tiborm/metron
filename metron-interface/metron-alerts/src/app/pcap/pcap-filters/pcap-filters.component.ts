@@ -31,8 +31,24 @@ function dateRangeValidator(dateRangeGroup: FormGroup): ValidationErrors | null 
   const startTimeMs = new Date(dateRangeGroup.controls['startTime'].value).getTime();
   const endTimeMs = new Date(dateRangeGroup.controls['endTime'].value).getTime();
 
-  if (startTimeMs > endTimeMs || endTimeMs > new Date().getTime()) {
+  if (startTimeMs > endTimeMs) {
     return { error: 'Selected date range is invalid.' };
+  }
+  return null;
+}
+
+function latestToValidator(toField: FormControl): ValidationErrors | null {
+  if (!toField.parent) {
+    return null;
+  }
+
+  const endTimeMs = new Date(toField.value).getTime();
+
+  if (endTimeMs > new Date().getTime()) {
+    if (dateRangeValidator(toField.parent as FormGroup)) {
+      toField.parent.setErrors(null);
+    }
+    return { error: 'To filter is in the future.' };
   }
   return null;
 }
@@ -106,7 +122,7 @@ export class PcapFiltersComponent implements OnChanges {
   filterForm = new FormGroup({
     dateRange: new FormGroup({
       startTime: new FormControl(moment(DEFAULT_START_TIME).format(DEFAULT_TIMESTAMP_FORMAT)),
-      endTime: new FormControl(moment(DEFAULT_END_TIME).format(DEFAULT_TIMESTAMP_FORMAT)),
+      endTime: new FormControl(moment(DEFAULT_END_TIME).format(DEFAULT_TIMESTAMP_FORMAT), latestToValidator),
     }, dateRangeValidator),
     ipSrcAddr: new FormControl('', Validators.pattern(this.validIp)),
     ipSrcPort: new FormControl('', Validators.pattern(this.validPort)),
