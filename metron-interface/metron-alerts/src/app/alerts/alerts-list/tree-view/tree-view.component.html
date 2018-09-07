@@ -89,7 +89,7 @@
                   <td> </td>
                 </tr>
 
-                <tr data-qe-id="alertTreeRecords" *ngFor="let alert of subGroup.response.results; let alertIndex = index;" [ngClass]="{'selected' : selectedAlerts.indexOf(alert) != -1, 'd-none': !subGroup.expand || !subGroup.show}" (click)="showDetails($event, alert)">
+                <tr attr.data-qe-id="{{ 'subGroupItem-' + subGroup.key + '-' + alertIndex }}" *ngFor="let alert of subGroup.response.results; let alertIndex = index;" [ngClass]="{'selected' : selectedAlerts.indexOf(alert) != -1, 'd-none': !subGroup.expand || !subGroup.show}" (click)="showDetails($event, alert)">
                   <td [attr.colspan]="2" [ngStyle]="{'padding-left.px': (16 * (subGroup.level -1)) + 23}" (click)="addFilter(threatScoreFieldName(), getScore(alert.source))">
                     <div appAlertSeverity [severity]="getScore(alert.source)">
                       <a> {{ hasScore(alert.source) ? getScore(alert.source) : '-' }}</a>
@@ -100,7 +100,7 @@
                   </td>
                   <td> <i class="fa fa-comments-o" aria-hidden="true" *ngIf="alert.source.comments && alert.source.comments.length > 0"></i> </td>
                   <td>
-                    <input id="{{ alert.id }}" attr.data-qe-id="{{ 'checkBox-' + alertIndex }}" class="fontawesome-checkbox" type="checkbox" name="{{alert.id}}" (click)="selectRow($event, alert)" [checked]="selectedAlerts.indexOf(alert) != -1">
+                    <input id="{{ alert.id }}" class="fontawesome-checkbox" type="checkbox" name="{{alert.id}}" (click)="selectRow($event, alert)" [checked]="selectedAlerts.indexOf(alert) != -1">
                     <label attr.for="{{ alert.id }}"></label>
                   </td>
                 </tr>

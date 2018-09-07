@@ -36,7 +36,7 @@ describe('Test spec for login page', function() {
   });
 
   after(() => {
-    // cy.get('.logout-link').click();
+    cy.get('.logout-link').click();
     deleteTestData();
   });
 
@@ -45,7 +45,6 @@ describe('Test spec for login page', function() {
     cy.get('.dropdown-menu span').contains(elLabel).click();
   }
 
-  /*
   it('should change alert status for multiple alerts to OPEN', function() {
     const rows = ['row-0','row-1','row-2'];
 
@@ -142,11 +141,8 @@ describe('Test spec for login page', function() {
       });
     });
   });
-  */
-  it('should change alert status for multiple alerts to OPEN in tree view', function() {
-    // deleteTestData();
-    // loadTestData();
 
+  it('should change alert status for multiple alerts to OPEN in tree view', function() {
     cy.get('[data-name="source:type"]').click();
     cy.get('[data-name="enrichments:geo:ip_dst_addr:country"]').click();
     cy.wait(300);
@@ -155,38 +151,26 @@ describe('Test spec for login page', function() {
     cy.get('[data-name="RU"]').click();
     cy.get('[data-name="FR"]').click();
 
-    const rows = [0,1,2];
-    rows.forEach((rowId) => {
-      cy.get(`[data-qe-id="alertTreeRecords"] [data-qe-id="checkBox-${rowId}"]`)
-      .check({ force: true });  
+    [
+      { state: 'Open', subGroup: 'US', rows: [0,1,2] },
+      { state: 'Dismiss', subGroup: 'US', rows: [3,4] },
+      { state: 'Escalate', subGroup: 'RU', rows: [0,1,2] },
+      { state: 'Resolve', subGroup: 'FR', rows: [0,1,2] },
+    ].forEach((scenario) => {
+      scenario.rows.forEach((rowId) => {
+        cy.get(`[data-qe-id="subGroupItem-${scenario.subGroup}-${rowId}"] input`)
+        .check({ force: true });  
+      });
+  
+      clickActionDropdownOption(scenario.state);
+  
+      scenario.rows.forEach((rowId) => {
+        cy.get(`[data-qe-id="subGroupItem-${scenario.subGroup}-${rowId}"] [data-name="alert_status"]`)
+        .should((statusEl) => {
+          expect(statusEl).to.contain(scenario.state.toUpperCase());
+        });
+      });  
     });
-    // await treePage.toggleAlertInTree(1);
-    // await treePage.toggleAlertInTree(2);
-    // await treePage.toggleAlertInTree(3);
-    // await page.clickActionDropdownOption('Open');
-    // expect(treePage.getAlertStatusForTreeView(1, 'NEW')).toEqual('OPEN');
-    // expect(treePage.getAlertStatusForTreeView(2, 'NEW')).toEqual('OPEN');
-    // expect(treePage.getAlertStatusForTreeView(3, 'NEW')).toEqual('OPEN');
-
-    // await treePage.toggleAlertInTree(4);
-    // await treePage.toggleAlertInTree(5);
-    // await page.clickActionDropdownOption('Dismiss');
-    // expect(treePage.getAlertStatusForTreeView(4, 'NEW')).toEqual('DISMISS');
-    // expect(treePage.getAlertStatusForTreeView(5, 'NEW')).toEqual('DISMISS');
-
-    // await treePage.toggleAlertInTree(8);
-    // await treePage.toggleAlertInTree(9);
-    // await page.clickActionDropdownOption('Escalate');
-    // expect(treePage.getAlertStatusForTreeView(8, 'NEW')).toEqual('ESCALATE');
-    // expect(treePage.getAlertStatusForTreeView(9, 'NEW')).toEqual('ESCALATE');
-
-    // await treePage.toggleAlertInTree(10);
-    // await treePage.toggleAlertInTree(11);
-    // await treePage.toggleAlertInTree(12);
-    // await page.clickActionDropdownOption('Resolve');
-    // expect(treePage.getAlertStatusForTreeView(10, 'NEW')).toEqual('RESOLVE');
-    // expect(treePage.getAlertStatusForTreeView(11, 'NEW')).toEqual('RESOLVE');
-    // expect(treePage.getAlertStatusForTreeView(12, 'NEW')).toEqual('RESOLVE');
   });
 
 });
