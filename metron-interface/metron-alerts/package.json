@@ -43,7 +43,7 @@
     "@types/pikaday-time": "^1.4.2",
     "codelyzer": "~2.0.0",
     "compression": "1.6.2",
-    "cypress": "^3.0.1",
+    "cypress": "^3.1.0",
     "elementor": "^2.1.0",
     "express": "4.15.2",
     "http-proxy-middleware": "0.17.4",
