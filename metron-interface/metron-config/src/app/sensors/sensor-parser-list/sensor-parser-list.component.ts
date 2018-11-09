@@ -15,7 +15,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import {Component, OnInit, ViewChild} from '@angular/core';
+import {Component, OnInit, ViewChild, OnDestroy} from '@angular/core';
 import {Router, NavigationStart} from '@angular/router';
 import {SensorParserConfig} from '../../model/sensor-parser-config';
 import {SensorParserConfigService} from '../../service/sensor-parser-config.service';
@@ -27,30 +27,38 @@ import {StormService} from '../../service/storm.service';
 import {TopologyStatus} from '../../model/topology-status';
 import {SensorParserConfigHistory} from '../../model/sensor-parser-config-history';
 import {SensorParserConfigHistoryService} from '../../service/sensor-parser-config-history.service';
+import { SensorAggregateService } from '../sensor-aggregate/sensor-aggregate.service';
+import { Subscription } from 'rxjs';
+import { SensorParserConfigHistoryListController } from '../sensor-aggregate/sensor-parser-config-history-list.controller';
+import { SensorParserConfigHistoryUndoable } from '../sensor-aggregate/sensor-parser-config-history-undoable';
 
 @Component({
   selector: 'metron-config-sensor-parser-list',
   templateUrl: 'sensor-parser-list.component.html',
   styleUrls: ['sensor-parser-list.component.scss']
 })
-export class SensorParserListComponent implements OnInit {
+export class SensorParserListComponent implements OnInit, OnDestroy {
 
-  componentName: string = 'Sensors';
+  componentName = 'Sensors';
   @ViewChild('table') table;
 
-  count: number = 0;
+  count = 0;
   sensors: SensorParserConfigHistory[] = [];
   sensorsStatus: TopologyStatus[] = [];
   selectedSensor: SensorParserConfigHistory;
   selectedSensors: SensorParserConfigHistory[] = [];
-  enableAutoRefresh: boolean = true;
+  enableAutoRefresh = true;
+  _executeMergeSubscription: Subscription;
+  sensorsToRender: SensorParserConfigHistoryUndoable[];
 
   constructor(private sensorParserConfigService: SensorParserConfigService,
               private sensorParserConfigHistoryService: SensorParserConfigHistoryService,
               private stormService: StormService,
               private router: Router,
               private metronAlerts:  MetronAlerts,
-              private metronDialogBox: MetronDialogBox) {
+              private metronDialogBox: MetronDialogBox,
+              private sensorAggregateService: SensorAggregateService,
+              private sensorParserConfigHistoryListController: SensorParserConfigHistoryListController) {
     router.events.subscribe(event => {
       if (event instanceof NavigationStart && event.url === '/sensors') {
         this.onNavigationStart();
@@ -70,6 +78,10 @@ export class SensorParserListComponent implements OnInit {
         }
         this.selectedSensors = [];
         this.count = this.sensors.length;
+
+        // TODO: tear down when the component is no longet available
+        this.sensorParserConfigHistoryListController.setSensors(this.sensors);
+
         if (!justOnce) {
           this.getStatus();
           this.pollStatus();
@@ -82,6 +94,7 @@ export class SensorParserListComponent implements OnInit {
   }
 
   onSort($event: SortEvent) {
+    console.log('onSort')
     switch ($event.sortBy) {
       case 'sensorName':
         this.sensors.sort((obj1: SensorParserConfigHistory, obj2: SensorParserConfigHistory) => {
@@ -145,8 +158,8 @@ export class SensorParserListComponent implements OnInit {
   updateSensorStatus() {
       for (let sensor of this.sensors) {
 
-        let status: TopologyStatus = this.sensorsStatus.find(status => {
-          return status.name === sensor.sensorName;
+        let status: TopologyStatus = this.sensorsStatus.find(stat => {
+          return stat.name === sensor.sensorName;
         });
 
         if (status) {
@@ -169,6 +182,9 @@ export class SensorParserListComponent implements OnInit {
   }
 
   getParserType(sensor: SensorParserConfig): string {
+    if (!sensor.parserClassName) {
+      return '';
+    }
     let items = sensor.parserClassName.split('.');
     return items[items.length - 1].replace('Basic', '').replace('Parser', '');
   }
@@ -178,6 +194,25 @@ export class SensorParserListComponent implements OnInit {
     this.sensorParserConfigService.dataChanged$.subscribe(
       data => {
         this.getSensors(true);
+      }
+    );
+
+    this._executeMergeSubscription = this.sensorAggregateService.executeMerge$
+      .subscribe((value: {
+        groupName: string,
+        sensors: SensorParserConfigHistoryUndoable[]
+      }) => {
+        if (!value.groupName || !value.sensors.length) {
+          // there's nothing to group
+          return;
+        }
+        this.addSensorsToGroup(value.groupName, value.sensors);
+      });
+
+    // TODO: unsubscribe
+    this.sensorParserConfigHistoryListController.isChanged().subscribe(
+      (sensors: SensorParserConfigHistoryUndoable[]) => {
+        this.sensorsToRender = sensors;
       }
     );
   }
@@ -369,16 +404,31 @@ export class SensorParserListComponent implements OnInit {
     this.selectedSensors = [];
   }
 
-
-  onDragStart(sensor: SensorParserConfigHistory, event: DragEvent) {
-    return true;
+  onDragStart(sensor: SensorParserConfigHistoryUndoable) {
+    this.sensorAggregateService.markSensorToBeMerged(sensor, 0);
   }
 
-  onDragOver(sensor: SensorParserConfigHistory, event: DragEvent) {
+  onDragOver(event: DragEvent) {
     event.preventDefault();
   }
 
-  onDrop(sensor: SensorParserConfigHistory, event: DragEvent) {
-    debugger; 
+  onDrop(sensor: SensorParserConfigHistoryUndoable) {
+    this.sensorAggregateService.markSensorToBeMerged(sensor, 1);
+    this.router.navigateByUrl('/sensors(dialog:sensor-aggregate)');
+  }
+
+  addSensorsToGroup(groupName: string, sensors: SensorParserConfigHistoryUndoable[]) {
+    this.sensorParserConfigHistoryListController.addToGroup(groupName, sensors[1]);
+    this.sensorParserConfigHistoryListController.addToGroup(groupName, sensors[0]);
+  }
+
+  undo(sensor: SensorParserConfigHistoryUndoable, e) {
+    e.stopPropagation();
+    this.sensorParserConfigHistoryListController.restorePreviousState(sensor);
+  }
+
+  ngOnDestroy() {
+    this._executeMergeSubscription.unsubscribe();
+    this.sensorParserConfigHistoryListController.tearDown();
   }
 }
