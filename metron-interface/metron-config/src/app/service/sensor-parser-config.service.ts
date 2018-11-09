@@ -17,19 +17,20 @@
  */
 import { Injectable, Inject } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import { Observable, Subject } from 'rxjs';
-import { catchError, map } from 'rxjs/operators';
+import { Observable, Subject, from, of } from 'rxjs';
+import { catchError, map, take, mergeMap, finalize } from 'rxjs/operators';
 import { SensorParserConfig } from '../model/sensor-parser-config';
 import { HttpUtil } from '../util/httpUtil';
 import { ParseMessageRequest } from '../model/parse-message-request';
 import { RestError } from '../model/rest-error';
 import { IAppConfig } from '../app.config.interface';
 import { APP_CONFIG } from '../app.config';
+import { ParserGroupModel } from 'app/model/parser-group';
 
 @Injectable()
 export class SensorParserConfigService {
-  url = this.config.apiEndpoint + '/sensor/parser/config';
-  selectedSensorParserConfig: SensorParserConfig;
+  readonly parserConfigEndpoint = this.config.apiEndpoint + '/sensor/parser/config';
+  readonly parserGroupEndpoint = this.config.apiEndpoint + '/sensor/parser/group';
 
   dataChangedSource = new Subject<string[]>();
   dataChanged$ = this.dataChangedSource.asObservable();
@@ -39,12 +40,73 @@ export class SensorParserConfigService {
     @Inject(APP_CONFIG) private config: IAppConfig
   ) {}
 
+  public getAllGroups(): Observable<ParserGroupModel[]> {
+    function extractParserGroups(rawJsonArray) {
+      return rawJsonArray.map(group => new ParserGroupModel(group));
+    }
+
+    return this.http.get(this.parserGroupEndpoint).pipe(
+      map(extractParserGroups),
+      catchError(HttpUtil.handleError)
+    );
+  }
+
+  public getGroup(name: string): Observable<RestError | ParserGroupModel> {
+    return this.http.get(`${this.parserGroupEndpoint}/${name}`).pipe(
+      map(group => new ParserGroupModel(group)),
+      catchError(HttpUtil.handleError)
+    );
+  }
+
+  public saveGroup(name: string, group: ParserGroupModel): Observable<RestError | ParserGroupModel> {
+    return this.http.post(`${this.parserGroupEndpoint}/${name}`, group).pipe(
+      map(HttpUtil.extractData),
+      catchError(HttpUtil.handleError)
+    );
+  }
+
+  public deleteGroup(groupName: string): Observable<{ groupName: string, isSuccess: boolean }> {
+    return this.http.delete(`${this.parserGroupEndpoint}/${groupName}`).pipe(
+      map((result) => { return { groupName, isSuccess: true } }),
+      catchError((error) => { return of({ groupName, isSuccess: false }) })
+    );
+  }
+
+  public deleteGroups(
+    groupNames: string[]
+  ): Observable<{ success: Array<string>; failure: Array<string> }> {
+    let result: { success: Array<string>; failure: Array<string> } = {
+      success: [],
+      failure: []
+    };
+    let observable = Observable.create(observer => {
+      let completed = () => {
+        if (observer) {
+          observer.next(result);
+          observer.complete();
+        }
+        // TODO: what about this?
+        // this.dataChangedSource.next(groupNames);
+      };
+      from(groupNames).pipe(
+        mergeMap(this.deleteGroup.bind(this)),
+        take(groupNames.length),
+        map((deleteResult: { groupName: string, isSuccess: boolean}) => {
+          (deleteResult.isSuccess ? result.success : result.failure).push(deleteResult.groupName);
+        }),
+        finalize(completed)
+        ).subscribe();
+    });
+
+    return observable;
+  }
+
   public post(
     name: string,
     sensorParserConfig: SensorParserConfig
   ): Observable<SensorParserConfig> {
     return this.http
-      .post(this.url + '/' + name, JSON.stringify(sensorParserConfig))
+      .post(this.parserConfigEndpoint + '/' + name, JSON.stringify(sensorParserConfig))
       .pipe(
         map(HttpUtil.extractData),
         catchError(HttpUtil.handleError)
@@ -52,14 +114,14 @@ export class SensorParserConfigService {
   }
 
   public get(name: string): Observable<SensorParserConfig> {
-    return this.http.get(this.url + '/' + name).pipe(
+    return this.http.get(this.parserConfigEndpoint + '/' + name).pipe(
       map(HttpUtil.extractData),
       catchError(HttpUtil.handleError)
     );
   }
 
   public getAll(): Observable<{}> {
-    return this.http.get(this.url).pipe(
+    return this.http.get(this.parserConfigEndpoint).pipe(
       map(HttpUtil.extractData),
       catchError(HttpUtil.handleError)
     );
@@ -69,12 +131,12 @@ export class SensorParserConfigService {
     name: string
   ): Observable<Object | RestError> {
     return this.http
-      .delete(this.url + '/' + name)
+      .delete(this.parserConfigEndpoint + '/' + name)
       .pipe(catchError(HttpUtil.handleError));
   }
 
   public getAvailableParsers(): Observable<{}> {
-    return this.http.get(this.url + '/list/available').pipe(
+    return this.http.get(this.parserConfigEndpoint + '/list/available').pipe(
       map(HttpUtil.extractData),
       catchError(HttpUtil.handleError)
     );
@@ -83,7 +145,7 @@ export class SensorParserConfigService {
   public parseMessage(
     parseMessageRequest: ParseMessageRequest
   ): Observable<{}> {
-    return this.http.post(this.url + '/parseMessage', parseMessageRequest).pipe(
+    return this.http.post(this.parserConfigEndpoint + '/parseMessage', parseMessageRequest).pipe(
       map(HttpUtil.extractData),
       catchError(HttpUtil.handleError)
     );

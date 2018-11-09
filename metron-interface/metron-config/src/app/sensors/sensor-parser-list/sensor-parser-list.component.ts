@@ -32,6 +32,7 @@ import { Subscription } from 'rxjs';
 import { SensorParserConfigHistoryListController } from '../sensor-aggregate/sensor-parser-config-history-list.controller';
 import { SensorParserConfigHistoryUndoable } from '../sensor-aggregate/sensor-parser-config-history-undoable';
 
+
 @Component({
   selector: 'metron-config-sensor-parser-list',
   templateUrl: 'sensor-parser-list.component.html',
@@ -52,7 +53,6 @@ export class SensorParserListComponent implements OnInit, OnDestroy {
   sensorsToRender: SensorParserConfigHistoryUndoable[];
 
   constructor(private sensorParserConfigService: SensorParserConfigService,
-              private sensorParserConfigHistoryService: SensorParserConfigHistoryService,
               private stormService: StormService,
               private router: Router,
               private metronAlerts:  MetronAlerts,
