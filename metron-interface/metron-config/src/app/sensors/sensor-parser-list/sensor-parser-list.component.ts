@@ -32,6 +32,7 @@ import { Store, select } from '@ngrx/store';
 import { ParserGroupModel } from 'app/model/parser-group';
 import { ParserLoadingStart } from '../parser-configs.actions';
 import * as parserSelectors from '../parser-configs.selectors';
+import { SensorParserStatus } from '../../model/sensor-parser-status';
 
 @Component({
   selector: 'metron-config-sensor-parser-list',
@@ -53,7 +54,8 @@ export class SensorParserListComponent implements OnInit, OnDestroy {
   sensorsToRender: MetaParserConfigItem[];
 
   private parserConfigs$: Observable<SensorParserConfigHistory[]>;
-  private groupConfigs$: Observable<ParserGroupModel[]>;
+  private groupConfigs$: Observable<SensorParserConfigHistory[]>;
+  private parserStatus$: Observable<SensorParserStatus[]>;
   private mergedConfigs$: Observable<MetaParserConfigItem[]>;
 
   private isStatusPolling: boolean;
@@ -67,7 +69,8 @@ export class SensorParserListComponent implements OnInit, OnDestroy {
               private sensorParserConfigHistoryListController: SensorParserConfigHistoryListController,
               private store: Store<{
                 parserConfigs: SensorParserConfigHistory[],
-                groupConfigs: ParserGroupModel[],
+                groupConfigs: SensorParserConfigHistory[],
+                parserStatus: SensorParserStatus[],
                 mergedConfigs: MetaParserConfigItem[] }>) {
     router.events.subscribe(event => {
       if (event instanceof NavigationStart && event.url === '/sensors') {
@@ -77,9 +80,8 @@ export class SensorParserListComponent implements OnInit, OnDestroy {
 
     this.parserConfigs$ = store.select('parserConfigs');
     this.groupConfigs$ = store.select('groupConfigs');
+    this.parserStatus$ = store.select('parserStatus');
     this.mergedConfigs$ = store.pipe(select(parserSelectors.getMergedConfigs));
-
-
   }
 
   private pollStatus() {
