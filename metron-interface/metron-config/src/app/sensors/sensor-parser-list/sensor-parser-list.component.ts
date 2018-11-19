@@ -28,10 +28,10 @@ import { SensorAggregateService } from '../sensor-aggregate/sensor-aggregate.ser
 import { Subscription, Observable } from 'rxjs';
 import { SensorParserConfigHistoryListController } from '../sensor-aggregate/sensor-parser-config-history-list.controller';
 import { MetaParserConfigItem } from '../sensor-aggregate/meta-parser-config-item';
-import { Store } from '@ngrx/store';
+import { Store, select } from '@ngrx/store';
 import { ParserGroupModel } from 'app/model/parser-group';
 import { ParserLoadingStart } from '../parser-configs.actions';
-
+import * as parserSelectors from '../parser-configs.selectors';
 
 @Component({
   selector: 'metron-config-sensor-parser-list',
@@ -77,7 +77,9 @@ export class SensorParserListComponent implements OnInit, OnDestroy {
 
     this.parserConfigs$ = store.select('parserConfigs');
     this.groupConfigs$ = store.select('groupConfigs');
-    this.mergedConfigs$ = store.select('mergedConfigs');
+    this.mergedConfigs$ = store.pipe(select(parserSelectors.getMergedConfigs));
+
+
   }
 
   private pollStatus() {
@@ -160,6 +162,10 @@ export class SensorParserListComponent implements OnInit, OnDestroy {
       }
     );
 
+    this.mergedConfigs$.subscribe((mergedConfigs) => {
+      this.sensorsToRender = mergedConfigs;
+    });
+
     // FIXME: this codepart is not responsible for the merging of the list of groups and configs
     // but the actual creation of new groups
     this._executeMergeSubscription = this.sensorAggregateService.executeMerge$
@@ -175,11 +181,11 @@ export class SensorParserListComponent implements OnInit, OnDestroy {
       });
 
     // TODO: unsubscribe
-    this.sensorParserConfigHistoryListController.isChanged().subscribe(
-      (sensors: MetaParserConfigItem[]) => {
-        this.sensorsToRender = sensors;
-      }
-    );
+    // this.sensorParserConfigHistoryListController.isChanged().subscribe(
+    //   (sensors: MetaParserConfigItem[]) => {
+    //     this.sensorsToRender = sensors;
+    //   }
+    // );
   }
 
   addAddSensor() {
