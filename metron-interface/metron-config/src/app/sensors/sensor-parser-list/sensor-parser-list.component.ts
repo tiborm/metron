@@ -33,6 +33,7 @@ import { ParserGroupModel } from 'app/model/parser-group';
 import { ParserLoadingStart } from '../parser-configs.actions';
 import * as parserSelectors from '../parser-configs.selectors';
 import { SensorParserStatus } from '../../model/sensor-parser-status';
+import { ParserState, AppState } from 'app/app.state';
 
 @Component({
   selector: 'metron-config-sensor-parser-list',
@@ -53,9 +54,7 @@ export class SensorParserListComponent implements OnInit, OnDestroy {
   _executeMergeSubscription: Subscription;
   sensorsToRender: MetaParserConfigItem[];
 
-  private parserConfigs$: Observable<SensorParserConfigHistory[]>;
-  private groupConfigs$: Observable<SensorParserConfigHistory[]>;
-  private parserStatus$: Observable<SensorParserStatus[]>;
+  private parserConfigs$: Observable<ParserState>;
   private mergedConfigs$: Observable<MetaParserConfigItem[]>;
 
   private isStatusPolling: boolean;
@@ -67,20 +66,14 @@ export class SensorParserListComponent implements OnInit, OnDestroy {
               private metronDialogBox: MetronDialogBox,
               private sensorAggregateService: SensorAggregateService,
               private sensorParserConfigHistoryListController: SensorParserConfigHistoryListController,
-              private store: Store<{
-                parserConfigs: SensorParserConfigHistory[],
-                groupConfigs: SensorParserConfigHistory[],
-                parserStatus: SensorParserStatus[],
-                mergedConfigs: MetaParserConfigItem[] }>) {
+              private store: Store<AppState>) {
     router.events.subscribe(event => {
       if (event instanceof NavigationStart && event.url === '/sensors') {
         this.onNavigationStart();
       }
     });
 
-    this.parserConfigs$ = store.select('parserConfigs');
-    this.groupConfigs$ = store.select('groupConfigs');
-    this.parserStatus$ = store.select('parserStatus');
+    this.parserConfigs$ = store.select('parsers');
     this.mergedConfigs$ = store.pipe(select(parserSelectors.getMergedConfigs));
   }
 
@@ -144,8 +137,8 @@ export class SensorParserListComponent implements OnInit, OnDestroy {
   }
 
   ngOnInit() {
-    this.parserConfigs$.subscribe((parserConfigs: SensorParserConfigHistory[]) => {
-      this.sensors = parserConfigs;
+    this.parserConfigs$.subscribe((state: ParserState) => {
+      this.sensors = state.parserConfigs;
       this.selectedSensors = [];
       this.count = this.sensors.length;
 
