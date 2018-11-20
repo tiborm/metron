@@ -30,10 +30,11 @@ import { SensorParserConfigHistoryListController } from '../sensor-aggregate/sen
 import { MetaParserConfigItem } from '../sensor-aggregate/meta-parser-config-item';
 import { Store, select } from '@ngrx/store';
 import { ParserGroupModel } from 'app/model/parser-group';
-import { ParserLoadingStart } from '../parser-configs.actions';
+import * as ParsersAction from '../parser-configs.actions';
 import * as parserSelectors from '../parser-configs.selectors';
 import { SensorParserStatus } from '../../model/sensor-parser-status';
-import { ParserState, AppState } from 'app/app.state';
+import { ParserState } from '../parser-configs.reducers';
+import { SensorState } from '../reducers';
 
 @Component({
   selector: 'metron-config-sensor-parser-list',
@@ -54,7 +55,7 @@ export class SensorParserListComponent implements OnInit, OnDestroy {
   _executeMergeSubscription: Subscription;
   sensorsToRender: MetaParserConfigItem[];
 
-  private parserConfigs$: Observable<ParserState>;
+  private parserConfigs$: Observable<SensorState>;
   private mergedConfigs$: Observable<MetaParserConfigItem[]>;
 
   private isStatusPolling: boolean;
@@ -66,14 +67,14 @@ export class SensorParserListComponent implements OnInit, OnDestroy {
               private metronDialogBox: MetronDialogBox,
               private sensorAggregateService: SensorAggregateService,
               private sensorParserConfigHistoryListController: SensorParserConfigHistoryListController,
-              private store: Store<AppState>) {
+              private store: Store<SensorState>) {
     router.events.subscribe(event => {
       if (event instanceof NavigationStart && event.url === '/sensors') {
         this.onNavigationStart();
       }
     });
 
-    this.parserConfigs$ = store.select('parsers');
+    this.parserConfigs$ = store.select('sensors');
     this.mergedConfigs$ = store.pipe(select(parserSelectors.getMergedConfigs));
   }
 
@@ -137,8 +138,8 @@ export class SensorParserListComponent implements OnInit, OnDestroy {
   }
 
   ngOnInit() {
-    this.parserConfigs$.subscribe((state: ParserState) => {
-      this.sensors = state.parserConfigs;
+    this.parserConfigs$.subscribe((state: SensorState) => {
+      this.sensors = state.parsers.items;
       this.selectedSensors = [];
       this.count = this.sensors.length;
 
@@ -149,11 +150,11 @@ export class SensorParserListComponent implements OnInit, OnDestroy {
       }
     })
 
-    this.store.dispatch(new ParserLoadingStart());
+    this.store.dispatch(new ParsersAction.LoadStart());
 
     this.sensorParserConfigService.dataChanged$.subscribe(
       data => {
-        this.store.dispatch(new ParserLoadingStart());
+        this.store.dispatch(new ParsersAction.LoadStart());
       }
     );
 
