@@ -417,7 +417,7 @@ export class SensorParserListComponent implements OnInit, OnDestroy {
   }
 
   onDiscard() {
-    this.store.dispatch(new ParsersActions.DiscardChanges());
+    this.store.dispatch(new ParsersActions.LoadStart());
   }
 
   ngOnDestroy() { }

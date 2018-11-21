@@ -121,7 +121,3 @@ export class MarkAsDeleted implements Action {
 export class ApplyChanges implements Action {
   readonly type = ParserConfigsActions.ApplyChanges;
 }
-
-export class DiscardChanges implements Action {
-  readonly type = ParserConfigsActions.ApplyChanges;
-}
