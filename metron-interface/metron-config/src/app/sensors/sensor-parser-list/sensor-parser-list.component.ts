@@ -412,6 +412,14 @@ export class SensorParserListComponent implements OnInit, OnDestroy {
     el.classList.remove('drop-after');
   }
 
+  onApply() {
+    this.store.dispatch(new ParsersActions.ApplyChanges());
+  }
+
+  onDiscard() {
+    this.store.dispatch(new ParsersActions.DiscardChanges());
+  }
+
   ngOnDestroy() { }
 
   isSelected(sensor) {
