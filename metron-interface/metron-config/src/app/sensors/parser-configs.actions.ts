@@ -21,7 +21,7 @@ export enum ParserConfigsActions {
   SetAllDraggedOver = '[Parser Configs List] Set all dragged over',
   MarkAsDeleted = '[Parser Configs List] Mark as deleted',
   ApplyChanges = '[Parser Configs List] Apply changes',
-  DiscardChanges = '[Parser Configs List] Discard changes',
+  ApplyChangesSuccess = '[Parser Configs List] Apply changes success',
 }
 
 export class LoadStart implements Action {
@@ -120,4 +120,8 @@ export class MarkAsDeleted implements Action {
 
 export class ApplyChanges implements Action {
   readonly type = ParserConfigsActions.ApplyChanges;
+}
+
+export class ApplyChangesSuccess implements Action {
+  readonly type = ParserConfigsActions.ApplyChangesSuccess;
 }
