@@ -18,7 +18,7 @@
 import { Injectable, Inject } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable, Subject, from, of } from 'rxjs';
-import { catchError, map, take, mergeMap, finalize } from 'rxjs/operators';
+import { catchError, map, take, mergeMap, finalize, switchMap, filter } from 'rxjs/operators';
 import { ParserConfigModel } from '../sensors/models/parser-config.model';
 import { HttpUtil } from '../util/httpUtil';
 import { ParseMessageRequest } from '../model/parse-message-request';
@@ -27,9 +27,11 @@ import { IAppConfig } from '../app.config.interface';
 import { APP_CONFIG } from '../app.config';
 import { ParserGroupModel } from '../sensors/models/parser-group.model';
 import { ParserModel } from 'app/sensors/models/parser.model';
+import { ParserMetaInfoModel } from '../sensors/models/parser-meta-info.model';
 
 @Injectable()
 export class SensorParserConfigService {
+
   readonly parserConfigEndpoint = this.config.apiEndpoint + '/sensor/parser/config';
   readonly parserGroupEndpoint = this.config.apiEndpoint + '/sensor/parser/group';
 
@@ -99,6 +101,19 @@ export class SensorParserConfigService {
     });
 
     return observable;
+  }
+
+  syncGroups(groups: ParserMetaInfoModel[]) {
+    return from(groups).pipe(
+      filter(group => !!(group.isDeleted || group.isDirty || group.isPhantom)),
+      switchMap((group: ParserMetaInfoModel) => {
+        if (group.isDeleted) {
+          return this.deleteGroup(group.getName());
+        } else {
+          return this.saveGroup(group.getName(), group.getConfig() as ParserGroupModel);
+        }
+      })
+    );
   }
 
   public getConfig(name: string): Observable<ParserConfigModel> {

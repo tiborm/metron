@@ -27,6 +27,7 @@ import {
 } from '@angular/common/http/testing';
 import { ParserGroupModel } from '../sensors/models/parser-group.model';
 import { noop } from 'rxjs';
+import { ParserMetaInfoModel } from '../sensors/models/parser-meta-info.model';
 
 describe('SensorParserConfigService', () => {
   let mockBackend: HttpTestingController;
@@ -205,5 +206,26 @@ describe('SensorParserConfigService', () => {
       request[1].flush('Invalid request parameters', { status: 404, statusText: 'Bad Request' });
       request[2].flush({});
     });
+
+    fit('syncronizing list of parser configs with the backend - SINGLE DELETE', () => {
+      const testData = [
+        new ParserMetaInfoModel(new ParserGroupModel({ name: 'TestGroup01', description: '' })),
+        new ParserMetaInfoModel(new ParserGroupModel({ name: 'TestGroup02', description: '' })),
+      ];
+
+      testData[1].isDeleted = true;
+
+      sensorParserConfigService.syncGroups(testData).subscribe((result) => {
+        console.dir(result);
+      });
+
+      const request = mockBackend.expectOne('/api/v1/sensor/parser/group/TestGroup02');
+      expect(request.request.method).toEqual('DELETE');
+    });
+
+    it('syncronizing list of parser groups with the backend', () => {
+
+    });
+
   })
 });

@@ -1,6 +1,6 @@
 import { Effect, Actions, ofType } from '@ngrx/effects'
 import { Observable, forkJoin } from 'rxjs';
-import { Action, Store } from '@ngrx/store';
+import { Action, Store, select } from '@ngrx/store';
 import { Injectable } from '@angular/core';
 import { mergeMap, map, switchMap, withLatestFrom } from 'rxjs/operators';
 import { SensorParserConfigService } from 'app/service/sensor-parser-config.service';
@@ -15,6 +15,8 @@ import { SensorState } from './reducers';
 
 @Injectable()
 export class ParserConfigEffects {
+
+  private sensorState$: Observable<SensorState>
 
   @Effect()
   loadData$: Observable<Action> = this.actions$.pipe(
@@ -39,7 +41,7 @@ export class ParserConfigEffects {
             parsers: configsArray,
             groups: groupsArray,
             statuses: statuses,
-          });
+          } as ParsersActions.LoadSuccesActionPayload);
         })
       )
     })
@@ -61,9 +63,11 @@ export class ParserConfigEffects {
   @Effect()
   applyChanges: Observable<Action> = this.actions$.pipe(
     ofType(ParsersActions.ParserConfigsActions.ApplyChanges),
-    withLatestFrom(this.store$),
+    withLatestFrom(this.store.select('sensors')),
     map(([ action, store ]) => {
-     return new ParsersActions.ApplyChangesSuccess();
+      // this.parserService.syncConfigs(store.parsers);
+      this.parserService.syncGroups(store.parsers);
+      return new ParsersActions.ApplyChangesSuccess();
     })
   )
 
@@ -71,6 +75,6 @@ export class ParserConfigEffects {
     private parserService: SensorParserConfigService,
     private stormService: StormService,
     private actions$: Actions,
-    private store$: Store<SensorState>
+    private store: Store<SensorState>
   ) {}
 }

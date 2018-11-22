@@ -54,7 +54,7 @@ describe('parser-config.actions.ts', () => {
     fillStoreWithTestData()
   });
 
-  fit('Should POST /sensor/parser/group on action ApplyChanges', () => {
+  it('Should POST /sensor/parser/group on action ApplyChanges', () => {
     store.dispatch(new ParserActions.ApplyChanges());
   })
 
