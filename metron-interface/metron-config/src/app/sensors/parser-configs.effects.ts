@@ -64,10 +64,14 @@ export class ParserConfigEffects {
   applyChanges: Observable<Action> = this.actions$.pipe(
     ofType(ParsersActions.ParserConfigsActions.ApplyChanges),
     withLatestFrom(this.store.select('sensors')),
-    map(([ action, store ]) => {
-      // this.parserService.syncConfigs(store.parsers);
-      this.parserService.syncGroups(store.parsers);
-      return new ParsersActions.ApplyChangesSuccess();
+    mergeMap(([ action, store ]) => {
+      return forkJoin(
+        this.parserService.syncConfigs(store.parsers),
+        this.parserService.syncGroups(store.parsers),
+      ).pipe(
+        map((params) => {
+          return new ParsersActions.ApplyChangesSuccess();
+      }));
     })
   )
 
