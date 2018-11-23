@@ -103,6 +103,19 @@ export class SensorParserConfigService {
     return observable;
   }
 
+  syncConfigs(configs: ParserMetaInfoModel[]): any {
+    return from(configs).pipe(
+      filter(config => !!(config.isDeleted || config.isDirty || config.isPhantom)),
+      switchMap((config: ParserMetaInfoModel) => {
+        if (config.isDeleted) {
+          return this.deleteConfig(config.getName());
+        } else {
+          return this.saveConfig(config.getName(), config.getConfig() as ParserGroupModel);
+        }
+      })
+    );
+  }
+
   syncGroups(groups: ParserMetaInfoModel[]) {
     return from(groups).pipe(
       filter(group => !!(group.isDeleted || group.isDirty || group.isPhantom)),

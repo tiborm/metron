@@ -216,7 +216,16 @@ describe('SensorParserConfigService', () => {
       ];
     }
 
-    function markIndexAs(testData: ParserMetaInfoModel[], indexes: number[], flag: string) {
+    function getTestConfigs() {
+      return [
+        new ParserMetaInfoModel(new ParserConfigModel({ sensorTopic: 'TestConfig01' })),
+        new ParserMetaInfoModel(new ParserConfigModel({ sensorTopic: 'TestConfig02' })),
+        new ParserMetaInfoModel(new ParserConfigModel({ sensorTopic: 'TestConfig03' })),
+        new ParserMetaInfoModel(new ParserConfigModel({ sensorTopic: 'TestConfig04' })),
+      ];
+    }
+
+    function markElementOnIndexAs(testData: ParserMetaInfoModel[], indexes: number[], flag: string) {
       indexes.forEach((index) => {
         testData[index][flag] = true;
       })
@@ -224,14 +233,14 @@ describe('SensorParserConfigService', () => {
 
     class DirtyFlags {
       static NEW = 'isPhantom';
-      static EDITED = 'isDirty';
+      static CHANGED = 'isDirty';
       static DELETED = 'isDeleted';
     }
 
-    fit('syncronizing list of parser GROUPS with the backend - SINGLE DELETE', () => {
+    it('syncronizing list of parser GROUPS with the backend - SINGLE DELETE', () => {
       const testData = getTestGroups();
 
-      markIndexAs(testData, [1], DirtyFlags.DELETED);
+      markElementOnIndexAs(testData, [1], DirtyFlags.DELETED);
 
       sensorParserConfigService.syncGroups(testData).subscribe();
 
@@ -239,10 +248,10 @@ describe('SensorParserConfigService', () => {
       expect(request.request.method).toEqual('DELETE');
     });
 
-    fit('syncronizing list of parser GROUPS with the backend - MULTIPLE DELETE', () => {
+    it('syncronizing list of parser GROUPS with the backend - MULTIPLE DELETE', () => {
       const testData = getTestGroups();
 
-      markIndexAs(testData, [0, 2, 3], DirtyFlags.DELETED);
+      markElementOnIndexAs(testData, [0, 2, 3], DirtyFlags.DELETED);
 
       sensorParserConfigService.syncGroups(testData).subscribe();
 
@@ -255,10 +264,10 @@ describe('SensorParserConfigService', () => {
       expect(requests[2].request.method).toEqual('DELETE');
     });
 
-    fit('syncronizing list of parser GROUPS with the backend - SINGLE NEW', () => {
+    it('syncronizing list of parser GROUPS with the backend - SINGLE NEW', () => {
       const testData = getTestGroups();
 
-      markIndexAs(testData, [0], DirtyFlags.NEW);
+      markElementOnIndexAs(testData, [0], DirtyFlags.NEW);
 
       sensorParserConfigService.syncGroups(testData).subscribe();
 
@@ -268,10 +277,10 @@ describe('SensorParserConfigService', () => {
       expect(request.request.body.description).toEqual('');
     });
 
-    fit('syncronizing list of parser GROUPS with the backend - MULTIPLE NEW', () => {
+    it('syncronizing list of parser GROUPS with the backend - MULTIPLE NEW', () => {
       const testData = getTestGroups();
 
-      markIndexAs(testData, [0, 2], DirtyFlags.NEW);
+      markElementOnIndexAs(testData, [0, 2], DirtyFlags.NEW);
 
       sensorParserConfigService.syncGroups(testData).subscribe();
 
@@ -283,11 +292,121 @@ describe('SensorParserConfigService', () => {
 
       expect(requests[0].request.body.name).toEqual('TestGroup01');
       expect(requests[1].request.body.name).toEqual('TestGroup03');
-
     });
 
-    it('SAME WITH CONFIGS', () => {
+    it('syncronizing list of parser GROUPS with the backend - SINGLE CHANGED', () => {
+      const testData = getTestGroups();
 
+      markElementOnIndexAs(testData, [3], DirtyFlags.CHANGED);
+
+      sensorParserConfigService.syncGroups(testData).subscribe();
+
+      const request = mockBackend.expectOne('/api/v1/sensor/parser/group/TestGroup04');
+      expect(request.request.method).toEqual('POST');
+      expect(request.request.body.name).toEqual('TestGroup04');
+      expect(request.request.body.description).toEqual('');
+    });
+
+    it('syncronizing list of parser GROUPS with the backend - MULTIPLE CHANGED', () => {
+      const testData = getTestGroups();
+
+      markElementOnIndexAs(testData, [0, 2], DirtyFlags.CHANGED);
+
+      sensorParserConfigService.syncGroups(testData).subscribe();
+
+      const requests = [];
+      requests.push(mockBackend.expectOne('/api/v1/sensor/parser/group/TestGroup01'));
+      requests.push(mockBackend.expectOne('/api/v1/sensor/parser/group/TestGroup03'));
+      expect(requests[0].request.method).toEqual('POST');
+      expect(requests[1].request.method).toEqual('POST');
+
+      expect(requests[0].request.body.name).toEqual('TestGroup01');
+      expect(requests[1].request.body.name).toEqual('TestGroup03');
+    });
+
+    it('syncronizing list of PARSER CONFIGS with the backend - SINGLE DELETE', () => {
+      const testData = getTestConfigs();
+
+      markElementOnIndexAs(testData, [1], DirtyFlags.DELETED);
+
+      sensorParserConfigService.syncConfigs(testData).subscribe();
+
+      const request = mockBackend.expectOne('/api/v1/sensor/parser/config/TestConfig02');
+      expect(request.request.method).toEqual('DELETE');
+    });
+
+    it('syncronizing list of PARSER CONFIGS with the backend - MULTIPLE DELETE', () => {
+      const testData = getTestConfigs();
+
+      markElementOnIndexAs(testData, [0, 2, 3], DirtyFlags.DELETED);
+
+      sensorParserConfigService.syncConfigs(testData).subscribe();
+
+      const requests = [];
+      requests.push(mockBackend.expectOne('/api/v1/sensor/parser/config/TestConfig01'));
+      requests.push(mockBackend.expectOne('/api/v1/sensor/parser/config/TestConfig03'));
+      requests.push(mockBackend.expectOne('/api/v1/sensor/parser/config/TestConfig04'));
+      expect(requests[0].request.method).toEqual('DELETE');
+      expect(requests[1].request.method).toEqual('DELETE');
+      expect(requests[2].request.method).toEqual('DELETE');
+    });
+
+    it('syncronizing list of PARSER CONFIGS with the backend - SINGLE NEW', () => {
+      const testData = getTestConfigs();
+
+      markElementOnIndexAs(testData, [0], DirtyFlags.NEW);
+
+      sensorParserConfigService.syncConfigs(testData).subscribe();
+
+      const request = mockBackend.expectOne('/api/v1/sensor/parser/config/TestConfig01');
+      expect(request.request.method).toEqual('POST');
+      expect(JSON.parse(request.request.body).sensorTopic).toEqual('TestConfig01');
+    });
+
+    it('syncronizing list of PARSER CONFIGS with the backend - MULTIPLE NEW', () => {
+      const testData = getTestConfigs();
+
+      markElementOnIndexAs(testData, [0, 2], DirtyFlags.NEW);
+
+      sensorParserConfigService.syncConfigs(testData).subscribe();
+
+      const requests = [];
+      requests.push(mockBackend.expectOne('/api/v1/sensor/parser/config/TestConfig01'));
+      requests.push(mockBackend.expectOne('/api/v1/sensor/parser/config/TestConfig03'));
+      expect(requests[0].request.method).toEqual('POST');
+      expect(requests[1].request.method).toEqual('POST');
+
+      expect(JSON.parse(requests[0].request.body).sensorTopic).toEqual('TestConfig01');
+      expect(JSON.parse(requests[1].request.body).sensorTopic).toEqual('TestConfig03');
+    });
+
+    it('syncronizing list of PARSER CONFIGS with the backend - SINGLE CHANGED', () => {
+      const testData = getTestConfigs();
+
+      markElementOnIndexAs(testData, [3], DirtyFlags.CHANGED);
+
+      sensorParserConfigService.syncConfigs(testData).subscribe();
+
+      const request = mockBackend.expectOne('/api/v1/sensor/parser/config/TestConfig04');
+      expect(request.request.method).toEqual('POST');
+      expect(JSON.parse(request.request.body).sensorTopic).toEqual('TestConfig04');
+    });
+
+    it('syncronizing list of PARSER CONFIGS with the backend - MULTIPLE CHANGED', () => {
+      const testData = getTestConfigs();
+
+      markElementOnIndexAs(testData, [0, 2], DirtyFlags.CHANGED);
+
+      sensorParserConfigService.syncConfigs(testData).subscribe();
+
+      const requests = [];
+      requests.push(mockBackend.expectOne('/api/v1/sensor/parser/config/TestConfig01'));
+      requests.push(mockBackend.expectOne('/api/v1/sensor/parser/config/TestConfig03'));
+      expect(requests[0].request.method).toEqual('POST');
+      expect(requests[1].request.method).toEqual('POST');
+
+      expect(JSON.parse(requests[0].request.body).sensorTopic).toEqual('TestConfig01');
+      expect(JSON.parse(requests[1].request.body).sensorTopic).toEqual('TestConfig03');
     });
 
     it('syncronization should clear the synced dirty flags', () => {
