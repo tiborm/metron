@@ -207,25 +207,95 @@ describe('SensorParserConfigService', () => {
       request[2].flush({});
     });
 
-    fit('syncronizing list of parser configs with the backend - SINGLE DELETE', () => {
-      const testData = [
+    function getTestGroups() {
+      return [
         new ParserMetaInfoModel(new ParserGroupModel({ name: 'TestGroup01', description: '' })),
         new ParserMetaInfoModel(new ParserGroupModel({ name: 'TestGroup02', description: '' })),
+        new ParserMetaInfoModel(new ParserGroupModel({ name: 'TestGroup03', description: '' })),
+        new ParserMetaInfoModel(new ParserGroupModel({ name: 'TestGroup04', description: '' })),
       ];
+    }
 
-      testData[1].isDeleted = true;
+    function markIndexAs(testData: ParserMetaInfoModel[], indexes: number[], flag: string) {
+      indexes.forEach((index) => {
+        testData[index][flag] = true;
+      })
+    }
 
-      sensorParserConfigService.syncGroups(testData).subscribe((result) => {
-        console.dir(result);
-      });
+    class DirtyFlags {
+      static NEW = 'isPhantom';
+      static EDITED = 'isDirty';
+      static DELETED = 'isDeleted';
+    }
+
+    fit('syncronizing list of parser GROUPS with the backend - SINGLE DELETE', () => {
+      const testData = getTestGroups();
+
+      markIndexAs(testData, [1], DirtyFlags.DELETED);
+
+      sensorParserConfigService.syncGroups(testData).subscribe();
 
       const request = mockBackend.expectOne('/api/v1/sensor/parser/group/TestGroup02');
       expect(request.request.method).toEqual('DELETE');
     });
 
-    it('syncronizing list of parser groups with the backend', () => {
+    fit('syncronizing list of parser GROUPS with the backend - MULTIPLE DELETE', () => {
+      const testData = getTestGroups();
+
+      markIndexAs(testData, [0, 2, 3], DirtyFlags.DELETED);
+
+      sensorParserConfigService.syncGroups(testData).subscribe();
+
+      const requests = [];
+      requests.push(mockBackend.expectOne('/api/v1/sensor/parser/group/TestGroup01'));
+      requests.push(mockBackend.expectOne('/api/v1/sensor/parser/group/TestGroup04'));
+      requests.push(mockBackend.expectOne('/api/v1/sensor/parser/group/TestGroup03'));
+      expect(requests[0].request.method).toEqual('DELETE');
+      expect(requests[1].request.method).toEqual('DELETE');
+      expect(requests[2].request.method).toEqual('DELETE');
+    });
+
+    fit('syncronizing list of parser GROUPS with the backend - SINGLE NEW', () => {
+      const testData = getTestGroups();
+
+      markIndexAs(testData, [0], DirtyFlags.NEW);
+
+      sensorParserConfigService.syncGroups(testData).subscribe();
+
+      const request = mockBackend.expectOne('/api/v1/sensor/parser/group/TestGroup01');
+      expect(request.request.method).toEqual('POST');
+      expect(request.request.body.name).toEqual('TestGroup01');
+      expect(request.request.body.description).toEqual('');
+    });
+
+    fit('syncronizing list of parser GROUPS with the backend - MULTIPLE NEW', () => {
+      const testData = getTestGroups();
+
+      markIndexAs(testData, [0, 2], DirtyFlags.NEW);
+
+      sensorParserConfigService.syncGroups(testData).subscribe();
+
+      const requests = [];
+      requests.push(mockBackend.expectOne('/api/v1/sensor/parser/group/TestGroup01'));
+      requests.push(mockBackend.expectOne('/api/v1/sensor/parser/group/TestGroup03'));
+      expect(requests[0].request.method).toEqual('POST');
+      expect(requests[1].request.method).toEqual('POST');
+
+      expect(requests[0].request.body.name).toEqual('TestGroup01');
+      expect(requests[1].request.body.name).toEqual('TestGroup03');
 
     });
 
+    it('SAME WITH CONFIGS', () => {
+
+    });
+
+    it('syncronization should clear the synced dirty flags', () => {
+
+    });
+
+    it('syncronization return with list of successful/unsuccessful requests', () => {
+
+    });
   })
 });
