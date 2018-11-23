@@ -409,18 +409,14 @@ fdescribe('SensorParserConfigService', () => {
       expect(JSON.parse(requests[1].request.body).sensorTopic).toEqual('TestConfig03');
     });
 
-    it('syncronization should clear the synced dirty flags', () => {
-
-    });
-
-    it('syncronization of PARSER CONFIGS should return with an Observable of successful/unsuccessful requests', () => {
+    it('syncronization of PARSER CONFIGS should return with an Observable array of successful/unsuccessful requests', () => {
       const testData = getTestConfigs();
 
       markElementOnIndexAs(testData, [0, 2], DirtyFlags.CHANGED);
 
       sensorParserConfigService.syncConfigs(testData)
         .subscribe((syncResults) => {
-          debugger;
+          expect(syncResults.length === 2);
         });
 
         const requests = [];

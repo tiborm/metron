@@ -18,7 +18,7 @@
 import { Injectable, Inject } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable, Subject, from, of, forkJoin } from 'rxjs';
-import { catchError, map, take, mergeMap, finalize, switchMap, filter } from 'rxjs/operators';
+import { catchError, map, take, mergeMap, finalize, switchMap, filter, reduce } from 'rxjs/operators';
 import { ParserConfigModel } from '../sensors/models/parser-config.model';
 import { HttpUtil } from '../util/httpUtil';
 import { ParseMessageRequest } from '../model/parse-message-request';
@@ -104,32 +104,34 @@ export class SensorParserConfigService {
   }
 
   syncConfigs(configs: ParserMetaInfoModel[]): any {
-    return forkJoin(
-      from(configs).pipe(
-        filter(config => !!(config.isDeleted || config.isDirty || config.isPhantom)),
-        mergeMap((config: ParserMetaInfoModel) => {
-          if (config.isDeleted) {
-            return this.deleteConfig(config.getName());
-          } else {
-            return this.saveConfig(config.getName(), config.getConfig() as ParserConfigModel);
-          }
-        })
-      )
+    return from(configs).pipe(
+      filter(config => !!(config.isDeleted || config.isDirty || config.isPhantom)),
+      mergeMap((config: ParserMetaInfoModel) => {
+        if (config.isDeleted) {
+          return this.deleteConfig(config.getName());
+        } else {
+          return this.saveConfig(config.getName(), config.getConfig() as ParserConfigModel);
+        }
+      }),
+      reduce((acc, request) => {
+        return acc.concat(request);
+      }, [])
     )
   }
 
   syncGroups(groups: ParserMetaInfoModel[]) {
-    return forkJoin(
-      from(groups).pipe(
-        filter(group => !!(group.isDeleted || group.isDirty || group.isPhantom)),
-        mergeMap((group: ParserMetaInfoModel) => {
-          if (group.isDeleted) {
-            return this.deleteGroup(group.getName());
-          } else {
-            return this.saveGroup(group.getName(), group.getConfig() as ParserGroupModel);
-          }
-        })
-      )
+    return from(groups).pipe(
+      filter(group => !!(group.isDeleted || group.isDirty || group.isPhantom)),
+      mergeMap((group: ParserMetaInfoModel) => {
+        if (group.isDeleted) {
+          return this.deleteGroup(group.getName());
+        } else {
+          return this.saveGroup(group.getName(), group.getConfig() as ParserGroupModel);
+        }
+      }),
+      reduce((acc, request) => {
+        return acc.concat(request);
+      }, [])
     )
   }
 
