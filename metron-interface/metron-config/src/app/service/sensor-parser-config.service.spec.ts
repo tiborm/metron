@@ -29,7 +29,7 @@ import { ParserGroupModel } from '../sensors/models/parser-group.model';
 import { noop } from 'rxjs';
 import { ParserMetaInfoModel } from '../sensors/models/parser-meta-info.model';
 
-describe('SensorParserConfigService', () => {
+fdescribe('SensorParserConfigService', () => {
   let mockBackend: HttpTestingController;
   let sensorParserConfigService: SensorParserConfigService;
 
@@ -413,8 +413,21 @@ describe('SensorParserConfigService', () => {
 
     });
 
-    it('syncronization return with list of successful/unsuccessful requests', () => {
+    it('syncronization of PARSER CONFIGS should return with an Observable of successful/unsuccessful requests', () => {
+      const testData = getTestConfigs();
 
+      markElementOnIndexAs(testData, [0, 2], DirtyFlags.CHANGED);
+
+      sensorParserConfigService.syncConfigs(testData)
+        .subscribe((syncResults) => {
+          debugger;
+        });
+
+        const requests = [];
+        requests.push(mockBackend.expectOne('/api/v1/sensor/parser/config/TestConfig01'));
+        requests.push(mockBackend.expectOne('/api/v1/sensor/parser/config/TestConfig03'));
+        requests[0].flush(requests[0].request.body);
+        requests[1].flush(requests[1].request.body);
     });
   })
 });

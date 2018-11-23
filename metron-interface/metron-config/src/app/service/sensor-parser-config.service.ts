@@ -17,7 +17,7 @@
  */
 import { Injectable, Inject } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import { Observable, Subject, from, of } from 'rxjs';
+import { Observable, Subject, from, of, forkJoin } from 'rxjs';
 import { catchError, map, take, mergeMap, finalize, switchMap, filter } from 'rxjs/operators';
 import { ParserConfigModel } from '../sensors/models/parser-config.model';
 import { HttpUtil } from '../util/httpUtil';
@@ -104,29 +104,33 @@ export class SensorParserConfigService {
   }
 
   syncConfigs(configs: ParserMetaInfoModel[]): any {
-    return from(configs).pipe(
-      filter(config => !!(config.isDeleted || config.isDirty || config.isPhantom)),
-      switchMap((config: ParserMetaInfoModel) => {
-        if (config.isDeleted) {
-          return this.deleteConfig(config.getName());
-        } else {
-          return this.saveConfig(config.getName(), config.getConfig() as ParserGroupModel);
-        }
-      })
-    );
+    return forkJoin(
+      from(configs).pipe(
+        filter(config => !!(config.isDeleted || config.isDirty || config.isPhantom)),
+        mergeMap((config: ParserMetaInfoModel) => {
+          if (config.isDeleted) {
+            return this.deleteConfig(config.getName());
+          } else {
+            return this.saveConfig(config.getName(), config.getConfig() as ParserConfigModel);
+          }
+        })
+      )
+    )
   }
 
   syncGroups(groups: ParserMetaInfoModel[]) {
-    return from(groups).pipe(
-      filter(group => !!(group.isDeleted || group.isDirty || group.isPhantom)),
-      switchMap((group: ParserMetaInfoModel) => {
-        if (group.isDeleted) {
-          return this.deleteGroup(group.getName());
-        } else {
-          return this.saveGroup(group.getName(), group.getConfig() as ParserGroupModel);
-        }
-      })
-    );
+    return forkJoin(
+      from(groups).pipe(
+        filter(group => !!(group.isDeleted || group.isDirty || group.isPhantom)),
+        mergeMap((group: ParserMetaInfoModel) => {
+          if (group.isDeleted) {
+            return this.deleteGroup(group.getName());
+          } else {
+            return this.saveGroup(group.getName(), group.getConfig() as ParserGroupModel);
+          }
+        })
+      )
+    )
   }
 
   public getConfig(name: string): Observable<ParserConfigModel> {
