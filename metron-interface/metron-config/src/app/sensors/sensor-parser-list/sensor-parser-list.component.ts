@@ -52,9 +52,8 @@ export class SensorParserListComponent implements OnInit, OnDestroy {
   selectedSensors: ParserMetaInfoModel[] = [];
   enableAutoRefresh = true;
   sensorsToRender: ParserMetaInfoModel[];
-  isDirty = false;
+  isDirty$: Observable<boolean>;
 
-  private isDirty$: Observable<boolean>;
   private mergedConfigs$: Observable<ParserMetaInfoModel[]>;
   private isStatusPolling: boolean;
   private draggedElement: ParserMetaInfoModel;
@@ -100,10 +99,6 @@ export class SensorParserListComponent implements OnInit, OnDestroy {
         this.isStatusPolling = true;
         this.store.dispatch(new ParsersActions.StartPolling());
       }
-    });
-
-    this.isDirty$.subscribe((isDirty) => {
-      this.isDirty = isDirty;
     });
   }
 
