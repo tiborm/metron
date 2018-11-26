@@ -61,11 +61,8 @@ export const getMergedConfigs = createSelector(
 export const isDirty = createSelector(
   getGroups,
   getParsers,
-  (
-    groups: ParserMetaInfoModel[],
-    parsers: ParserMetaInfoModel[],
-  ): boolean => {
-    return groups.some((group) => group.isDeleted || group.isDirty || group.isPhantom)
-      || parsers.some((parser) => parser.isDeleted || parser.isDirty || parser.isPhantom)
+  (groups: ParserMetaInfoModel[], parsers: ParserMetaInfoModel[]): boolean => {
+    const isChanged = (item) => item.isDeleted || item.isDirty || item.isPhantom;
+    return groups.some(isChanged) || parsers.some(isChanged)
   }
 );
