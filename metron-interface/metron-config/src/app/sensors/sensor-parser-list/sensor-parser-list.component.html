@@ -189,7 +189,7 @@
     </tbody>
   </table>
 
-  <div>
+  <div *ngIf="isDirty">
     <button (click)="onApply()" class="btn sensor-button save-button">APPLY</button>
     <button (click)="onDiscard()" class="btn sensor-button form-enable-disable-button">DISCARD ALL</button>
   </div>

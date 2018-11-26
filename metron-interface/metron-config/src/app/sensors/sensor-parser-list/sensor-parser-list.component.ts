@@ -52,7 +52,9 @@ export class SensorParserListComponent implements OnInit, OnDestroy {
   selectedSensors: ParserMetaInfoModel[] = [];
   enableAutoRefresh = true;
   sensorsToRender: ParserMetaInfoModel[];
+  isDirty = false;
 
+  private isDirty$: Observable<boolean>;
   private mergedConfigs$: Observable<ParserMetaInfoModel[]>;
   private isStatusPolling: boolean;
   private draggedElement: ParserMetaInfoModel;
@@ -70,6 +72,7 @@ export class SensorParserListComponent implements OnInit, OnDestroy {
     });
 
     this.mergedConfigs$ = store.pipe(select(parserSelectors.getMergedConfigs));
+    this.isDirty$ = store.pipe(select(parserSelectors.isDirty));
   }
 
   getParserType(sensor: ParserConfigModel): string {
@@ -97,6 +100,10 @@ export class SensorParserListComponent implements OnInit, OnDestroy {
         this.isStatusPolling = true;
         this.store.dispatch(new ParsersActions.StartPolling());
       }
+    });
+
+    this.isDirty$.subscribe((isDirty) => {
+      this.isDirty = isDirty;
     });
   }
 
