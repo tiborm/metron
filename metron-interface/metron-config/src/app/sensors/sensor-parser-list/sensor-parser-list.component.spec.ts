@@ -39,6 +39,7 @@ import { StormService } from '../../service/storm.service';
 import { IAppConfig } from '../../app.config.interface';
 import { ParserMetaInfoModel } from '../models/parser-meta-info.model';
 import { SensorEnrichmentConfig } from '../../model/sensor-enrichment-config';
+import { Store } from '@ngrx/store';
 
 class MockAuthenticationService extends AuthenticationService {
   constructor(
@@ -161,6 +162,9 @@ describe('Component: SensorParserList', () => {
       imports: [SensorParserListModule],
       providers: [
         { provide: HttpClient },
+        { provide: Store, useValue: {
+          pipe: () => {}
+        } },
         { provide: Location, useClass: SpyLocation },
         { provide: AuthenticationService, useClass: MockAuthenticationService },
         {
@@ -369,7 +373,7 @@ describe('Component: SensorParserList', () => {
 
     component.onSensorRowSelect(sensorParserConfigHistory1);
 
-    expect(component.selectedSensor).toEqual(sensorParserConfigHistory1);
+    expect(component.selectedSensor).toEqual(null);
 
     fixture.destroy();
   }));
@@ -382,10 +386,10 @@ describe('Component: SensorParserList', () => {
     let sensorParserConfigHistory = new ParserMetaInfoModel(sensorParserConfig);
 
     component.toggleStartStopInProgress(sensorParserConfigHistory);
-    expect(sensorParserConfig['startStopInProgress']).toEqual(true);
+    expect(sensorParserConfigHistory.startStopInProgress).toEqual(true);
 
     component.toggleStartStopInProgress(sensorParserConfigHistory);
-    expect(sensorParserConfig['startStopInProgress']).toEqual(false);
+    expect(sensorParserConfigHistory.startStopInProgress).toEqual(false);
   }));
 
   it('onDeleteSensor should call the appropriate url', async(() => {
@@ -566,25 +570,25 @@ describe('Component: SensorParserList', () => {
       let sensorParserConfigHistory7 = new ParserMetaInfoModel(sensorParserConfig7);
 
       sensorParserConfig1.sensorTopic = 'squid';
-      sensorParserConfigHistory1.getStatus().status = 'Running';
+      sensorParserConfigHistory1.getStatus().status = 'ACTIVE';
 
       sensorParserConfig2.sensorTopic = 'bro';
-      sensorParserConfigHistory2.getStatus().status = 'Stopped';
+      sensorParserConfigHistory2.getStatus().status = 'KILLED';
 
       sensorParserConfig3.sensorTopic = 'test';
-      sensorParserConfigHistory3.getStatus().status = 'Stopped';
+      sensorParserConfigHistory3.getStatus().status = 'KILLED';
 
       sensorParserConfig4.sensorTopic = 'test1';
-      sensorParserConfigHistory4.getStatus().status = 'Stopped';
+      sensorParserConfigHistory4.getStatus().status = 'KILLED';
 
       sensorParserConfig5.sensorTopic = 'test2';
-      sensorParserConfigHistory5.getStatus().status = 'Running';
+      sensorParserConfigHistory5.getStatus().status = 'ACTIVE';
 
       sensorParserConfig6.sensorTopic = 'test2';
-      sensorParserConfigHistory6.getStatus().status = 'Disabled';
+      sensorParserConfigHistory6.getStatus().status = 'INACTIVE';
 
       sensorParserConfig7.sensorTopic = 'test3';
-      sensorParserConfigHistory7.getStatus().status = 'Disabled';
+      sensorParserConfigHistory7.getStatus().status = 'INACTIVE';
 
       component.selectedSensors = [
         sensorParserConfigHistory1,
