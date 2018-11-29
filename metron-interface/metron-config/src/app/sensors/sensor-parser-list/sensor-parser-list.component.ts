@@ -44,6 +44,8 @@ export class SensorParserListComponent implements OnInit, OnDestroy {
   isDirty$: Observable<boolean>;
   mergedConfigs$: Observable<ParserMetaInfoModel[]>;
   sensors: ParserMetaInfoModel[] = [];
+  draggedOverElementId: string;
+  highlightedElementId: string;
 
   private mergedConfigSub: Subscription;
   private isStatusPolling: boolean;
@@ -90,7 +92,7 @@ export class SensorParserListComponent implements OnInit, OnDestroy {
 
   navigateToSensorEdit(selectedSensor: ParserMetaInfoModel, event) {
     this.selectedSensor = selectedSensor;
-    this.router.navigateByUrl('/sensors(dialog:sensors-config/' + selectedSensor.getName() + ')');
+    this.router.navigateByUrl('/sensors(dialog:sensors-config/' + selectedSensor.config.getName() + ')');
     event.stopPropagation();
   }
 
@@ -117,31 +119,31 @@ export class SensorParserListComponent implements OnInit, OnDestroy {
   }
 
   onSensorRowSelect(sensor: ParserMetaInfoModel) {
-    if (this.selectedSensor === sensor) {
+    if (this.selectedSensor && this.selectedSensor.config.getName() === sensor.config.getName()) {
       this.selectedSensor = null;
       this.router.navigateByUrl('/sensors');
       return;
     }
     this.selectedSensor = sensor;
-    this.router.navigateByUrl('/sensors(dialog:sensors-readonly/' + sensor.getName() + ')');
+    this.router.navigateByUrl('/sensors(dialog:sensors-readonly/' + sensor.config.getName() + ')');
   }
 
   onDeleteSelectedItems() {
     this.store.dispatch(new fromActions.MarkAsDeleted({
-      parserIds: this.selectedSensors.map(p => p.getName()),
+      parserIds: this.selectedSensors.map(p => p.config.getName()),
     }));
   }
 
   onDeleteItem(item: ParserMetaInfoModel, e: Event) {
     this.store.dispatch(new fromActions.MarkAsDeleted({
-      parserIds: [item.getName()]
+      parserIds: [item.config.getName()]
     }));
     e.stopPropagation();
   }
 
   onStopSensors() {
     for (let sensor of this.selectedSensors) {
-      if (sensor.getStatus().status === 'ACTIVE' || sensor.getStatus().status === 'INACTIVE') {
+      if (sensor.status.status === 'ACTIVE' || sensor.status.status === 'INACTIVE') {
         this.onStopSensor(sensor, null);
       }
     }
@@ -150,12 +152,12 @@ export class SensorParserListComponent implements OnInit, OnDestroy {
   onStopSensor(sensor: ParserMetaInfoModel, event) {
     this.toggleStartStopInProgress(sensor);
 
-    this.stormService.stopParser(sensor.getName()).subscribe(() => {
-        this.metronAlerts.showSuccessMessage('Stopped sensor ' + sensor.getName());
+    this.stormService.stopParser(sensor.config.getName()).subscribe(() => {
+        this.metronAlerts.showSuccessMessage('Stopped sensor ' + sensor.config.getName());
         this.toggleStartStopInProgress(sensor);
       },
       () => {
-        this.metronAlerts.showErrorMessage('Unable to stop sensor ' + sensor.getName());
+        this.metronAlerts.showErrorMessage('Unable to stop sensor ' + sensor.config.getName());
         this.toggleStartStopInProgress(sensor);
       });
 
@@ -166,7 +168,7 @@ export class SensorParserListComponent implements OnInit, OnDestroy {
 
   onStartSensors() {
     for (let sensor of this.selectedSensors) {
-      if (sensor.getStatus().status === 'KILLED') {
+      if (sensor.status.status === 'KILLED') {
         this.onStartSensor(sensor, null);
       }
     }
@@ -175,17 +177,17 @@ export class SensorParserListComponent implements OnInit, OnDestroy {
   onStartSensor(sensor: ParserMetaInfoModel, event) {
     this.toggleStartStopInProgress(sensor);
 
-    this.stormService.startParser(sensor.getName()).subscribe(result => {
+    this.stormService.startParser(sensor.config.getName()).subscribe(result => {
         if (result['status'] === 'ERROR') {
-          this.metronAlerts.showErrorMessage('Unable to start sensor ' + sensor.getName() + ': ' + result['message']);
+          this.metronAlerts.showErrorMessage('Unable to start sensor ' + sensor.config.getName() + ': ' + result['message']);
         } else {
-          this.metronAlerts.showSuccessMessage('Started sensor ' + sensor.getName());
+          this.metronAlerts.showSuccessMessage('Started sensor ' + sensor.config.getName());
         }
 
         this.toggleStartStopInProgress(sensor);
       },
       () => {
-        this.metronAlerts.showErrorMessage('Unable to start sensor ' + sensor.getName());
+        this.metronAlerts.showErrorMessage('Unable to start sensor ' + sensor.config.getName());
         this.toggleStartStopInProgress(sensor);
       });
 
@@ -196,7 +198,7 @@ export class SensorParserListComponent implements OnInit, OnDestroy {
 
   onDisableSensors() {
     for (let sensor of this.selectedSensors) {
-      if (sensor.getStatus().status === 'ACTIVE') {
+      if (sensor.status.status === 'ACTIVE') {
         this.onDisableSensor(sensor, null);
       }
     }
@@ -205,12 +207,12 @@ export class SensorParserListComponent implements OnInit, OnDestroy {
   onDisableSensor(sensor: ParserMetaInfoModel, event) {
     this.toggleStartStopInProgress(sensor);
 
-    this.stormService.deactivateParser(sensor.getName()).subscribe(() => {
-        this.metronAlerts.showSuccessMessage('Disabled sensor ' + sensor.getName());
+    this.stormService.deactivateParser(sensor.config.getName()).subscribe(() => {
+        this.metronAlerts.showSuccessMessage('Disabled sensor ' + sensor.config.getName());
         this.toggleStartStopInProgress(sensor);
       },
       () => {
-        this.metronAlerts.showErrorMessage('Unable to disable sensor ' + sensor.getName());
+        this.metronAlerts.showErrorMessage('Unable to disable sensor ' + sensor.config.getName());
         this.toggleStartStopInProgress(sensor);
       });
 
@@ -221,7 +223,7 @@ export class SensorParserListComponent implements OnInit, OnDestroy {
 
   onEnableSensors() {
     for (let sensor of this.selectedSensors) {
-      if (sensor.getStatus().status === 'INACTIVE') {
+      if (sensor.status.status === 'INACTIVE') {
         this.onEnableSensor(sensor, null);
       }
     }
@@ -230,12 +232,12 @@ export class SensorParserListComponent implements OnInit, OnDestroy {
   onEnableSensor(sensor: ParserMetaInfoModel, event) {
     this.toggleStartStopInProgress(sensor);
 
-    this.stormService.activateParser(sensor.getName()).subscribe(() => {
-        this.metronAlerts.showSuccessMessage('Enabled sensor ' + sensor.getName());
+    this.stormService.activateParser(sensor.config.getName()).subscribe(() => {
+        this.metronAlerts.showSuccessMessage('Enabled sensor ' + sensor.config.getName());
         this.toggleStartStopInProgress(sensor);
       },
       () => {
-        this.metronAlerts.showErrorMessage('Unable to enabled sensor ' + sensor.getName());
+        this.metronAlerts.showErrorMessage('Unable to enabled sensor ' + sensor.config.getName());
         this.toggleStartStopInProgress(sensor);
       });
 
@@ -256,25 +258,19 @@ export class SensorParserListComponent implements OnInit, OnDestroy {
   onDragStart(metaInfo: ParserMetaInfoModel, e: DragEvent) {
     this.draggedElement = metaInfo;
     e.dataTransfer.setDragImage((e.target as HTMLElement).parentElement, 10, 17);
-    this.store.dispatch(new fromActions.SetDragged(metaInfo.getName()));
+    this.store.dispatch(new fromActions.SetDragged(metaInfo.config.getName()));
   }
 
-  onDragOver(sensor, e: DragEvent) {
+  onDragOver(sensor: ParserMetaInfoModel, e: DragEvent) {
     const el = (e.currentTarget as HTMLElement);
     const rect = el.getBoundingClientRect();
     const mouseX = e.pageX;
     const mouseY = e.pageY;
 
     if (mouseX > rect.left + 8 && mouseY > rect.top + 8 && mouseX <= (rect.right - 8) && mouseY <= (rect.bottom - 8)) {
-      this.store.dispatch(new fromActions.SetDraggedOver({
-        id: sensor.getName(),
-        value: true,
-      }));
+      this.setDraggedOver(sensor.config.getName());
     } else {
-      this.store.dispatch(new fromActions.SetDraggedOver({
-        id: sensor.getName(),
-        value: false,
-      }));
+      this.removeDraggedOver();
     }
 
     if (mouseY > rect.top && mouseY < (rect.top + 8)) {
@@ -291,20 +287,17 @@ export class SensorParserListComponent implements OnInit, OnDestroy {
     e.preventDefault();
   }
 
-  onDragEnter(sensor) {
-    const groupName = sensor.getGroup();
+  onDragEnter(sensor: ParserMetaInfoModel) {
+    const groupName = sensor.config.group;
     if (!groupName) {
       return;
     }
     setTimeout(() => {
-      this.store.dispatch(new fromActions.SetHighlighted({
-        id: groupName,
-        value: true,
-      }));
+      this.setHighlighted(groupName);
     });
   }
 
-  onDragLeave(sensor, e: DragEvent) {
+  onDragLeave(sensor: ParserMetaInfoModel, e: DragEvent) {
     const el = e.currentTarget as HTMLElement;
     const rect = el.getBoundingClientRect();
     const mouseX = e.pageX;
@@ -313,63 +306,60 @@ export class SensorParserListComponent implements OnInit, OnDestroy {
     if (mouseX < rect.left || mouseY < rect.top || mouseX >= rect.right || mouseY >= rect.bottom) {
       el.classList.remove('drop-before');
       el.classList.remove('drop-after');
-      this.store.dispatch(new fromActions.SetDraggedOver({
-        id: sensor.getName(),
-        value: false,
-      }));
 
-      const groupName = sensor.getGroup();
+      this.setDraggedOver(sensor.config.getName());
+
+      const groupName = sensor.config.group;
       if (!groupName) {
         return;
       }
-      this.store.dispatch(new fromActions.SetHighlighted({
-        id: groupName,
-        value: false,
-      }));
+
+      this.removeHighlighted();
     }
   }
 
   onDrop(referenceMetaInfo: ParserMetaInfoModel, e: DragEvent) {
-    this.store.dispatch(new fromActions.SetAllHighlighted(false));
-    this.store.dispatch(new fromActions.SetAllDraggedOver(false));
+    this.removeDraggedOver();
+    this.removeHighlighted();
+
     const el = e.currentTarget as HTMLElement;
     const dragged = this.draggedElement;
-    if (dragged.getName() !== referenceMetaInfo.getName() && !referenceMetaInfo.isDeleted) {
+    if (dragged.config.getName() !== referenceMetaInfo.config.getName() && !referenceMetaInfo.isDeleted) {
       if (el.classList.contains('drop-before') || el.classList.contains('drop-after')) {
-        if (referenceMetaInfo.getGroup() !== dragged.getGroup() || referenceMetaInfo.isGroup()) {
+        if (referenceMetaInfo.config.group !== dragged.config.group || referenceMetaInfo.isGroup) {
           this.store.dispatch(new fromActions.AddToGroup({
-            groupName: referenceMetaInfo.hasGroup()
-              ? referenceMetaInfo.getGroup()
-              : referenceMetaInfo.isGroup()
-                ? referenceMetaInfo.getName()
+            groupName: this.hasGroup(referenceMetaInfo)
+              ? referenceMetaInfo.config.group
+              : referenceMetaInfo.isGroup
+                ? referenceMetaInfo.config.getName()
                 : '',
-            parserIds: [dragged.getName()]
+            parserIds: [dragged.config.getName()]
           }));
         }
       }
       if (el.classList.contains('drop-before')) {
         this.store.dispatch(new fromActions.InjectBefore({
-          reference: referenceMetaInfo.getName(),
-          parserId: dragged.getName(),
+          reference: referenceMetaInfo.config.getName(),
+          parserId: dragged.config.getName(),
         }));
       } else if (el.classList.contains('drop-after')) {
         this.store.dispatch(new fromActions.InjectAfter({
-          reference: referenceMetaInfo.getName(),
-          parserId: dragged.getName(),
+          reference: referenceMetaInfo.config.getName(),
+          parserId: dragged.config.getName(),
         }));
       } else {
-        if (referenceMetaInfo.isGroup() && !referenceMetaInfo.isDeleted) {
+        if (referenceMetaInfo.isGroup && !referenceMetaInfo.isDeleted) {
           this.store.dispatch(new fromActions.AddToGroup({
-            groupName: referenceMetaInfo.getName(),
-            parserIds: [dragged.getName()]
+            groupName: referenceMetaInfo.config.getName(),
+            parserIds: [dragged.config.getName()]
           }));
           this.store.dispatch(new fromActions.InjectAfter({
-            reference: referenceMetaInfo.getName(),
-            parserId: dragged.getName(),
+            reference: referenceMetaInfo.config.getName(),
+            parserId: dragged.config.getName(),
           }));
         } else {
-          this.store.dispatch(new fromActions.SetDropTarget(referenceMetaInfo.getName()));
-          this.store.dispatch(new fromActions.SetTargetGroup(referenceMetaInfo.getConfig().group || ''));
+          this.store.dispatch(new fromActions.SetDropTarget(referenceMetaInfo.config.getName()));
+          this.store.dispatch(new fromActions.SetTargetGroup(referenceMetaInfo.config.group || ''));
           this.router.navigateByUrl('/sensors(dialog:sensor-aggregate)');
         }
       }
@@ -386,19 +376,53 @@ export class SensorParserListComponent implements OnInit, OnDestroy {
     this.store.dispatch(new fromActions.LoadStart());
   }
 
-  ngOnDestroy() {
-    if (this.mergedConfigSub) {
-      this.mergedConfigSub.unsubscribe();
-    }
-  }
-
-  isSelected(sensor) {
+  isSelected(sensor: ParserMetaInfoModel) {
     return this.selectedSensors.find(s => {
-      if (s.getName() === sensor.getName()) {
+      if (s.config.getName() === sensor.config.getName()) {
         return true;
       } else {
         return false;
       }
     })
+  }
+
+  hasGroup(sensor: ParserMetaInfoModel) {
+    return !!sensor.config.group;
+  }
+
+  isRootElement(sensor: ParserMetaInfoModel) {
+    return sensor.isGroup || !this.hasGroup(sensor);
+  }
+
+  isStopable(sensor: ParserMetaInfoModel) {
+    return this.isRootElement(sensor)
+      && sensor.status.status === 'ACTIVE'
+      && !sensor.startStopInProgress;
+  }
+
+  isActive(sensor: ParserMetaInfoModel) {
+    return sensor.status.status === 'ACTIVE';
+  }
+
+  setDraggedOver(id: string) {
+    this.draggedOverElementId = id;
+  }
+
+  removeDraggedOver() {
+    this.draggedOverElementId = null;
+  }
+
+  setHighlighted(id: string) {
+    this.highlightedElementId = id;
+  }
+
+  removeHighlighted() {
+    this.highlightedElementId = null;
+  }
+
+  ngOnDestroy() {
+    if (this.mergedConfigSub) {
+      this.mergedConfigSub.unsubscribe();
+    }
   }
 }
