@@ -31,12 +31,11 @@ import { ParserConfigModel } from '../models/parser-config.model';
 import { AuthenticationService } from '../../service/authentication.service';
 import { SensorParserListModule } from './sensor-parser-list.module';
 import { MetronDialogBox } from '../../shared/metron-dialog-box';
-import { Sort } from '../../util/enums';
 import 'jquery';
-import { SensorParserConfigHistoryService } from '../../service/sensor-parser-config-history.service';
 import { APP_CONFIG, METRON_REST_CONFIG } from '../../app.config';
 import { StormService } from '../../service/storm.service';
 import { IAppConfig } from '../../app.config.interface';
+
 import { ParserMetaInfoModel } from '../models/parser-meta-info.model';
 import { SensorEnrichmentConfig } from '../../model/sensor-enrichment-config';
 import { Store } from '@ngrx/store';
@@ -273,8 +272,10 @@ describe('Component: SensorParserList', () => {
 
     let component: SensorParserListComponent = fixture.componentInstance;
 
-    let sensorParserConfigHistory1 = new ParserMetaInfoModel(new ParserConfigModel());
-    sensorParserConfigHistory1.setName('squid');
+    let sensorParserConfigHistory1 = {
+      config: new ParserConfigModel()
+    };
+    sensorParserConfigHistory1.config.setName('squid');
     component.navigateToSensorEdit(sensorParserConfigHistory1, event);
 
     let expectStr = router.navigateByUrl['calls'].argsFor(0);
@@ -304,7 +305,9 @@ describe('Component: SensorParserList', () => {
 
     let sensorParserConfig = new ParserConfigModel();
     sensorParserConfig.sensorTopic = 'squid';
-    let sensorParserConfigHistory = new ParserMetaInfoModel(sensorParserConfig);
+    let sensorParserConfigHistory = {
+      config: sensorParserConfig
+    };
 
     component.onRowSelected(sensorParserConfigHistory, event);
 
@@ -355,8 +358,10 @@ describe('Component: SensorParserList', () => {
   }));
 
   it('onSensorRowSelect should change the url and updated the selected items stack', async(() => {
-    let sensorParserConfigHistory1 = new ParserMetaInfoModel(new ParserConfigModel());
-    sensorParserConfigHistory1.setName('squid');
+    let sensorParserConfigHistory1 = {
+      config: new ParserConfigModel()
+    };
+    sensorParserConfigHistory1.config.setName('squid');
 
     let component: SensorParserListComponent = fixture.componentInstance;
 
@@ -383,7 +388,9 @@ describe('Component: SensorParserList', () => {
 
     let sensorParserConfig = new ParserConfigModel();
     sensorParserConfig.sensorTopic = 'squid';
-    let sensorParserConfigHistory = new ParserMetaInfoModel(sensorParserConfig);
+    let sensorParserConfigHistory = {
+      config: sensorParserConfig
+    }
 
     component.toggleStartStopInProgress(sensorParserConfigHistory);
     expect(sensorParserConfigHistory.startStopInProgress).toEqual(true);
@@ -440,7 +447,9 @@ describe('Component: SensorParserList', () => {
 
     let sensorParserConfig1 = new ParserConfigModel();
     sensorParserConfig1.sensorTopic = 'squid';
-    let sensorParserConfigHistory1 = new ParserMetaInfoModel(sensorParserConfig1);
+    let sensorParserConfigHistory1 = {
+      config: sensorParserConfig1
+    };
 
     let observableToReturn = Observable.create(observer => {
       observer.next({ status: 'success', message: 'Some Message' });
@@ -467,7 +476,9 @@ describe('Component: SensorParserList', () => {
 
     let sensorParserConfig1 = new ParserConfigModel();
     sensorParserConfig1.sensorTopic = 'squid';
-    let sensorParserConfigHistory1 = new ParserMetaInfoModel(sensorParserConfig1);
+    let sensorParserConfigHistory1 = {
+      config: sensorParserConfig1
+    };
 
     let observableToReturn = Observable.create(observer => {
       observer.next({ status: 'success', message: 'Some Message' });
@@ -494,7 +505,9 @@ describe('Component: SensorParserList', () => {
 
     let sensorParserConfig1 = new ParserConfigModel();
     sensorParserConfig1.sensorTopic = 'squid';
-    let sensorParserConfigHistory1 = new ParserMetaInfoModel(sensorParserConfig1);
+    let sensorParserConfigHistory1 = {
+      config: sensorParserConfig1
+    };
 
     let observableToReturn = Observable.create(observer => {
       observer.next({ status: 'success', message: 'Some Message' });
@@ -521,7 +534,9 @@ describe('Component: SensorParserList', () => {
 
     let sensorParserConfig1 = new ParserConfigModel();
     sensorParserConfig1.sensorTopic = 'squid';
-    let sensorParserConfigHistory1 = new ParserMetaInfoModel(sensorParserConfig1);
+    let sensorParserConfigHistory1 = {
+      config: sensorParserConfig1
+    };
 
     let observableToReturn = Observable.create(observer => {
       observer.next({ status: 'success', message: 'Some Message' });
@@ -561,13 +576,13 @@ describe('Component: SensorParserList', () => {
       let sensorParserConfig6 = new ParserConfigModel();
       let sensorParserConfig7 = new ParserConfigModel();
 
-      let sensorParserConfigHistory1 = new ParserMetaInfoModel(sensorParserConfig1);
-      let sensorParserConfigHistory2 = new ParserMetaInfoModel(sensorParserConfig2);
-      let sensorParserConfigHistory3 = new ParserMetaInfoModel(sensorParserConfig3);
-      let sensorParserConfigHistory4 = new ParserMetaInfoModel(sensorParserConfig4);
-      let sensorParserConfigHistory5 = new ParserMetaInfoModel(sensorParserConfig5);
-      let sensorParserConfigHistory6 = new ParserMetaInfoModel(sensorParserConfig6);
-      let sensorParserConfigHistory7 = new ParserMetaInfoModel(sensorParserConfig7);
+      let sensorParserConfigHistory1 = { config: sensorParserConfig1, status: new TopologyStatus() };
+      let sensorParserConfigHistory2 = { config: sensorParserConfig2, status: new TopologyStatus() };
+      let sensorParserConfigHistory3 = { config: sensorParserConfig3, status: new TopologyStatus() };
+      let sensorParserConfigHistory4 = { config: sensorParserConfig4, status: new TopologyStatus() };
+      let sensorParserConfigHistory5 = { config: sensorParserConfig5, status: new TopologyStatus() };
+      let sensorParserConfigHistory6 = { config: sensorParserConfig6, status: new TopologyStatus() };
+      let sensorParserConfigHistory7 = { config: sensorParserConfig7, status: new TopologyStatus() };
 
       sensorParserConfig1.sensorTopic = 'squid';
       sensorParserConfigHistory1.getStatus().status = 'ACTIVE';
