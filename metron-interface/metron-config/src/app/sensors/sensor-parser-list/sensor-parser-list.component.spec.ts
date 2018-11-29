@@ -389,7 +389,8 @@ describe('Component: SensorParserList', () => {
     let sensorParserConfig = new ParserConfigModel();
     sensorParserConfig.sensorTopic = 'squid';
     let sensorParserConfigHistory = {
-      config: sensorParserConfig
+      config: sensorParserConfig,
+      startStopInProgress: false
     }
 
     component.toggleStartStopInProgress(sensorParserConfigHistory);
@@ -585,25 +586,25 @@ describe('Component: SensorParserList', () => {
       let sensorParserConfigHistory7 = { config: sensorParserConfig7, status: new TopologyStatus() };
 
       sensorParserConfig1.sensorTopic = 'squid';
-      sensorParserConfigHistory1.getStatus().status = 'ACTIVE';
+      sensorParserConfigHistory1.status.status = 'ACTIVE';
 
       sensorParserConfig2.sensorTopic = 'bro';
-      sensorParserConfigHistory2.getStatus().status = 'KILLED';
+      sensorParserConfigHistory2.status.status = 'KILLED';
 
       sensorParserConfig3.sensorTopic = 'test';
-      sensorParserConfigHistory3.getStatus().status = 'KILLED';
+      sensorParserConfigHistory3.status.status = 'KILLED';
 
       sensorParserConfig4.sensorTopic = 'test1';
-      sensorParserConfigHistory4.getStatus().status = 'KILLED';
+      sensorParserConfigHistory4.status.status = 'KILLED';
 
       sensorParserConfig5.sensorTopic = 'test2';
-      sensorParserConfigHistory5.getStatus().status = 'ACTIVE';
+      sensorParserConfigHistory5.status.status = 'ACTIVE';
 
       sensorParserConfig6.sensorTopic = 'test2';
-      sensorParserConfigHistory6.getStatus().status = 'INACTIVE';
+      sensorParserConfigHistory6.status.status = 'INACTIVE';
 
       sensorParserConfig7.sensorTopic = 'test3';
-      sensorParserConfigHistory7.getStatus().status = 'INACTIVE';
+      sensorParserConfigHistory7.status.status = 'INACTIVE';
 
       component.selectedSensors = [
         sensorParserConfigHistory1,
