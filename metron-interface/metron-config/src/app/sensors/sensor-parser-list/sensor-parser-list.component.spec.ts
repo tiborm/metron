@@ -157,35 +157,35 @@ describe('Component: SensorParserList', () => {
   let dialogEl: DebugElement;
   let sensors = [
     {
-      config: new ParserConfigModel(),
+      config: new ParserConfigModel('TestConfigId01'),
       status: {
         status: 'KILLED'
       },
       isGroup: false
     },
     {
-      config: new ParserConfigModel(),
+      config: new ParserConfigModel('TestConfigId02'),
       status: {
         status: 'INACTIVE'
       },
       isGroup: false
     },
     {
-      config: new ParserConfigModel(),
+      config: new ParserConfigModel('TestConfigId03'),
       status: {
         status: 'ACTIVE'
       },
       isGroup: false
     },
     {
-      config: new ParserConfigModel(),
+      config: new ParserConfigModel('TestConfigId04'),
       status: {
         status: 'ACTIVE'
       },
       isDeleted: true
     },
     {
-      config: new ParserConfigModel(),
+      config: new ParserConfigModel('TestConfigId05'),
       status: {
         status: 'ACTIVE'
       },
@@ -291,11 +291,11 @@ describe('Component: SensorParserList', () => {
   it('getParserType should return the Type of Parser', async(() => {
     let component: SensorParserListComponent = fixture.componentInstance;
 
-    let sensorParserConfig1 = new ParserConfigModel();
+    let sensorParserConfig1 = new ParserConfigModel('TestConfigId01');
     sensorParserConfig1.sensorTopic = 'squid';
     sensorParserConfig1.parserClassName =
       'org.apache.metron.parsers.GrokParser';
-    let sensorParserConfig2 = new ParserConfigModel();
+    let sensorParserConfig2 = new ParserConfigModel('TestConfigId02');
     sensorParserConfig2.sensorTopic = 'bro';
     sensorParserConfig2.parserClassName =
       'org.apache.metron.parsers.bro.BasicBroParser';
@@ -315,7 +315,7 @@ describe('Component: SensorParserList', () => {
     let component: SensorParserListComponent = fixture.componentInstance;
 
     let sensorParserConfigHistory1 = {
-      config: new ParserConfigModel()
+      config: new ParserConfigModel('TestConfigId01')
     };
     sensorParserConfigHistory1.config.setName('squid');
     component.navigateToSensorEdit(sensorParserConfigHistory1, event);
@@ -345,7 +345,7 @@ describe('Component: SensorParserList', () => {
     let component: SensorParserListComponent = fixture.componentInstance;
     let event = { target: { checked: true } };
 
-    let sensorParserConfig = new ParserConfigModel();
+    let sensorParserConfig = new ParserConfigModel('TestConfigId01');
     sensorParserConfig.sensorTopic = 'squid';
     let sensorParserConfigHistory = {
       config: sensorParserConfig
@@ -401,7 +401,7 @@ describe('Component: SensorParserList', () => {
 
   it('onSensorRowSelect should change the url and updated the selected items stack', async(() => {
     let sensorParserConfigHistory1 = {
-      config: new ParserConfigModel()
+      config: new ParserConfigModel('TestConfigId01')
     };
     sensorParserConfigHistory1.config.setName('squid');
 
@@ -632,13 +632,13 @@ describe('Component: SensorParserList', () => {
       spyOn(component, 'onDisableSensor');
       spyOn(component, 'onEnableSensor');
 
-      let sensorParserConfig1 = new ParserConfigModel();
-      let sensorParserConfig2 = new ParserConfigModel();
-      let sensorParserConfig3 = new ParserConfigModel();
-      let sensorParserConfig4 = new ParserConfigModel();
-      let sensorParserConfig5 = new ParserConfigModel();
-      let sensorParserConfig6 = new ParserConfigModel();
-      let sensorParserConfig7 = new ParserConfigModel();
+      let sensorParserConfig1 = new ParserConfigModel('TestConfigId01');
+      let sensorParserConfig2 = new ParserConfigModel('TestConfigId02');
+      let sensorParserConfig3 = new ParserConfigModel('TestConfigId03');
+      let sensorParserConfig4 = new ParserConfigModel('TestConfigId04');
+      let sensorParserConfig5 = new ParserConfigModel('TestConfigId05');
+      let sensorParserConfig6 = new ParserConfigModel('TestConfigId06');
+      let sensorParserConfig7 = new ParserConfigModel('TestConfigId07');
 
       let sensorParserConfigHistory1 = { config: sensorParserConfig1, status: new TopologyStatus() };
       let sensorParserConfigHistory2 = { config: sensorParserConfig2, status: new TopologyStatus() };
@@ -697,7 +697,7 @@ describe('Component: SensorParserList', () => {
 
   it('isStoppable() should return true unless a sensor is KILLED', async(() => {
     const component = Object.create( SensorParserListComponent.prototype );
-    const sensorParserConfig1 = new ParserConfigModel();
+    const sensorParserConfig1 = new ParserConfigModel('TestConfigId01');
     let sensor: ParserMetaInfoModel = { config: sensorParserConfig1, status: new TopologyStatus() };
 
     sensor.status.status = 'KILLED';
@@ -712,7 +712,7 @@ describe('Component: SensorParserList', () => {
 
   it('isStartable() should return true only when a parser is KILLED', async(() => {
     const component = Object.create( SensorParserListComponent.prototype );
-    const sensorParserConfig1 = new ParserConfigModel();
+    const sensorParserConfig1 = new ParserConfigModel('TestConfigId01');
     let sensor: ParserMetaInfoModel = { config: sensorParserConfig1, status: new TopologyStatus() };
 
     sensor.status.status = 'KILLED';
@@ -727,7 +727,7 @@ describe('Component: SensorParserList', () => {
 
   it('isEnableable() should return true only when a parser is ACTIVE', async(() => {
     const component = Object.create( SensorParserListComponent.prototype );
-    const sensorParserConfig1 = new ParserConfigModel();
+    const sensorParserConfig1 = new ParserConfigModel('TestConfigId01');
     let sensor: ParserMetaInfoModel = { config: sensorParserConfig1, status: new TopologyStatus() };
 
     sensor.status.status = 'KILLED';
@@ -742,7 +742,7 @@ describe('Component: SensorParserList', () => {
 
   it('isDisableable() should return true only when a parser is INACTIVE', async(() => {
     const component = Object.create( SensorParserListComponent.prototype );
-    const sensorParserConfig1 = new ParserConfigModel();
+    const sensorParserConfig1 = new ParserConfigModel('TestConfigId01');
     let sensor: ParserMetaInfoModel = { config: sensorParserConfig1, status: new TopologyStatus() };
 
     sensor.status.status = 'KILLED';
@@ -757,7 +757,7 @@ describe('Component: SensorParserList', () => {
 
   it('isDeletedOrPhantom() should return true if a parser is deleted or a phantom', async(() => {
     const component = Object.create( SensorParserListComponent.prototype );
-    const sensorParserConfig1 = new ParserConfigModel();
+    const sensorParserConfig1 = new ParserConfigModel('TestConfigId01');
     let sensor: ParserMetaInfoModel = { config: sensorParserConfig1, status: new TopologyStatus() };
 
     expect(component.isDeletedOrPhantom(sensor)).toBe(false);
