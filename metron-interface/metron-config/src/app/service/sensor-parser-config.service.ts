@@ -116,13 +116,15 @@ export class SensorParserConfigService {
     saveFn: Function, deleteFn: Function
   ) {
     return from(items).pipe(
-      filter(item => !!(item.isDeleted || item.isDirty || item.isPhantom)),
+      map(item => (item.isDeleted || item.isDirty || item.isPhantom) ? item : null),
       mergeMap((changedItem: ParserMetaInfoModel) => {
+        if (!changedItem) {
+          return of(null);
+        }
         if (changedItem.isDeleted) {
           return deleteFn.call(this, changedItem.config.getName());
-        } else {
-          return saveFn.call(this, changedItem.config.getName(), changedItem.config);
         }
+        return saveFn.call(this, changedItem.config.getName(), changedItem.config);
       }),
       catchError(HttpUtil.handleError),
     )

@@ -416,16 +416,13 @@ describe('SensorParserConfigService', () => {
 
       markElementOnIndexAs(testData, [0, 2], DirtyFlags.CHANGED);
 
-      sensorParserConfigService.syncConfigs(testData)
-        .subscribe((syncResults) => {
-          expect(syncResults.length === 2);
-        });
+      sensorParserConfigService.syncConfigs(testData).subscribe();
 
-        const requests = [];
-        requests.push(mockBackend.expectOne('/api/v1/sensor/parser/config/Parser_Config_ID_01'));
-        requests.push(mockBackend.expectOne('/api/v1/sensor/parser/config/Parser_Config_ID_03'));
-        requests[0].flush(requests[0].request.body);
-        requests[1].flush(requests[1].request.body);
+      const requests = [];
+      requests.push(mockBackend.expectOne('/api/v1/sensor/parser/config/Parser_Config_ID_01'));
+      requests.push(mockBackend.expectOne('/api/v1/sensor/parser/config/Parser_Config_ID_03'));
+      requests[0].flush(requests[0].request.body);
+      requests[1].flush(requests[1].request.body);
     });
 
     it('error throwing in syncConfigs()', () => {

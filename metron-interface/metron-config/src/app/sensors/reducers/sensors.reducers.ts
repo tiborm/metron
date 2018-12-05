@@ -83,12 +83,12 @@ export function parserConfigsReducer(state: ParserState = initialParserState, ac
         items: state.items.map(item => {
           if (a.payload.parserIds.includes(item.config.getName())) {
             if (item.config.group !== a.payload.groupName) {
-              const config = (item.config as ParserConfigModel).clone();
-              config.group = a.payload.groupName;
               return {
                 ...item,
                 isDirty: true,
-                config,
+                config: (item.config as ParserConfigModel).clone({
+                  group: a.payload.groupName,
+                }),
               };
             }
           }

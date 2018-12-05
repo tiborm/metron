@@ -65,30 +65,16 @@ export class ParserConfigModel implements ParserModel {
     this.stormConfig = config.stormConfig || {};
   }
 
-  clone() {
+  clone(params = {}) {
     const clone = new ParserConfigModel(this.id);
-
-    clone.parserClassName = this.parserClassName;
-    clone.filterClassName = this.filterClassName;
-    clone.sensorTopic = this.sensorTopic;
-    clone.writerClassName = this.writerClassName;
-    clone.errorWriterClassName = this.errorWriterClassName;
-    clone.invalidWriterClassName = this.invalidWriterClassName;
-    clone.parserConfig = this.parserConfig;
-    clone.fieldTransformations = this.fieldTransformations;
-    clone.numWorkers = this.numWorkers;
-    clone.numAckers = this.numAckers;
-    clone.spoutParallelism = this.spoutParallelism;
-    clone.spoutNumTasks = this.spoutNumTasks;
-    clone.parserParallelism = this.parserParallelism;
-    clone.parserNumTasks = this.parserNumTasks;
-    clone.errorWriterParallelism = this.errorWriterParallelism;
-    clone.errorWriterNumTasks = this.errorWriterNumTasks;
-    clone.spoutConfig = this.spoutConfig;
-    clone.stormConfig = this.stormConfig;
-    clone.startStopInProgress = this.startStopInProgress;
-    clone.group = this.group;
-
+    Object.keys(this).forEach((key) => {
+      if (typeof this[key] !== 'function' && this.hasOwnProperty(key)) {
+        clone[key] = this[key]
+      }
+    });
+    Object.keys(params).forEach((key) => {
+      clone[key] = params[key];
+    });
     return clone;
   }
 
