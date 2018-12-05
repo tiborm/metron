@@ -161,21 +161,24 @@ describe('Component: SensorParserList', () => {
       status: {
         status: 'KILLED'
       },
-      isGroup: false
+      isGroup: false,
+      isDeleted: false,
     },
     {
       config: new ParserConfigModel(),
       status: {
         status: 'INACTIVE'
       },
-      isGroup: false
+      isGroup: false,
+      isDeleted: false,
     },
     {
       config: new ParserConfigModel(),
       status: {
         status: 'ACTIVE'
       },
-      isGroup: false
+      isGroup: false,
+      isDeleted: false,
     },
     {
       config: new ParserConfigModel(),
@@ -189,7 +192,8 @@ describe('Component: SensorParserList', () => {
       status: {
         status: 'ACTIVE'
       },
-      isPhantom: true
+      isPhantom: true,
+      isDeleted: false,
     }
   ];
 
@@ -778,6 +782,8 @@ describe('Component: SensorParserList', () => {
     const enableButtons = fixture.debugElement.queryAll(By.css('[data-qe-id="enable-parser-button"]'));
     const disableButtons = fixture.debugElement.queryAll(By.css('[data-qe-id="disable-parser-button"]'));
     const selectWrappers = fixture.debugElement.queryAll(By.css('[data-qe-id="sensor-select"]'));
+    const editButtons = fixture.debugElement.queryAll(By.css('[data-qe-id="edit-parser-button"]'));
+    const deleteButtons = fixture.debugElement.queryAll(By.css('[data-qe-id="delete-parser-button"]'));
 
     // !KILLED status should show stop button
     expect(stopButtons[0].properties.hidden).toBe(true);
@@ -806,6 +812,19 @@ describe('Component: SensorParserList', () => {
     expect(disableButtons[2].properties.hidden).toBe(true);
     expect(disableButtons[3].properties.hidden).toBe(true);
     expect(disableButtons[4].properties.hidden).toBe(true);
+
+    // Edit button should hide if a parser or group is deleted
+    expect(editButtons[0].properties.hidden).toBe(false);
+    expect(editButtons[1].properties.hidden).toBe(false);
+    expect(editButtons[2].properties.hidden).toBe(false);
+    expect(editButtons[3].properties.hidden).toBe(true);
+    expect(editButtons[4].properties.hidden).toBe(false);
+
+    expect(deleteButtons[0].properties.hidden).toBe(false);
+    expect(deleteButtons[1].properties.hidden).toBe(false);
+    expect(deleteButtons[2].properties.hidden).toBe(false);
+    expect(deleteButtons[3].properties.hidden).toBe(true);
+    expect(deleteButtons[4].properties.hidden).toBe(false);
 
     // select checkbox should hide if parser is deleted or a phantom
     expect(selectWrappers[0].properties.hidden).toBe(false);
