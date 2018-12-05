@@ -27,10 +27,12 @@ import { ColumnNameTranslatePipe } from './pipes/column-name-translate.pipe';
 import { MapKeysPipe } from './pipes/map-keys.pipe';
 import { AlertSeverityHexagonDirective } from './directives/alert-severity-hexagon.directive';
 import { TimeLapsePipe } from './pipes/time-lapse.pipe';
+import { ContextMenuModule } from './context-menu/context-menu.module';
 
 @NgModule({
   imports:  [
-    CommonModule
+    CommonModule,
+    ContextMenuModule,
   ],
   declarations: [
     AlertSeverityDirective,
