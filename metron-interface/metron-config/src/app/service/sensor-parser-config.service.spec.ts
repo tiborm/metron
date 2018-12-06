@@ -462,7 +462,7 @@ describe('SensorParserConfigService', () => {
         request.flush('Invalid request parameters', { status: 404, statusText: 'Bad Request' });
     });
 
-    fit('syncConfigs() should complete even if no changed item passed', () => {
+    it('syncConfigs() should complete even if no changed item passed', () => {
       const testData = getTestConfigs();
 
       sensorParserConfigService.syncConfigs(testData)
@@ -479,7 +479,7 @@ describe('SensorParserConfigService', () => {
         );
     });
 
-    fit('syncGroups() should complete even if no changed item passed', () => {
+    it('syncGroups() should complete even if no changed item passed', () => {
       const testData = getTestGroups();
 
       sensorParserConfigService.syncGroups(testData)
