@@ -10,11 +10,7 @@ export class ContextMenuDirective {
   constructor(el: ElementRef) {}
 
   @HostListener('click', ['$event']) onLeftClick($event) {
-    debugger;
-  }
-
-  @HostListener('mouseenter') onMouseEnter() {
-    debugger;
+    console.log($event.target);
   }
 
 }
