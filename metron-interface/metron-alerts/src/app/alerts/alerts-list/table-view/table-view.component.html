@@ -35,7 +35,8 @@
             </div>
           </td>
           <td *ngFor="let column of alertsColumnsToDisplay; let columnIndex = index;" #cell>
-            <a  attr.data-qe-id="{{'cell-' + columnIndex}}" (click)="addFilter(column.name, getValue(alert, column, false))" title="{{getValue(alert, column, true)}}"  style="color:#689AA9">
+            <a  attr.data-qe-id="{{'cell-' + columnIndex}}" (click)="addFilter(column.name, getValue(alert, column, false))" title="{{getValue(alert, column, true)}}"  style="color:#689AA9"
+              context-menu>
               {{ getValue(alert,column, true) | centerEllipses:20:cell }}
             </a>
           </td>
