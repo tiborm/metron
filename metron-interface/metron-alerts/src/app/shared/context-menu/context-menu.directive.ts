@@ -1,10 +1,20 @@
-import { Directive, ElementRef } from '@angular/core';
+import { Directive, ElementRef, HostListener, Input } from '@angular/core';
 
 @Directive({
   selector: '[context-menu]'
 })
 export class ContextMenuDirective {
 
-  constructor(el: ElementRef) { }
+  @Input() fieldName: string;
+
+  constructor(el: ElementRef) {}
+
+  @HostListener('click', ['$event']) onLeftClick($event) {
+    debugger;
+  }
+
+  @HostListener('mouseenter') onMouseEnter() {
+    debugger;
+  }
 
 }

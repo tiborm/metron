@@ -47,6 +47,7 @@ import { ContextMenuModule } from './context-menu/context-menu.module';
   ],
   exports:  [
     CommonModule,
+    ContextMenuModule,
     FormsModule,
     AlertSeverityDirective,
     MetronTableDirective,
