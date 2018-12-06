@@ -89,10 +89,12 @@
             </div>
           </td>
           <td *ngFor="let column of alertsColumnsToDisplay">
-            <a *ngIf="column.name !== 'alert_status'" (click)="addFilter(column.name, getValueFromSource(metaAlerts, column, false))" title="{{ getValueFromSource(metaAlerts, column, true) }}" style="color:#689AA9">
+            <a *ngIf="column.name !== 'alert_status'" (click)="addFilter(column.name, getValueFromSource(metaAlerts, column, false))" title="{{ getValueFromSource(metaAlerts, column, true) }}" style="color:#689AA9"
+              context-menu>
               {{ getValueFromSource(metaAlerts, column, true) | centerEllipses:20:cell }}
             </a>
-            <a *ngIf="column.name === 'alert_status'" (click)="addFilter(column.name, getValue(alert, column, false))" title="{{getValue(alert, column, true)}}" style="color:#689AA9">
+            <a *ngIf="column.name === 'alert_status'" (click)="addFilter(column.name, getValue(alert, column, false))" title="{{getValue(alert, column, true)}}" style="color:#689AA9"
+              context-menu>
               {{ getValue(alert,column, true) | centerEllipses:20:cell }}
             </a>
           </td>

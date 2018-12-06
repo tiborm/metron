@@ -8,6 +8,9 @@ import { ContextMenuDirective } from './context-menu.directive';
   ],
   declarations: [
     ContextMenuDirective
+  ],
+  exports: [
+    ContextMenuDirective
   ]
 })
 export class ContextMenuModule { }
