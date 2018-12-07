@@ -49,6 +49,7 @@ export class ParserConfigModel implements ParserModel {
   invalidWriterClassName: string;
   startStopInProgress: boolean;
   group: string;
+  description: string;
 
   constructor(id: string, config: any = {}) {
 
@@ -98,5 +99,9 @@ export class ParserConfigModel implements ParserModel {
 
   setName(value: string) {
     this.id = value;
+  }
+
+  getDescription(): string {
+    return '';
   }
 }

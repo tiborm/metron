@@ -18,11 +18,10 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
 import { Router, ActivatedRoute } from '@angular/router';
 import { Store, select } from '@ngrx/store';
-import { Observable, Subscription } from 'rxjs';
+import { Observable, Subscription, combineLatest } from 'rxjs';
 import * as fromReducers from '../reducers';
 import * as fromActions from '../actions';
 import { getGroups, GroupState } from '../reducers';
-import { take } from 'rxjs/operators';
 
 @Component({
   selector: 'metron-config-sensor-aggregate',
@@ -37,8 +36,14 @@ export class SensorParserAggregateSidebarComponent implements OnInit, OnDestroy 
   private state$: Observable<fromReducers.SensorState>;
   private stateSub: Subscription;
   private targetGroup: string;
+  private groupDetails = {
+    name: '',
+    description: ''
+  };
   groups: GroupState;
   name: string;
+  description: string;
+  existingGroup = null;
 
   allowMerge = true;
 
@@ -51,17 +56,19 @@ export class SensorParserAggregateSidebarComponent implements OnInit, OnDestroy 
   }
 
   ngOnInit() {
-    this.stateSub = this.state$.subscribe((state: fromReducers.SensorState) => {
+    const combined = combineLatest(this.state$, this.route.params);
+    this.stateSub = combined.subscribe(([state, routeParams]) => {
       this.draggedId = state.layout.dnd.draggedId;
       this.dropTargetId = state.layout.dnd.dropTargetId;
       this.targetGroup = state.layout.dnd.targetGroup;
       this.groups = state.groups;
-    });
-    this.route.params.subscribe(params => {
-      if (params['id']) {
-        this.name = params['id'];
+      if (routeParams['id']) {
+        this.existingGroup = this.groups.items.filter(g => g.config.getName() === routeParams['id']);
+        this.name = this.existingGroup[0].config.getName();
+        this.description = this.existingGroup[0].config.getDescription();
       } else {
         this.name = 'Aggregate: ' + [this.draggedId, this.dropTargetId].join(' + ') ;
+        this.description = '';
       }
     });
   }
@@ -71,9 +78,17 @@ export class SensorParserAggregateSidebarComponent implements OnInit, OnDestroy 
     this.router.navigateByUrl('/sensors');
   }
 
-  createNew(groupName: string) {
-
-    this.store.dispatch(new fromActions.CreateGroup(groupName));
+  createNew(groupName: string, groupDescription: string) {
+    this.groupDetails.name = groupName;
+    this.groupDetails.description = groupDescription;
+    const group = this.groups.items.filter(item => item.config.getName() === this.name);
+    if (group.length) {
+      this.store.dispatch(new fromActions.UpdateGroupDescription(this.groupDetails));
+      this.close();
+      return;
+    } else {
+      this.store.dispatch(new fromActions.CreateGroup(this.groupDetails));
+    }
 
     if (!this.targetGroup) {
       this.store.dispatch(new fromActions.AggregateParsers({
