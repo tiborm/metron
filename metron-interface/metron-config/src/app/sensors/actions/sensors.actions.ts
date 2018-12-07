@@ -18,7 +18,6 @@
 import { Action } from '@ngrx/store';
 import { TopologyStatus } from '../../model/topology-status';
 import { ParserMetaInfoModel } from '../models/parser-meta-info.model';
-import { TopologyResponse } from '../../model/topology-response';
 
 export enum SensorsActionTypes {
   LoadStart = '[Sensors] Load sensors',
@@ -161,7 +160,7 @@ export class StartSensor implements Action {
 export class StartSensorSuccess implements Action {
   readonly type = SensorsActionTypes.StartSensorSuccess;
   constructor(readonly payload: {
-    status: TopologyResponse,
+    status: string,
     parser: ParserMetaInfoModel,
   }) {}
 }
@@ -169,7 +168,7 @@ export class StartSensorSuccess implements Action {
 export class StartSensorFailure implements Action {
   readonly type = SensorsActionTypes.StartSensorFailure;
   constructor(readonly payload: {
-    status: TopologyResponse,
+    status: string,
     parser: ParserMetaInfoModel,
   }) {}
 }
@@ -182,7 +181,7 @@ export class StopSensor implements Action {
 export class StopSensorSuccess implements Action {
   readonly type = SensorsActionTypes.StopSensorSuccess;
   constructor(readonly payload: {
-    status: TopologyResponse,
+    status: string,
     parser: ParserMetaInfoModel,
   }) {}
 }
@@ -190,7 +189,7 @@ export class StopSensorSuccess implements Action {
 export class StopSensorFailure implements Action {
   readonly type = SensorsActionTypes.StopSensorFailure;
   constructor(readonly payload: {
-    status: TopologyResponse,
+    status: string,
     parser: ParserMetaInfoModel,
   }) {}
 }
@@ -203,7 +202,7 @@ export class EnableSensor implements Action {
 export class EnableSensorSuccess implements Action {
   readonly type = SensorsActionTypes.EnableSensorSuccess;
   constructor(readonly payload: {
-    status: TopologyResponse,
+    status: string,
     parser: ParserMetaInfoModel,
   }) {}
 }
@@ -211,7 +210,7 @@ export class EnableSensorSuccess implements Action {
 export class EnableSensorFailure implements Action {
   readonly type = SensorsActionTypes.EnableSensorFailure;
   constructor(readonly payload: {
-    status: TopologyResponse,
+    status: string,
     parser: ParserMetaInfoModel,
   }) {}
 }
@@ -224,7 +223,7 @@ export class DisableSensor implements Action {
 export class DisableSensorSuccess implements Action {
   readonly type = SensorsActionTypes.DisableSensorSuccess;
   constructor(readonly payload: {
-    status: TopologyResponse,
+    status: string,
     parser: ParserMetaInfoModel,
   }) {}
 }
@@ -232,7 +231,7 @@ export class DisableSensorSuccess implements Action {
 export class DisableSensorFailure implements Action {
   readonly type = SensorsActionTypes.DisableSensorFailure;
   constructor(readonly payload: {
-    status: TopologyResponse,
+    status: string,
     parser: ParserMetaInfoModel,
   }) {}
 }

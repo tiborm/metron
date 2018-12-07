@@ -429,202 +429,6 @@ describe('Component: SensorParserList', () => {
     fixture.destroy();
   }));
 
-  it('onSensorRowSelect should change the url and updated the selected items stack', async(() => {
-
-    // FIXME: there's no toggleStartStopInProgress in the component anymore
-      // It doesn't modify startStopInProgress property of the component directly anymore
-      // Now it goes through the ngrx store and let the reducers do the job
-
-    // let component: SensorParserListComponent = fixture.componentInstance;
-
-    // let sensorParserConfig = new ParserConfigModel();
-    // sensorParserConfig.sensorTopic = 'squid';
-    // let sensorParserConfigHistory = {
-    //   config: sensorParserConfig,
-    //   startStopInProgress: false
-    // }
-
-    // component.toggleStartStopInProgress(sensorParserConfigHistory);
-    // expect(sensorParserConfigHistory.startStopInProgress).toEqual(true);
-
-    // component.toggleStartStopInProgress(sensorParserConfigHistory);
-    // expect(sensorParserConfigHistory.startStopInProgress).toEqual(false);
-  }));
-
-  it('onDeleteSensor should call the appropriate url', async(() => {
-
-    // FIXME: we're using ngrx to mark them as deleted and delete then if the user presses "Apply changes"
-
-    // spyOn(metronAlerts, 'showSuccessMessage');
-    // spyOn(metronDialog, 'showConfirmationMessage').and.callThrough();
-
-    // let event = new Event('mouse');
-    // event.stopPropagation = jasmine.createSpy('stopPropagation');
-
-    // let component: SensorParserListComponent = fixture.componentInstance;
-    // let sensorParserConfig1 = new ParserConfigModel();
-    // let sensorParserConfig2 = new ParserConfigModel();
-    // sensorParserConfig1.setName('squid');
-    // sensorParserConfig2.setName('bro');
-    // let sensorParserConfigHistory1 = new ParserMetaInfoModel(sensorParserConfig1);
-    // let sensorParserConfigHistory2 = new ParserMetaInfoModel(sensorParserConfig2);
-
-    // component.selectedSensors.push(sensorParserConfigHistory1);
-    // component.selectedSensors.push(sensorParserConfigHistory2);
-
-    // component.onDeleteSensor();
-
-    // expect(metronAlerts.showSuccessMessage).toHaveBeenCalled();
-
-    // component.deleteSensor([sensorParserConfigHistory1], event);
-
-    // expect(metronDialog.showConfirmationMessage).toHaveBeenCalled();
-    // expect(metronDialog.showConfirmationMessage['calls'].count()).toEqual(2);
-    // expect(metronDialog.showConfirmationMessage['calls'].count()).toEqual(2);
-    // expect(metronDialog.showConfirmationMessage['calls'].all()[0].args).toEqual(
-    //   ['Are you sure you want to delete sensor(s) squid, bro ?']
-    // );
-    // expect(metronDialog.showConfirmationMessage['calls'].all()[1].args).toEqual(
-    //   ['Are you sure you want to delete sensor(s) squid ?']
-    // );
-
-    // expect(event.stopPropagation).toHaveBeenCalled();
-
-    // fixture.destroy();
-  }));
-
-  it('onStopSensor should call the appropriate url', async(() => {
-
-    // FIXME: the component doesn't interact with the services directly
-      // It has been moved to ngrx "effects"
-
-    // let event = new Event('mouse');
-    // event.stopPropagation = jasmine.createSpy('stopPropagation');
-
-    // let sensorParserConfig1 = new ParserConfigModel();
-    // sensorParserConfig1.sensorTopic = 'squid';
-    // let sensorParserConfigHistory1 = {
-    //   config: sensorParserConfig1
-    // };
-
-    // let observableToReturn = Observable.create(observer => {
-    //   observer.next({ status: 'success', message: 'Some Message' });
-    //   observer.complete();
-    // });
-
-    // spyOn(metronAlerts, 'showSuccessMessage');
-    // spyOn(stormService, 'stopParser').and.returnValue(observableToReturn);
-
-    // let component: SensorParserListComponent = fixture.componentInstance;
-
-    // component.onStopSensor(sensorParserConfigHistory1, event);
-
-    // expect(stormService.stopParser).toHaveBeenCalled();
-    // expect(event.stopPropagation).toHaveBeenCalled();
-    // expect(metronAlerts.showSuccessMessage).toHaveBeenCalled();
-
-    // fixture.destroy();
-  }));
-
-  it('onStartSensor should call the appropriate url', async(() => {
-
-    // FIXME: the component doesn't interact with the services directly
-      // It has been moved to ngrx "effects"
-
-    // let event = new Event('mouse');
-    // event.stopPropagation = jasmine.createSpy('stopPropagation');
-
-    // let sensorParserConfig1 = new ParserConfigModel();
-    // sensorParserConfig1.sensorTopic = 'squid';
-    // let sensorParserConfigHistory1 = {
-    //   config: sensorParserConfig1
-    // };
-
-    // let observableToReturn = Observable.create(observer => {
-    //   observer.next({ status: 'success', message: 'Some Message' });
-    //   observer.complete();
-    // });
-
-    // spyOn(metronAlerts, 'showSuccessMessage');
-    // spyOn(stormService, 'startParser').and.returnValue(observableToReturn);
-
-    // let component: SensorParserListComponent = fixture.componentInstance;
-
-    // component.onStartSensor(sensorParserConfigHistory1, event);
-
-    // expect(stormService.startParser).toHaveBeenCalled();
-    // expect(event.stopPropagation).toHaveBeenCalled();
-    // expect(metronAlerts.showSuccessMessage).toHaveBeenCalled();
-
-    // fixture.destroy();
-  }));
-
-  it('onEnableSensor should call the appropriate url', async(() => {
-
-    // FIXME: the component doesn't interact with the services directly
-      // It has been moved to ngrx "effects"
-
-    // let event = new Event('mouse');
-    // event.stopPropagation = jasmine.createSpy('stopPropagation');
-
-    // let sensorParserConfig1 = new ParserConfigModel();
-    // sensorParserConfig1.sensorTopic = 'squid';
-    // let sensorParserConfigHistory1 = {
-    //   config: sensorParserConfig1
-    // };
-
-    // let observableToReturn = Observable.create(observer => {
-    //   observer.next({ status: 'success', message: 'Some Message' });
-    //   observer.complete();
-    // });
-
-    // spyOn(metronAlerts, 'showSuccessMessage');
-    // spyOn(stormService, 'activateParser').and.returnValue(observableToReturn);
-
-    // let component: SensorParserListComponent = fixture.componentInstance;
-
-    // component.onEnableSensor(sensorParserConfigHistory1, event);
-
-    // expect(stormService.activateParser).toHaveBeenCalled();
-    // expect(event.stopPropagation).toHaveBeenCalled();
-    // expect(metronAlerts.showSuccessMessage).toHaveBeenCalled();
-
-    // fixture.destroy();
-  }));
-
-  it('onDisableSensor should call the appropriate url', async(() => {
-
-    // FIXME: the component doesn't interact with the services directly
-      // It has been moved to ngrx "effects"
-
-    // let event = new Event('mouse');
-    // event.stopPropagation = jasmine.createSpy('stopPropagation');
-
-    // let sensorParserConfig1 = new ParserConfigModel();
-    // sensorParserConfig1.sensorTopic = 'squid';
-    // let sensorParserConfigHistory1 = {
-    //   config: sensorParserConfig1
-    // };
-
-    // let observableToReturn = Observable.create(observer => {
-    //   observer.next({ status: 'success', message: 'Some Message' });
-    //   observer.complete();
-    // });
-
-    // spyOn(metronAlerts, 'showSuccessMessage');
-    // spyOn(stormService, 'deactivateParser').and.returnValue(observableToReturn);
-
-    // let component: SensorParserListComponent = fixture.componentInstance;
-
-    // component.onDisableSensor(sensorParserConfigHistory1, event);
-
-    // expect(stormService.deactivateParser).toHaveBeenCalled();
-    // expect(event.stopPropagation).toHaveBeenCalled();
-    // expect(metronAlerts.showSuccessMessage).toHaveBeenCalled();
-
-    // fixture.destroy();
-  }));
-
   it(
     'onStartSensors/onStopSensors should call start on all sensors that have status != ' +
       'Running and status != Running respectively',
@@ -738,10 +542,10 @@ describe('Component: SensorParserList', () => {
     expect(component.isEnableable(sensor)).toBe(false);
 
     sensor.status.status = 'ACTIVE';
-    expect(component.isEnableable(sensor)).toBe(true);
+    expect(component.isEnableable(sensor)).toBe(false);
 
     sensor.status.status = 'INACTIVE';
-    expect(component.isEnableable(sensor)).toBe(false);
+    expect(component.isEnableable(sensor)).toBe(true);
   }));
 
   it('isDisableable() should return true only when a parser is INACTIVE', async(() => {
@@ -753,10 +557,10 @@ describe('Component: SensorParserList', () => {
     expect(component.isDisableable(sensor)).toBe(false);
 
     sensor.status.status = 'ACTIVE';
-    expect(component.isDisableable(sensor)).toBe(false);
+    expect(component.isDisableable(sensor)).toBe(true);
 
     sensor.status.status = 'INACTIVE';
-    expect(component.isDisableable(sensor)).toBe(true);
+    expect(component.isDisableable(sensor)).toBe(false);
   }));
 
   it('isDeletedOrPhantom() should return true if a parser is deleted or a phantom', async(() => {
@@ -799,17 +603,17 @@ describe('Component: SensorParserList', () => {
     expect(startButtons[3].properties.hidden).toBe(true);
     expect(startButtons[4].properties.hidden).toBe(true);
 
-    // ACTIVE status should show enable buttons
+    // ACTIVE status should hide enable buttons
     expect(enableButtons[0].properties.hidden).toBe(true);
-    expect(enableButtons[1].properties.hidden).toBe(true);
-    expect(enableButtons[2].properties.hidden).toBe(false);
+    expect(enableButtons[1].properties.hidden).toBe(false);
+    expect(enableButtons[2].properties.hidden).toBe(true);
     expect(enableButtons[3].properties.hidden).toBe(true);
     expect(enableButtons[4].properties.hidden).toBe(true);
 
-    // INACTIVE status should show disable buttons
+    // INACTIVE status should hide disable buttons
     expect(disableButtons[0].properties.hidden).toBe(true);
-    expect(disableButtons[1].properties.hidden).toBe(false);
-    expect(disableButtons[2].properties.hidden).toBe(true);
+    expect(disableButtons[1].properties.hidden).toBe(true);
+    expect(disableButtons[2].properties.hidden).toBe(false);
     expect(disableButtons[3].properties.hidden).toBe(true);
     expect(disableButtons[4].properties.hidden).toBe(true);
 

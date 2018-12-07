@@ -40,8 +40,8 @@
   <table class="table config-table" metron-config-table #table>
     <thead>
     <tr>
-      <th></th>
-      <th>Name </th>
+      <th class="head-cell-drag-handle"></th>
+      <th class="head-cell-name">Name </th>
       <th>Parser</th>
       <th>Status</th>
       <th>Latency</th>
@@ -90,11 +90,13 @@
         <span class="indentation" *ngIf="!!hasGroup(sensor)">
           ---
         </span>
-        {{ sensor.config.getName() }}
+        <span [title]="sensor.config.getName()">
+          {{ sensor.config.getName() }}
+        </span>
       </td>
       <td>{{ getParserType(sensor.config) }}</td>
       <td
-        [ngClass]="{'warning-text': ['KILLED', 'STOPPING', 'INACTIVE', 'ERROR'].includes(sensor.status.status)}"
+        [ngClass]="{'warning-text': ['KILLED', 'INACTIVE'].includes(sensor.status.status) || !sensor.status.status}"
       >
         {{ hasGroup(sensor) ? '' : sensor.status.status | sensorStatus }}
       </td>
