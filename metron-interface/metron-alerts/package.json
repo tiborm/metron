@@ -37,6 +37,7 @@
     "moment": "^2.22.2",
     "ng2-dragula": "^1.5.0",
     "pikaday-time": "^1.6.1",
+    "popper.js": "^1.14.6",
     "puppeteer": "^1.7.0",
     "rxjs": "^6.3.0",
     "ts-node": "^7.0.0",
