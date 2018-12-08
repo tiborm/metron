@@ -29,19 +29,19 @@ export class ContextMenuComponent implements  AfterContentInit, OnDestroy {
   ngAfterContentInit() {
     this.origin.click
       .pipe(takeUntil(this.destroyed$))
-      .subscribe(($event: MouseEvent) => {
-        document.body.appendChild(this.dropDown.nativeElement); // somehow disappear after 2 sec without this, otherwise ok
-        document.body.appendChild(this.outside.nativeElement); // somehow disappear after 2 sec without this, otherwise ok
-        this.renderer.setStyle(this.dropDown.nativeElement, 'display', 'block');
-        this.renderer.setStyle(this.outside.nativeElement, 'display', 'block');
-        this.popper = new Popper(this.origin.element, this.dropDown.nativeElement, { placement: 'bottom-start' });
-      });
+      .subscribe(this.open.bind(this));
 
-    fromEvent(this.outside.nativeElement, 'click').subscribe(this.close.bind(this));
+    fromEvent(this.outside.nativeElement, 'click')
+      .pipe(takeUntil(this.destroyed$))
+      .subscribe(this.close.bind(this));
   }
 
   private open() {
-
+    document.body.appendChild(this.dropDown.nativeElement); // somehow disappear after 2 sec without this
+    document.body.appendChild(this.outside.nativeElement); // somehow disappear after 2 sec without this
+    this.renderer.setStyle(this.dropDown.nativeElement, 'display', 'block');
+    this.renderer.setStyle(this.outside.nativeElement, 'display', 'block');
+    this.popper = new Popper(this.origin.element, this.dropDown.nativeElement, { placement: 'bottom-start' });
   }
 
   private close() {
