@@ -35,10 +35,12 @@
             </div>
           </td>
           <td *ngFor="let column of alertsColumnsToDisplay; let columnIndex = index;" #cell>
-            <a  attr.data-qe-id="{{'cell-' + columnIndex}}" (click)="addFilter(column.name, getValue(alert, column, false))" title="{{getValue(alert, column, true)}}"  style="color:#689AA9"
-              context-menu>
-              {{ getValue(alert,column, true) | centerEllipses:20:cell }}
-            </a>
+            <context-menu>
+              <a  attr.data-qe-id="{{'cell-' + columnIndex}}" (click)="addFilter(column.name, getValue(alert, column, false))" title="{{getValue(alert, column, true)}}"  style="color:#689AA9"
+                contextMenuOrigin>
+                {{ getValue(alert,column, true) | centerEllipses:20:cell }}
+              </a>
+            </context-menu>
           </td>
           <td width="20" class="icon-cell"></td>
           <td width="20" class="icon-cell">
@@ -90,14 +92,16 @@
             </div>
           </td>
           <td *ngFor="let column of alertsColumnsToDisplay">
-            <a *ngIf="column.name !== 'alert_status'" (click)="addFilter(column.name, getValueFromSource(metaAlerts, column, false))" title="{{ getValueFromSource(metaAlerts, column, true) }}" style="color:#689AA9"
-              context-menu>
-              {{ getValueFromSource(metaAlerts, column, true) | centerEllipses:20:cell }}
-            </a>
-            <a *ngIf="column.name === 'alert_status'" (click)="addFilter(column.name, getValue(alert, column, false))" title="{{getValue(alert, column, true)}}" style="color:#689AA9"
-              context-menu>
-              {{ getValue(alert,column, true) | centerEllipses:20:cell }}
-            </a>
+            <context-menu>
+              <a *ngIf="column.name !== 'alert_status'" (click)="addFilter(column.name, getValueFromSource(metaAlerts, column, false))" title="{{ getValueFromSource(metaAlerts, column, true) }}" style="color:#689AA9"
+                contextMenuOrigin>
+                {{ getValueFromSource(metaAlerts, column, true) | centerEllipses:20:cell }}
+              </a>
+              <a *ngIf="column.name === 'alert_status'" (click)="addFilter(column.name, getValue(alert, column, false))" title="{{getValue(alert, column, true)}}" style="color:#689AA9"
+                contextMenuOrigin>
+                {{ getValue(alert,column, true) | centerEllipses:20:cell }}
+              </a>
+            </context-menu>
           </td>
           <td width="20" class="icon-cell" (click)="deleteOneAlertFromMetaAlert($event, alert, metaAlertIndex)">
             <i class="fa fa-chain-broken" aria-hidden="true"></i>
