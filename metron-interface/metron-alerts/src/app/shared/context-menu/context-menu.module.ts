@@ -1,16 +1,23 @@
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { ContextMenuDirective } from './context-menu.directive';
+import { ContextMenuOriginDirective } from './context-menu-origin.directive';
+import { ContextMenuComponent } from './context-menu.component';
+import { ContextMenuService } from './context-menu.service';
 
 @NgModule({
   imports: [
-    CommonModule
+    CommonModule,
   ],
   declarations: [
-    ContextMenuDirective
+    ContextMenuOriginDirective,
+    ContextMenuComponent,
   ],
   exports: [
-    ContextMenuDirective
+    ContextMenuOriginDirective,
+    ContextMenuComponent,
+  ],
+  providers: [
+    ContextMenuService
   ]
 })
 export class ContextMenuModule { }
