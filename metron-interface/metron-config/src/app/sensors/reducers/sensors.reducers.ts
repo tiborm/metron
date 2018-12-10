@@ -514,3 +514,10 @@ export const isDirty = createSelector(
   }
 );
 
+export const getParserConfig = () => createSelector(
+  getParsers,
+  (parsers: ParserMetaInfoModel[], props) => {
+    return parsers.find(parser => parser.config.getName() === props.id);
+  }
+);
+
