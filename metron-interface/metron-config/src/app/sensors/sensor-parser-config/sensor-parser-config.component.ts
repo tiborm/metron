@@ -37,6 +37,7 @@ import { Store, select } from '@ngrx/store';
 import { ParserMetaInfoModel } from '../models/parser-meta-info.model';
 import { filter } from 'rxjs/operators';
 import * as fromReducers from '../reducers';
+import * as fromActions from '../actions';
 
 export enum Pane {
   GROK,
@@ -425,6 +426,9 @@ export class SensorParserConfigComponent implements OnInit {
     if (!this.indexingConfigurations.solr.index) {
       this.indexingConfigurations.solr.index = this.sensorName;
     }
+
+    this.store.dispatch(new fromActions.UpdateParserConfig(this.sensorParserConfig.clone()));
+
     this.sensorParserConfigService
       .saveConfig(this.sensorName, this.sensorParserConfig)
       .subscribe(

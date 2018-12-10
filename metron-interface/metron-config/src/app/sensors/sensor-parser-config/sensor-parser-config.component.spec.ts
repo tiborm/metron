@@ -578,7 +578,8 @@ describe('Component: SensorParserConfig', () => {
         { provide: Store, useValue: {
           pipe: () => {
             return of(squidParserMetaInfo);
-          }
+          },
+          dispatch: () => {}
         } },
         {
           provide: SensorParserConfigService,

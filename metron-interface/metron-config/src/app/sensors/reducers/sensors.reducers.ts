@@ -75,6 +75,22 @@ export function parserConfigsReducer(state: ParserState = initialParserState, ac
         items: (action as fromActions.LoadSuccess).payload.parsers
       };
 
+    case fromActions.SensorsActionTypes.UpdateParserConfig: {
+      const a = (action as fromActions.UpdateParserConfig);
+      return {
+        ...state,
+        items: state.items.map(item => {
+          if (item.config.getName() === a.payload.getName()) {
+            return {
+              ...item,
+              config: a.payload.clone()
+            };
+          }
+          return item;
+        }),
+      };
+    }
+
     case fromActions.SensorsActionTypes.AggregateParsers:
     case fromActions.SensorsActionTypes.AddToGroup: {
       const a = (action as fromActions.AggregateParsers);
