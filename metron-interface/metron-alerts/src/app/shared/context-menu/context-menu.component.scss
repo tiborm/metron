@@ -17,4 +17,14 @@ $menu-z-index: 98888;
 
 .dropdown-menu {
   z-index: $menu-z-index + 1;
+  font-size: .9em;
+
+  .dropdown-item {
+    cursor: pointer;
+  }
+
+  .dropdown-divider {
+    background-color: #555555;
+  }
 }
+
