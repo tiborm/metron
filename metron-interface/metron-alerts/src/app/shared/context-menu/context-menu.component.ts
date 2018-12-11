@@ -15,6 +15,7 @@ export class ContextMenuComponent implements  AfterContentInit, OnDestroy {
   @ViewChild('clickOutsideCanvas') outside: ElementRef;
 
   @Input() predefinedItems: { label: string, event: string }[];
+  @Input() menuTitle: string;
   @Input() menuConfigId: string;
   @Input() data: any;
 
@@ -33,10 +34,6 @@ export class ContextMenuComponent implements  AfterContentInit, OnDestroy {
   }
 
   private subscribeTo() {
-    // this.origin.click
-    //   .pipe(takeUntil(this.destroyed$))
-    //   .subscribe(this.open.bind(this));
-
     fromEvent(this.el.nativeElement, 'click')
       .pipe(takeUntil(this.destroyed$))
       .subscribe(this.open.bind(this));
@@ -49,6 +46,7 @@ export class ContextMenuComponent implements  AfterContentInit, OnDestroy {
   // TODO: make open/close to a toggleMenu Fn
   private open($event: MouseEvent) {
     $event.stopPropagation();
+    // TODO would be better to do this whith *ngIf (heavn't found a way to attach poper to it yet)
     document.body.appendChild(this.dropDown.nativeElement); // somehow disappear after 2 sec without this
     document.body.appendChild(this.outside.nativeElement); // somehow disappear after 2 sec without this
     this.renderer.setStyle(this.dropDown.nativeElement, 'display', 'block');

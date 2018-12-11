@@ -29,7 +29,7 @@
       <ng-container *ngIf="!alert.source.metron_alert || alert.source.metron_alert.length === 0">
         <tr attr.data-qe-id="{{'row-' + alertIndex}}"
           [ngClass]="{'selected' : selectedAlerts.indexOf(alert) != -1}"
-          withContextMenu menuConfigId="alertItem"
+          withContextMenu menuConfigId="alertItem" menuTitle="{{ alert.id }}"
           [predefinedItems]="[{ label: 'Show details', event: 'menuEventShowDetails'}]"
           (menuEventShowDetails)="showDetails($event, alert)">
           <td width="15" class="icon-cell"></td>
@@ -99,10 +99,10 @@
             <span withContextMenu [menuConfigId]="column.name"
               [predefinedItems]="[{ label: 'Add to search bar', event: 'menuEventFilter'}]"
               (menuEventFilter)="addFilter(column.name, getValue(alert, column, false))">
-              <a *ngIf="column.name !== 'alert_status'" (click)="addFilter(column.name, getValueFromSource(metaAlerts, column, false))" title="{{ getValueFromSource(metaAlerts, column, true) }}" style="color:#689AA9">
+              <a *ngIf="column.name !== 'alert_status'" title="{{ getValueFromSource(metaAlerts, column, true) }}" style="color:#689AA9">
                 {{ getValueFromSource(metaAlerts, column, true) | centerEllipses:20:cell }}
               </a>
-              <a *ngIf="column.name === 'alert_status'" (click)="addFilter(column.name, getValue(alert, column, false))" title="{{getValue(alert, column, true)}}" style="color:#689AA9">
+              <a *ngIf="column.name === 'alert_status'" title="{{getValue(alert, column, true)}}" style="color:#689AA9">
                 {{ getValue(alert,column, true) | centerEllipses:20:cell }}
               </a>
             </span>

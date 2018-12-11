@@ -1,5 +1,6 @@
 <ng-content></ng-content>
 <div #dropDown class="dropdown-menu">
+  <div class="card-header">{{ menuTitle || menuConfigId || 'Menu' }}</div>
   <a class="dropdown-item" *ngFor="let menuItem of predefinedItems" (click)="dispatchMenuEvent(menuItem.event)">{{ menuItem.label }}</a>
   <div class="dropdown-divider"></div>
   <a class="dropdown-item">Another action</a>
