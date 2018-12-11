@@ -1,6 +1,5 @@
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { ContextMenuOriginDirective } from './context-menu-origin.directive';
 import { ContextMenuComponent } from './context-menu.component';
 import { ContextMenuService } from './context-menu.service';
 
@@ -9,11 +8,9 @@ import { ContextMenuService } from './context-menu.service';
     CommonModule,
   ],
   declarations: [
-    ContextMenuOriginDirective,
     ContextMenuComponent,
   ],
   exports: [
-    ContextMenuOriginDirective,
     ContextMenuComponent,
   ],
   providers: [
