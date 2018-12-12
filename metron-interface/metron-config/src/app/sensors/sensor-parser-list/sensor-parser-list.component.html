@@ -18,7 +18,7 @@
   <div class="container-fluid">
     <div class="row">
       <div class="col-lg-10 px-0">
-        <div class="metron-title"> {{ componentName }} ({{ sensors.length }}) </div>
+        <div class="metron-title" data-qe-id="metron-page-title"> {{ componentName }} ({{ sensors.length }}) </div>
       </div>
       <div class="col-lg-2">
         <div class="dropdown float-right">
@@ -54,6 +54,7 @@
     </thead>
     <tbody>
     <tr *ngFor="let sensor of sensors"
+        attr.data-qe-id="sensor-tr-{{sensor.config.getName()}}"
         (click)="onSensorRowSelect(sensor, $event)"
         [ngClass]="{
           'active': isSelected(sensor),
@@ -77,6 +78,7 @@
         <span
           *ngIf="!sensor.isGroup"
           class="drag-handle-icon"
+          attr.data-qe-id="sensor-drag-handle-{{sensor.config.getName()}}"
         >
           <i class="fa fa-ellipsis-v drag-handle-part"></i>
           <i class="fa fa-ellipsis-v drag-handle-part"></i>

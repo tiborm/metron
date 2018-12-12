@@ -3,8 +3,8 @@
     "id": "profiler-3-1541415577",
     "name": "websphere",
     "status": "ACTIVE",
-    "latency": 3.509,
-    "throughput": 8.76,
+    "latency": 45.43,
+    "throughput": 66.67657871044901,
     "emitted": 5354,
     "acked": 5256
   },
@@ -12,8 +12,8 @@
     "id": "batch_indexing-5-1541415804",
     "name": "syslog5424",
     "status": "ACTIVE",
-    "latency": 38.435,
-    "throughput": 8.725,
+    "latency": 30.34,
+    "throughput": 62.01029918813548,
     "emitted": 4994,
     "acked": 5235
   },
@@ -21,8 +21,8 @@
     "id": "enrichment-1-1541415424",
     "name": "jsonMap",
     "status": "ACTIVE",
-    "latency": 8.65,
-    "throughput": 8.696666666666667,
+    "latency": 51.71,
+    "throughput": 2.617785468420042,
     "emitted": 57669,
     "acked": 5218
   },
@@ -30,8 +30,8 @@
     "id": "bro__snort__yaf-4-1541415720",
     "name": "jsonMapQuery",
     "status": "ACTIVE",
-    "latency": 2083.689,
-    "throughput": 8.725,
+    "latency": 75.18,
+    "throughput": 81.25381075400699,
     "emitted": 4821,
     "acked": 5235
   },
@@ -39,8 +39,8 @@
     "id": "random_access_indexing-6-1541415857",
     "name": "squid",
     "status": "ACTIVE",
-    "latency": 32.408,
-    "throughput": 8.766666666666667,
+    "latency": 100,
+    "throughput": 77.59124249152526,
     "emitted": 5224,
     "acked": 5260
   },
@@ -48,8 +48,8 @@
     "id": "pcap-2-1541415492",
     "name": "jsonMapWrappedQuery",
     "status": "ACTIVE",
-    "latency": 23.654,
-    "throughput": 2.863,
+    "latency": 40.28,
+    "throughput": 39.581582693323725,
     "emitted": 7841,
     "acked": 7841
   },
@@ -57,8 +57,8 @@
     "id": "pcap-2-1541415492",
     "name": "snort",
     "status": "ACTIVE",
-    "latency": 54.756,
-    "throughput": 23.765,
+    "latency": 34.15,
+    "throughput": 72.9129998196047,
     "emitted": 12522,
     "acked": 12521
   },
@@ -66,8 +66,8 @@
     "id": "pcap-2-1541415492",
     "name": "bro",
     "status": "ACTIVE",
-    "latency": 32.546,
-    "throughput": 11.897,
+    "latency": 74,
+    "throughput": 6.134710652193487,
     "emitted": 3212,
     "acked": 3212
   },
@@ -75,17 +75,35 @@
     "id": "pcap-2-1541415492",
     "name": "asa",
     "status": "INACTIVE",
-    "latency": 0.0,
-    "throughput": 0.0,
+    "latency": 60.72,
+    "throughput": 32.26616201368242,
+    "emitted": 0,
+    "acked": 0
+  },
+  {
+    "id": "pcap-2-1541415492",
+    "name": "TheMostHappiestGroup",
+    "status": "ACTIVE",
+    "latency": 31.29,
+    "throughput": 68.34299081186592,
+    "emitted": 0,
+    "acked": 0
+  },
+  {
+    "id": "pcap-2-1541415492",
+    "name": "ANiceGroup",
+    "status": "ACTIVE",
+    "latency": 11.22,
+    "throughput": 45.9722494631702,
     "emitted": 0,
     "acked": 0
   },
   {
     "id": "pcap-2-1541415492",
     "name": "yaf",
-    "status": "KILLED",
-    "latency": 0.0,
-    "throughput": 0.0,
+    "status": "ACTIVE",
+    "latency": 87.89,
+    "throughput": 87.44497647382701,
     "emitted": 0,
     "acked": 0
   }
