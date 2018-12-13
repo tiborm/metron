@@ -6,11 +6,46 @@ import { Observable, of } from 'rxjs';
 export class ContextMenuService {
 
   getConfig(): Observable<{}> {
-    // TODO this here is the actual API definition
+    // TODO the following JSON is the actual API response design
     return of({
-      id: [{ label: 'id: dynamic menu item 01', urlPattern: '/{}'}],
-      ip_src_addr: [{ label: 'ip_src_addr: dynamic menu item 02', urlPattern: '/{}'}],
-      host: [{ label: 'host: dynamic menu item 01', urlPattern: '/{}'}],
+      alertEntry: [
+        {
+          label: 'Internal ticketing system',
+          urlPattern: '/{}',
+        }
+      ],
+      id: [
+        {
+          label: 'Dynamic menu item 01',
+          urlPattern: '/{}',
+        }
+      ],
+      ip_src_addr: [
+        {
+          label: 'IP Investigation Notebook',
+          urlPattern: 'http://zepellin.example.com:9000/notebook/BLAHBAH?ip={}',
+        },
+        {
+          label: 'IP Conversation Investigation',
+          urlPattern: 'http://zepellin.example.com:9000/notebook/BLAHBAH?ip_src_addr={ip_src_addr}&ip_dst_addr={ip_dst_addr}',
+        },
+      ],
+      ip_dst_addr: [
+        {
+          label: 'IP Investigation Notebook',
+          urlPattern: 'http://zepellin.example.com:9000/notebook/BLAHBAH?ip={}',
+        },
+        {
+          label: 'IP Conversation Investigation',
+          urlPattern: 'http://zepellin.example.com:9000/notebook/BLAHBAH?ip_src_addr={ip_src_addr}&ip_dst_addr={ip_dst_addr}',
+        },
+      ],
+      host: [
+        {
+          label: 'Whois Reputation Service',
+          urlPattern: 'https://www.whois.com/whois/{}',
+        }
+      ],
     })
   }
 

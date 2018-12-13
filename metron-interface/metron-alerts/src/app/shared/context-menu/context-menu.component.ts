@@ -60,7 +60,7 @@ export class ContextMenuComponent implements OnInit, AfterContentInit, OnDestroy
 
   constructor(
     private contextMenuSvc: ContextMenuService,
-    private el: ElementRef,
+    private host: ElementRef,
     private renderer: Renderer2
     ) {}
 
@@ -83,7 +83,7 @@ export class ContextMenuComponent implements OnInit, AfterContentInit, OnDestroy
   }
 
   private subscribeTo() {
-    fromEvent(this.el.nativeElement, 'click')
+    fromEvent(this.host.nativeElement, 'click')
       .pipe(takeUntil(this.destroyed$))
       .subscribe(this.open.bind(this));
 
@@ -94,13 +94,22 @@ export class ContextMenuComponent implements OnInit, AfterContentInit, OnDestroy
 
   // TODO: make open/close to a toggleMenu Fn
   private open($event: MouseEvent) {
-    $event.stopPropagation();
+    const origin = this.getContextMenuOrigin($event);
     // TODO would be better to do this whith *ngIf (heavn't found a way to attach poper to it yet)
     document.body.appendChild(this.dropDown.nativeElement); // somehow disappear after 2 sec without this
     document.body.appendChild(this.outside.nativeElement); // somehow disappear after 2 sec without this
     this.renderer.setStyle(this.dropDown.nativeElement, 'display', 'block');
     this.renderer.setStyle(this.outside.nativeElement, 'display', 'block');
-    this.popper = new Popper(this.el.nativeElement, this.dropDown.nativeElement, { placement: 'bottom-start' });
+    this.popper = new Popper(origin, this.dropDown.nativeElement, { placement: 'bottom-start' });
+  }
+
+  private getContextMenuOrigin($event: MouseEvent): HTMLElement {
+    $event.stopPropagation();
+    if (($event.currentTarget as HTMLElement).contains($event.target as Node)) {
+      return $event.target as HTMLElement;
+    } else {
+      return $event.currentTarget as HTMLElement;
+    }
   }
 
   private close() {
@@ -115,11 +124,12 @@ export class ContextMenuComponent implements OnInit, AfterContentInit, OnDestroy
 
   dispatchMenuEvent(event: string) {
     this.close();
-    this.el.nativeElement.dispatchEvent(new CustomEvent(event));
+    this.host.nativeElement.dispatchEvent(new CustomEvent(event));
   }
 
   dynamicItemClicked($event: MouseEvent, url: string) {
-
+    this.close();
+    window.open(url);
   }
 
   ngOnDestroy() {
