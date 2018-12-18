@@ -1,0 +1,1 @@
+{ "name": "bro", "numPartitions": 1, "replicationFactor": 1, "properties": {} }

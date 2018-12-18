@@ -11,13 +11,18 @@ context('Grouping parser to aggregates', () => {
 
     cy.route({
       method: 'POST',
-      url: '/api/v1/logout',
+      url: '**/logout',
       response: []
     });
 
     cy.route('GET', '**/sensor/parser/config', 'fixture:parser-config.json');
+    cy.route('GET', '**/sensor/parser/config/bro', 'fixture:parser-config-bro.json');
+    cy.route('GET', '**/sensor/kafka/topic/bro', 'fixture:kafka-topic-bro.json');
+    cy.route('GET', '**/sensor/enrichment/config/bro', 'fixture:enrichment-config-bro.json');
     cy.route('GET', '**/sensor/parser/group', 'fixture:parser-group.json');
+    cy.route('GET', '**/sensor/indexing/config/*', []);
     cy.route('GET', '**/storm', 'fixture:storm-config.json');
+    cy.route('GET', '**/hdfs', []);
 
     cy.visit('http://localhost:4200/login');
     cy.get('[name="user"]').type('user');
@@ -113,19 +118,20 @@ context('Grouping parser to aggregates', () => {
   });
 
   it('should open the details pane', () => {
-    ['websphere', 'jsonMap', 'squid', 'asa', 'snort', 'bro', 'yaf'].map(
+    ['bro'].map(
       pName => {
         cy.get(`[data-qe-id="sensor-tr-${pName}"]`).click();
         cy.url().should(
           'eq',
           `http://localhost:4200/sensors(dialog:sensors-readonly/${pName})`
         );
+        cy.get('.metron-slider-pane .close-button').click();
       }
     );
   });
 
   it('should open the edit pane', () => {
-    ['websphere', 'jsonMap', 'squid', 'asa', 'snort', 'bro', 'yaf'].map(
+    ['bro'].map(
       pName => {
         cy.get(
           `[data-qe-id="sensor-tr-${pName}"] [data-qe-id="edit-parser-button"]`
@@ -134,6 +140,7 @@ context('Grouping parser to aggregates', () => {
           'eq',
           `http://localhost:4200/sensors(dialog:sensors-config/${pName})`
         );
+        cy.get('.main.close-button').click();
       }
     );
   });
