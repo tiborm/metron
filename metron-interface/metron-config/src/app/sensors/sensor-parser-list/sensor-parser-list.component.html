@@ -21,16 +21,18 @@
         <div class="metron-title" data-qe-id="metron-page-title"> {{ componentName }} ({{ sensors.length }}) </div>
       </div>
       <div class="col-lg-2">
-        <div class="dropdown float-right">
+        <div class="dropdown float-right" data-qe-id="action-dropdown">
           <button class="btn btn-primary dropdown-toggle" type="button" id="dropdownMenu1" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
             ACTIONS
           </button>
-          <div class="dropdown-menu dropdown-menu-right metron-bg-inverse" aria-labelledby="dropdownMenu1">
-            <span class="dropdown-item" data-action="Delete" (click)="onDeleteSelectedItems()" [class.disabled]="selectedSensors.length == 0">Delete</span>
-            <span class="dropdown-item" data-action="Enable" (click)="onEnableSensors()" [class.disabled]="selectedSensors.length == 0">Enable</span>
-            <span class="dropdown-item" data-action="Disable" (click)="onDisableSensors()" [class.disabled]="selectedSensors.length == 0">Disable</span>
-            <span class="dropdown-item" data-action="Start" (click)="onStartSensors()" [class.disabled]="selectedSensors.length == 0">Start</span>
-            <span class="dropdown-item" data-action="Stop" (click)="onStopSensors()" [class.disabled]="selectedSensors.length == 0">Stop</span>
+          <div class="dropdown-menu dropdown-menu-right metron-bg-inverse"
+                aria-labelledby="dropdownMenu1"
+                data-qe-id="action-dropdown-menu">
+            <span class="dropdown-item" data-qe-id="action-dropdown-action" data-action="Delete" (click)="onDeleteSelectedItems()" [class.disabled]="selectedSensors.length == 0">Delete</span>
+            <span class="dropdown-item" data-qe-id="action-dropdown-action" data-action="Enable" (click)="onEnableSensors()" [class.disabled]="selectedSensors.length == 0">Enable</span>
+            <span class="dropdown-item" data-qe-id="action-dropdown-action" data-action="Disable" (click)="onDisableSensors()" [class.disabled]="selectedSensors.length == 0">Disable</span>
+            <span class="dropdown-item" data-qe-id="action-dropdown-action" data-action="Start" (click)="onStartSensors()" [class.disabled]="selectedSensors.length == 0">Start</span>
+            <span class="dropdown-item" data-qe-id="action-dropdown-action" data-action="Stop" (click)="onStopSensors()" [class.disabled]="selectedSensors.length == 0">Stop</span>
           </div>
         </div>
       </div>
@@ -41,15 +43,21 @@
     <thead>
     <tr>
       <th class="head-cell-drag-handle"></th>
-      <th class="head-cell-name">Name </th>
-      <th>Parser</th>
-      <th>Status</th>
-      <th>Latency</th>
-      <th>Throughput</th>
-      <th>Last Updated</th>
-      <th>Last Editor</th>
+      <th class="head-cell-name" data-qe-id="sensor-table-header">Name </th>
+      <th data-qe-id="sensor-table-header">Parser</th>
+      <th data-qe-id="sensor-table-header">Status</th>
+      <th data-qe-id="sensor-table-header">Latency</th>
+      <th data-qe-id="sensor-table-header">Throughput</th>
+      <th data-qe-id="sensor-table-header">Last Updated</th>
+      <th data-qe-id="sensor-table-header">Last Editor</th>
       <th style="width:100px"></th>
-      <th style="width:50px"><input id="select-deselect-all" class="fontawesome-checkbox" type="checkbox" (click)="onSelectDeselectAll(sensors, $event)"><label for="select-deselect-all"></label></th>
+      <th style="width:50px">
+        <input id="select-deselect-all"
+                class="fontawesome-checkbox"
+                type="checkbox"
+                (click)="onSelectDeselectAll(sensors, $event)">
+        <label for="select-deselect-all" data-qe-id="sensor-table-select-all"></label>
+      </th>
     </tr>
     </thead>
     <tbody>
@@ -190,6 +198,7 @@
           >
           <label
             attr.for="{{ sensor.config.getName() }}"
+            attr.data-qe-id="sensor-select-{{sensor.config.getName()}}"
             (click)="$event.stopPropagation()"
           ></label>
         </div>
