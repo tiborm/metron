@@ -105,15 +105,15 @@
         </span>
       </td>
       <td>{{ getParserType(sensor.config) }}</td>
-      <td
+      <td data-qe-id="sensor-status"
         [ngClass]="{'warning-text': ['KILLED', 'INACTIVE'].includes(sensor.status.status) || !sensor.status.status}"
       >
         {{ hasGroup(sensor) ? '' : sensor.status.status | sensorStatus }}
       </td>
-      <td>{{ hasGroup(sensor) ? '' : sensor.status | latency }}</td>
-      <td>{{ hasGroup(sensor) ? '' : sensor.status | throughput }}</td>
-      <td>{{ hasGroup(sensor) ? '' : sensor.modifiedByDate }}</td>
-      <td>{{ hasGroup(sensor) ? '' : sensor.modifiedBy }}</td>
+      <td data-qe-id="sensor-latency">{{ hasGroup(sensor) ? '' : sensor.status | latency }}</td>
+      <td data-qe-id="sensor-throughput">{{ hasGroup(sensor) ? '' : sensor.status | throughput }}</td>
+      <td data-qe-id="sensor-modified-by-date">{{ hasGroup(sensor) ? '' : sensor.modifiedByDate }}</td>
+      <td data-qe-id="sensor-modified-by">{{ hasGroup(sensor) ? '' : sensor.modifiedBy }}</td>
       <td class="icon-container">
         <i
           data-toggle="tooltip"
@@ -225,7 +225,7 @@
   </div>
 
   <div class="metron-add-button hexa-button" (click)="addAddSensor()">
-    <i class="fa fa-plus"></i>
+    <i class="fa fa-plus" data-qe-id="add-sensor-button"></i>
   </div>
 
 </div>

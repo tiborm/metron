@@ -92,7 +92,7 @@
   {
     "id": "pcap-2-1541415492",
     "name": "ANiceGroup",
-    "status": "ACTIVE",
+    "status": "KILLED",
     "latency": 11.22,
     "throughput": 45.9722494631702,
     "emitted": 0,
