@@ -32,14 +32,16 @@
           [ngClass]="{'selected' : selectedAlerts.indexOf(alert) != -1}"
           withContextMenu menuConfigId="alertEntry" menuTitle="Alert entry: {{ alert.id }}"
           [predefinedItems]="[{ label: 'Show details', event: 'menuEventShowDetails'}]"
-          (menuEventShowDetails)="showDetails($event, alert)">
+          (menuEventShowDetails)="showDetails($event, alert)"
+          [data]="alert.source">
           <td width="15" class="icon-cell"></td>
           <td>
             <div appAlertSeverity [severity]="getScore(alert.source)">
               <a attr.data-qe-id="{{'score'}}"
               withContextMenu menuConfigId="score"
               [predefinedItems]="[{ label: 'Add to search bar', event: 'menuEventFilter'}]"
-              (menuEventFilter)="addFilter(threatScoreFieldName(), getScore(alert.source))">
+              (menuEventFilter)="addFilter(threatScoreFieldName(), getScore(alert.source))"
+              [data]="alert.source">
               {{ hasScore(alert.source) ? getScore(alert.source) : '-' }}
             </a>
             </div>
@@ -48,7 +50,8 @@
             <a attr.data-qe-id="{{'cell-' + columnIndex}}" title="{{getValue(alert, column, true)}}"  style="color:#689AA9"
               withContextMenu [menuConfigId]="column.name"
               [predefinedItems]="[{ label: 'Add to search bar', event: 'menuEventFilter'}]"
-              (menuEventFilter)="addFilter(column.name, getValue(alert, column, false))">
+              (menuEventFilter)="addFilter(column.name, getValue(alert, column, false))"
+              [data]="alert.source">
               {{ getValue(alert,column, true) | centerEllipses:20:cell }}
             </a>
           </td>
@@ -69,7 +72,8 @@
         <tr [ngClass]="{'selected' : selectedAlerts.indexOf(alert) != -1}"
           withContextMenu menuConfigId="metaAlertEntry" menuTitle="Alert entry: {{ alert.id }}"
           [predefinedItems]="[{ label: 'Show details', event: 'menuEventShowDetails'}]"
-          (menuEventShowDetails)="showDetails($event, alert)">
+          (menuEventShowDetails)="showDetails($event, alert)"
+          [data]="alert.source">
           <td width="15" class="icon-cell dropdown-cell" (click)="toggleExpandCollapse($event, alert)">
             <i class="fa" aria-hidden="true"
                [ngClass]="{'fa-caret-right': metaAlertsDisplayState[alert.id] === metronAlertDisplayState.COLLAPSE, 'fa-caret-down': metaAlertsDisplayState[alert.id] === metronAlertDisplayState.EXPAND}">
@@ -79,7 +83,10 @@
             <div appAlertSeverity [severity]="getScore(alert.source)">
               <a withContextMenu menuConfigId="metaAlert-{{ alert.id }}"
               [predefinedItems]="[{ label: 'Add to search bar', event: 'menuEventFilter'}]"
-              (menuEventFilter)="addFilter(threatScoreFieldName(), getScore(alert.source))"> {{ hasScore(alert.source) ? getScore(alert.source) : '-' }} </a>
+              (menuEventFilter)="addFilter(threatScoreFieldName(), getScore(alert.source))"
+              [data]="alert.source">
+                {{ hasScore(alert.source) ? getScore(alert.source) : '-' }}
+              </a>
             </div>
           </td>
           <td [attr.colspan]="alertsColumnsToDisplay.length - 1">
@@ -87,6 +94,7 @@
               withContextMenu menuConfigId="metaAlert-{{ alert.id }}"
               [predefinedItems]="[{ label: 'Add to search bar', event: 'menuEventFilter'}]"
               (menuEventFilter)="addFilter('guid', alert.source['guid'])">
+              [data]="alert.source">
                 {{ alert.source['name'] ? alert.source['name'] : alert.id | centerEllipses:20:cell }}
             </a>
             <span> ({{ alert.source.metron_alert.length }})</span>
@@ -95,7 +103,8 @@
             <a *ngIf="isStatusFieldPresent" style="color:#689AA9"
               withContextMenu menuConfigId="metaAlert-{{ alert.id }}"
               [predefinedItems]="[{ label: 'Add to search bar', event: 'menuEventFilter'}]"
-              (menuEventFilter)="addFilter('alert_status', alert.source['alert_status'])">
+              (menuEventFilter)="addFilter('alert_status', alert.source['alert_status'])"
+              [data]="alert.source">
               {{ alert.source['alert_status'] ?alert.source['alert_status'] : 'New' | centerEllipses:20:cell }}
             </a>
           </td>
@@ -115,13 +124,15 @@
           [ngClass]="{'selected' : selectedAlerts.indexOf(metaAlerts) != -1 , 'd-none': metaAlertsDisplayState[alert.id] === metronAlertDisplayState.COLLAPSE}"
           withContextMenu menuConfigId="metaAlertEntry" menuTitle="Alert entry: {{ alert.id }}"
           [predefinedItems]="[{ label: 'Show details', event: 'menuEventShowDetails'}]"
-          (menuEventShowDetails)="showMetaAlertDetails($event, metaAlerts)">
+          (menuEventShowDetails)="showMetaAlertDetails($event, metaAlerts)"
+          [data]="metaAlerts">
           <td width="15" class="icon-cell" class="dropdown-cell"></td>
           <td style="padding-left: 15px">
             <div appAlertSeverity [severity]="getScore(metaAlerts)">
               <a withContextMenu [menuConfigId]="threatScoreFieldName()"
               [predefinedItems]="[{ label: 'Add to search bar', event: 'menuEventFilter'}]"
-              (menuEventFilter)="addFilter(threatScoreFieldName(), getScore(alert.source))">
+              (menuEventFilter)="addFilter(threatScoreFieldName(), getScore(alert.source))"
+              [data]="metaAlerts">
                 {{ hasScore(metaAlerts) ? getScore(metaAlerts) : '-' }}
               </a>
             </div>
@@ -130,13 +141,15 @@
             <a *ngIf="column.name !== 'alert_status'" title="{{ getValueFromSource(metaAlerts, column, true) }}" style="color:#689AA9"
               withContextMenu [menuConfigId]="column.name"
               [predefinedItems]="[{ label: 'Add to search bar', event: 'menuEventFilter'}]"
-              (menuEventFilter)="addFilter(column.name, getValueFromSource(metaAlerts, column, false))">
+              (menuEventFilter)="addFilter(column.name, getValueFromSource(metaAlerts, column, false))"
+              [data]="metaAlerts">
               {{ getValueFromSource(metaAlerts, column, true) | centerEllipses:20:cell }}
             </a>
             <a *ngIf="column.name === 'alert_status'" title="{{getValue(alert, column, true)}}" style="color:#689AA9"
               withContextMenu [menuConfigId]="column.name"
               [predefinedItems]="[{ label: 'Add to search bar', event: 'menuEventFilter'}]"
-              (menuEventFilter)="addFilter(column.name, getValue(alert, column, false))">
+              (menuEventFilter)="addFilter(column.name, getValue(alert, column, false))"
+              [data]="metaAlerts">
               {{ getValue(alert,column, true) | centerEllipses:20:cell }}
             </a>
           </td>
