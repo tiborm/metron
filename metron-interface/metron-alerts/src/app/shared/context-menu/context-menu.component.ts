@@ -129,7 +129,14 @@ export class ContextMenuComponent implements OnInit, AfterContentInit, OnDestroy
 
   dynamicItemClicked($event: MouseEvent, url: string) {
     this.close();
-    window.open(url);
+    window.open(this.parseUrlPattern(url, this.data));
+  }
+
+  private parseUrlPattern(url = '', data = {}, delimeter: RegExp = /{|}/): string {
+    return url.replace('{}', `{${this.menuConfigId}}`)
+      .split(delimeter).map((urlSegment) => {
+        return data[urlSegment] || urlSegment;
+    }).join('');
   }
 
   ngOnDestroy() {

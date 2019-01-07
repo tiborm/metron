@@ -11,7 +11,13 @@ export class ContextMenuService {
       alertEntry: [
         {
           label: 'Internal ticketing system',
-          urlPattern: '/{}',
+          urlPattern: '/{id}',
+        }
+      ],
+      metaAlertEntry: [
+        {
+          label: 'MetaAlert specific item',
+          urlPattern: '/{id}',
         }
       ],
       id: [
@@ -23,7 +29,7 @@ export class ContextMenuService {
       ip_src_addr: [
         {
           label: 'IP Investigation Notebook',
-          urlPattern: 'http://zepellin.example.com:9000/notebook/BLAHBAH?ip={}',
+          urlPattern: 'http://zepellin.example.com:9000/notebook/BLAHBAH?ip={ip_src_addr}',
         },
         {
           label: 'IP Conversation Investigation',
@@ -33,7 +39,7 @@ export class ContextMenuService {
       ip_dst_addr: [
         {
           label: 'IP Investigation Notebook',
-          urlPattern: 'http://zepellin.example.com:9000/notebook/BLAHBAH?ip={}',
+          urlPattern: 'http://zepellin.example.com:9000/notebook/BLAHBAH?ip={ip_dst_addr}',
         },
         {
           label: 'IP Conversation Investigation',
