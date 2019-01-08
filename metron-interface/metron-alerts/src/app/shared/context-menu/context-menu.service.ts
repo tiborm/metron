@@ -1,59 +1,28 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import { Observable, of } from 'rxjs';
+import { Observable, of, BehaviorSubject } from 'rxjs';
+import { first, catchError, map } from 'rxjs/operators';
+import { HttpUtil } from 'app/utils/httpUtil';
 
 @Injectable()
 export class ContextMenuService {
 
+  private readonly CONFIG_SVC_URL = '/assets/context-menu.conf.json';
+
+  public cachedConfig$: BehaviorSubject<{}> = new BehaviorSubject({});
+
   getConfig(): Observable<{}> {
-    // TODO the following JSON is the actual API response design
-    return of({
-      alertEntry: [
-        {
-          label: 'Internal ticketing system',
-          urlPattern: '/{id}',
-        }
-      ],
-      metaAlertEntry: [
-        {
-          label: 'MetaAlert specific item',
-          urlPattern: '/{id}',
-        }
-      ],
-      id: [
-        {
-          label: 'Dynamic menu item 01',
-          urlPattern: '/{}',
-        }
-      ],
-      ip_src_addr: [
-        {
-          label: 'IP Investigation Notebook',
-          urlPattern: 'http://zepellin.example.com:9000/notebook/BLAHBAH?ip={ip_src_addr}',
-        },
-        {
-          label: 'IP Conversation Investigation',
-          urlPattern: 'http://zepellin.example.com:9000/notebook/BLAHBAH?ip_src_addr={ip_src_addr}&ip_dst_addr={ip_dst_addr}',
-        },
-      ],
-      ip_dst_addr: [
-        {
-          label: 'IP Investigation Notebook',
-          urlPattern: 'http://zepellin.example.com:9000/notebook/BLAHBAH?ip={ip_dst_addr}',
-        },
-        {
-          label: 'IP Conversation Investigation',
-          urlPattern: 'http://zepellin.example.com:9000/notebook/BLAHBAH?ip_src_addr={ip_src_addr}&ip_dst_addr={ip_dst_addr}',
-        },
-      ],
-      host: [
-        {
-          label: 'Whois Reputation Service',
-          urlPattern: 'https://www.whois.com/whois/{}',
-        }
-      ],
-    })
+    return this.cachedConfig$;
   }
 
-  constructor(private http: HttpClient) { }
+  constructor(private http: HttpClient) {
+    this.http.get(this.CONFIG_SVC_URL)
+      .pipe(
+        map(HttpUtil.extractData),
+        catchError(HttpUtil.handleError)
+      )
+      .subscribe((result) => {
+        this.cachedConfig$.next(result);
+    });
+  }
 }
