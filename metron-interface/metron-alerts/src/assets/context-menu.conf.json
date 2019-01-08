@@ -2,19 +2,19 @@
   "alertEntry": [
     {
       "label": "Internal ticketing system",
-      "urlPattern": "/tickets/{id}"
+      "urlPattern": "http://mytickets.org/tickets/{id}"
     }
   ],
   "metaAlertEntry": [
     {
       "label": "MetaAlert specific item",
-      "urlPattern": "/tickets/{id}"
+      "urlPattern": "http://mytickets.org/tickets/{id}"
     }
   ],
   "id": [
     {
       "label": "Dynamic menu item 01",
-      "urlPattern": "/tickets/{}"
+      "urlPattern": "http://mytickets.org/tickets/{}"
     }
   ],
   "ip_src_addr": [
