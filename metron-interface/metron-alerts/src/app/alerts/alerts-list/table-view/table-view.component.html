@@ -33,7 +33,7 @@
           withContextMenu menuConfigId="alertEntry" menuTitle="Alert entry: {{ alert.id }}"
           [predefinedItems]="[{ label: 'Show details', event: 'menuEventShowDetails'}]"
           (menuEventShowDetails)="showDetails($event, alert)"
-          [data]="alert.source">
+          [data]="merge(alert.source, { id: alert.id })">
           <td width="15" class="icon-cell"></td>
           <td>
             <div appAlertSeverity [severity]="getScore(alert.source)">
@@ -73,7 +73,7 @@
           withContextMenu menuConfigId="metaAlertEntry" menuTitle="Alert entry: {{ alert.id }}"
           [predefinedItems]="[{ label: 'Show details', event: 'menuEventShowDetails'}]"
           (menuEventShowDetails)="showDetails($event, alert)"
-          [data]="alert.source">
+          [data]="merge(alert.source, { id: alert.id })">
           <td width="15" class="icon-cell dropdown-cell" (click)="toggleExpandCollapse($event, alert)">
             <i class="fa" aria-hidden="true"
                [ngClass]="{'fa-caret-right': metaAlertsDisplayState[alert.id] === metronAlertDisplayState.COLLAPSE, 'fa-caret-down': metaAlertsDisplayState[alert.id] === metronAlertDisplayState.EXPAND}">
@@ -125,7 +125,7 @@
           withContextMenu menuConfigId="metaAlertEntry" menuTitle="Alert entry: {{ alert.id }}"
           [predefinedItems]="[{ label: 'Show details', event: 'menuEventShowDetails'}]"
           (menuEventShowDetails)="showMetaAlertDetails($event, metaAlerts)"
-          [data]="metaAlerts">
+          [data]="merge(metaAlerts, { id: alert.id })">
           <td width="15" class="icon-cell" class="dropdown-cell"></td>
           <td style="padding-left: 15px">
             <div appAlertSeverity [severity]="getScore(metaAlerts)">
