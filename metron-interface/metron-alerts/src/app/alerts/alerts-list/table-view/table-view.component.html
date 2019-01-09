@@ -93,7 +93,7 @@
             <a [attr.title]="alert.source['guid']" style="color:#689AA9"
               withContextMenu menuConfigId="metaAlert-{{ alert.id }}"
               [predefinedItems]="[{ label: 'Add to search bar', event: 'menuEventFilter'}]"
-              (menuEventFilter)="addFilter('guid', alert.source['guid'])">
+              (menuEventFilter)="addFilter('guid', alert.source['guid'])"
               [data]="alert.source">
                 {{ alert.source['name'] ? alert.source['name'] : alert.id | centerEllipses:20:cell }}
             </a>
