@@ -13,12 +13,12 @@
 	OR CONDITIONS OF ANY KIND, either express or implied. See the License for
   the specific language governing permissions and limitations under the License.
   -->
+<metron-config-sidebar-nav *ngIf="loggedIn" (open)="toggleMainWidth($event)"></metron-config-sidebar-nav>
 <div class="container-fluid header" *ngIf="loggedIn">
   <metron-config-navbar></metron-config-navbar>
 </div>
-<div [ngClass]="{'container-fluid body-fill px-0': loggedIn, 'fill': !loggedIn}">
+<div [ngClass]="{'container-fluid body-fill px-0 body': loggedIn, 'fill': !loggedIn, 'open': menuOpen}">
   <div [ngClass]="{'card-group ': loggedIn}" class="fill">
-    <div  *ngIf="loggedIn" class="fill navigation" ><metron-config-vertical-navbar></metron-config-vertical-navbar></div>
     <div [ngClass]="{'fill content px-0 ' : loggedIn , 'fill': !loggedIn}"><router-outlet></router-outlet></div>
   </div>
 </div>

@@ -33,3 +33,13 @@
   border: none;
   flex: 1;
 }
+
+.body {
+  margin-left: 3.57142857rem;
+  transition: margin-left .35s ease;
+}
+
+.open {
+  margin-left: 14.28571429rem;
+}
+

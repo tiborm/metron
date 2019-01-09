@@ -1,0 +1,37 @@
+<nav id="navbarToggle" class="navbar navbar-primary navbar-expand-sm collapse show">
+  <a class="navbar-brand collapsed" href="#top" data-toggle="collapse" data-target="#navbarBrandToggle" aria-controls="navbarBrandToggle"
+    aria-expanded="true" aria-label="Toggle product navigation">
+    <img src="assets/images/logo.png" alt="Logo" width=110>
+  </a>
+  <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarToggle" aria-controls="navbarToggle"
+    aria-expanded="true" aria-label="Toggle navigation" (click)="toggleMainWidth()">
+    <span class="navbar-toggler-icon fa fa-angle-double-left"></span>
+  </button>
+  <div class="collapse navbar-collapse" id="my-navbar">
+    <div class="navbar-nav" >
+      <div class="nav-item dropdown">
+        <a class="nav-link" data-toggle="collapse" data-target="#navbarItemsToggle" aria-controls="navbarItemsToggle"
+        aria-expanded="false" aria-label="Toggle navigation items">
+          <span class="fa fa-book"></span>
+          Manage
+        </a>
+        <div class="collapse" id="navbarItemsToggle">
+          <ul class="navbar-nav flex-column">
+            <li class="nav-item">
+              <a [routerLink]="['/sensors']"  class="nav-link py-0 d-flex justify-content-center" routerLinkActive="active" href="#">Sensors</a>
+            </li>
+            <li class="nav-item">
+              <a [routerLink]="['/general-settings']"  class="nav-link py-0 d-flex justify-content-center" routerLinkActive="active" href="#">General Settings</a>
+            </li>
+          </ul>
+        </div>
+      </div>
+    </div>
+    <div class="navbar-nav">
+      <a class="nav-item nav-link" href="http://node1:4201">
+        <span class="fa fa-exclamation-triangle"></span>
+        Alerts
+      </a>
+    </div>
+  </div>
+</nav>

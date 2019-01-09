@@ -46,6 +46,7 @@ import {SensorIndexingConfigService} from './service/sensor-indexing-config.serv
 import {HdfsService} from './service/hdfs.service';
 import { DefaultHeadersInterceptor } from './http-interceptors/default-headers.interceptor';
 import {AppConfigService} from './service/app-config.service';
+import { SidebarNavComponent } from './sidebar-nav/sidebar-nav.component';
 
 export function initConfig(appConfigService: AppConfigService) {
   return () => appConfigService.loadAppConfig();
@@ -54,7 +55,7 @@ export function initConfig(appConfigService: AppConfigService) {
 @NgModule({
   imports: [ BrowserModule, FormsModule, ReactiveFormsModule, HttpClientModule, SensorParserListModule,
     SensorParserConfigModule, SensorParserConfigReadonlyModule, GeneralSettingsModule, MetronConfigRoutingModule ],
-  declarations: [ AppComponent, NavbarComponent, VerticalNavbarComponent ],
+  declarations: [ AppComponent, NavbarComponent, VerticalNavbarComponent, SidebarNavComponent ],
   providers: [  AppConfigService, AuthenticationService, AuthGuard, LoginGuard, SensorParserConfigService,
     SensorParserConfigHistoryService, SensorEnrichmentConfigService, SensorIndexingConfigService,
     StormService, KafkaService, GrokValidationService, StellarService, HdfsService,

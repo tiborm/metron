@@ -28,11 +28,16 @@ import {AuthenticationService} from './service/authentication.service';
 export class AppComponent {
 
   loggedIn = false;
+  menuOpen = true;
 
   constructor(private authService: AuthenticationService) {
     this.authService.onLoginEvent.subscribe(result => {
       this.loggedIn = result;
     });
+  }
+
+  toggleMainWidth(open) {
+    this.menuOpen = open;
   }
 
 }
