@@ -21,6 +21,7 @@
               "src/favicon.ico"
             ],
             "styles": [
+              "node_modules/bootstrap/dist/css/bootstrap.css",
               "node_modules/font-awesome/css/font-awesome.css",
               "node_modules/dragula/dist/dragula.css",
               "src/vendor.scss",
@@ -28,7 +29,8 @@
             ],
             "scripts": [
               "node_modules/jquery/dist/jquery.js",
-              "node_modules/tether/dist/js/tether.js",
+              "node_modules/popper.js/dist/umd/popper.min.js",
+              "node_modules/bootstrap/dist/js/bootstrap.js",
               "node_modules/ace-builds/src-noconflict/ace.js"
             ]
           },
