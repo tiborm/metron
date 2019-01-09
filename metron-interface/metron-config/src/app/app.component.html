@@ -17,7 +17,7 @@
 <div class="container-fluid header" *ngIf="loggedIn">
   <metron-config-navbar></metron-config-navbar>
 </div>
-<div [ngClass]="{'container-fluid body-fill px-0 body': loggedIn, 'fill': !loggedIn, 'open': menuOpen}">
+<div [ngClass]="{'body-fill px-0 body': loggedIn, 'fill': !loggedIn, 'open': menuOpen}">
   <div [ngClass]="{'card-group ': loggedIn}" class="fill">
     <div [ngClass]="{'fill content px-0 ' : loggedIn , 'fill': !loggedIn}"><router-outlet></router-outlet></div>
   </div>
