@@ -1552,3 +1552,9 @@ $print-body-min-width:              map-get($grid-breakpoints, "lg") !default;
   }
 }
 
+/* css hacks for the TKO demo */
+.navbar-brand {
+  img {
+    padding: 12px 0 0 2px;
+  }
+}
