@@ -1,0 +1,40 @@
+$menu-z-index: 98888;
+
+.transparent {
+  opacity: 0;
+}
+
+.viewport-sized {
+  display: none;
+  position: fixed;
+  z-index: $menu-z-index;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: aqua;
+}
+
+.dropdown-menu {
+  z-index: $menu-z-index + 1;
+  font-size: .9em;
+  padding: 0 0 .5rem 0;
+
+  .card-header {
+    padding: .3rem .6rem .2rem .6rem;
+    margin-bottom: .5rem;
+    background-color: #92929a;
+    color: black;
+    border-bottom: 1px solid rgba(0, 0, 0, 0.125);
+    font-size: .8rem;
+  }
+
+  .dropdown-item {
+    cursor: pointer;
+  }
+
+  .dropdown-divider {
+    background-color: #555555;
+  }
+}
+
