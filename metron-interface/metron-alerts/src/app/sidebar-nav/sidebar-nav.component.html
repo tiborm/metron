@@ -1,4 +1,4 @@
-<nav id="navbarToggle" class="navbar navbar-primary navbar-expand-sm collapse show">
+<nav id="navbarToggle" class="navbar navbar-primary navbar-expand-sm ">
   <a class="navbar-brand collapsed" href="#top" data-toggle="collapse" data-target="#navbarBrandToggle" aria-controls="navbarBrandToggle"
     aria-expanded="true" aria-label="Toggle product navigation">
     <img src="assets/images/logo.png" alt="Logo" width=110>
@@ -9,11 +9,11 @@
   </button>
   <div class="collapse navbar-collapse" id="my-navbar">
     <div class="navbar-nav">
-      <a class="nav-item nav-link" href="http://node1:4201/alert-list">
+      <a [routerLink]="['/alerts-list']" class="nav-item nav-link" href="#">
         <span class="fa fa-exclamation-triangle"></span>
         Alerts
       </a>
-      <a class="nav-item nav-link" href="http://node1:4201/pcap">
+      <a [routerLink]="['/pcap']" class="nav-item nav-link" href="#">
         <span class="fa fa-cubes"></span>
         PCAP
       </a>
@@ -26,10 +26,10 @@
         <div class="collapse" id="navbarItemsToggle">
           <ul class="navbar-nav flex-column">
             <li class="nav-item">
-              <a [routerLink]="['/sensors']"  class="nav-link py-0 d-flex justify-content-center" routerLinkActive="active" href="#">Sensors</a>
+              <a class="nav-link py-0 d-flex justify-content-center" href="http://localhost:4200/sensors">Sensors</a>
             </li>
             <li class="nav-item">
-              <a [routerLink]="['/general-settings']"  class="nav-link py-0 d-flex justify-content-center" routerLinkActive="active" href="#">General Settings</a>
+              <a class="nav-link py-0 d-flex justify-content-center" href="http://localhost:4200/general-settings">General Settings</a>
             </li>
           </ul>
         </div>
