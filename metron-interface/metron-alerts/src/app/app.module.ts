@@ -51,6 +51,8 @@ import { MetronDialogComponent } from './shared/metron-dialog/metron-dialog.comp
 import {PcapModule} from './pcap/pcap.module';
 import { AppConfigService } from './service/app-config.service';
 
+import { SidebarNavComponent } from './sidebar-nav/sidebar-nav.component';
+
 export function initConfig(appConfigService: AppConfigService) {
   return () => appConfigService.loadAppConfig();
 }
@@ -58,7 +60,8 @@ export function initConfig(appConfigService: AppConfigService) {
 @NgModule({
   declarations: [
     AppComponent,
-    MetronDialogComponent
+    MetronDialogComponent,
+    SidebarNavComponent
   ],
   imports: [
     BrowserModule,

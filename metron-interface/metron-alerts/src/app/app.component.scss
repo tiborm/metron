@@ -17,32 +17,13 @@
  */
 @import "../variables";
 
-.navbar
-{
-  flex-direction: row;
-  background: $nav-bar-bg;
-  padding: 0rem 1rem;
-  height: 50px;
-  line-height: 50px;
-  max-height: 50px;
+.body {
+  margin-left: 3.57142857rem;
+  transition: margin-left .35s ease;
 }
 
-.nav-link
-{
-  padding-bottom: 0;
-  padding-top: 0;
-  color: inherit;
-}
-
-.nav-item.active
-{
-  border-bottom: 3px solid #32abe2;
-  margin-bottom: 5px;
-}
-
-.nav-link.active
-{
-  color: #ffffff;
+.open {
+  margin-left: 14.28571429rem;
 }
 
 .logout {

@@ -29,6 +29,7 @@ declare var $;
 export class AppComponent implements OnInit {
   loggedIn = false;
   noTransition = false;
+  menuOpen = true;
 
   constructor(private authService: AuthenticationService) {
     this.authService.onLoginEvent.subscribe(result => {
@@ -50,5 +51,9 @@ export class AppComponent implements OnInit {
     $(document).on('click', function () {
       $('.tooltip').tooltip('hide');
     });
+  }
+
+  toggleMainWidth(open) {
+    this.menuOpen = open;
   }
 }
