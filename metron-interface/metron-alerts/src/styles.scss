@@ -337,3 +337,11 @@ $background_color_3: #2196F3;
   animation: none !important;
 }
 
+body {
+  background-color: #232323 !important;
+  border-top: solid 1px transparent;
+  color: #999 !important;
+}
+
+.table td { border-top: 1px solid #404040; }
+.table thead th { border-bottom: 2px solid #404040; }
