@@ -17,7 +17,7 @@
  */
 import { Component, OnInit, Input, Output, EventEmitter } from '@angular/core';
 
-import 'bootstrap';
+// import 'bootstrap';
 import { CollapseComponentData } from './collapse-component-data';
 
 @Component({
