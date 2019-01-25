@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import { Observable, of, BehaviorSubject } from 'rxjs';
-import { first, catchError, map } from 'rxjs/operators';
+import { Observable, BehaviorSubject } from 'rxjs';
+import { catchError, map } from 'rxjs/operators';
 import { HttpUtil } from 'app/utils/httpUtil';
 
 @Injectable()
@@ -20,9 +20,8 @@ export class ContextMenuService {
       .pipe(
         map(HttpUtil.extractData),
         catchError(HttpUtil.handleError)
-      )
-      .subscribe((result) => {
+      ).subscribe((result) => {
         this.cachedConfig$.next(result);
-    });
+      });
   }
 }

@@ -1,6 +1,7 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
-
+import { HttpClientTestingModule } from '@angular/common/http/testing';
 import { ContextMenuComponent } from './context-menu.component';
+import { ContextMenuService } from './context-menu.service';
 
 describe('ContextMenuComponent', () => {
   let component: ContextMenuComponent;
@@ -8,7 +9,9 @@ describe('ContextMenuComponent', () => {
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      declarations: [ ContextMenuComponent ]
+      imports: [ HttpClientTestingModule ],
+      declarations: [ ContextMenuComponent ],
+      providers: [ ContextMenuService ]
     })
     .compileComponents();
   }));
