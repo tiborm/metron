@@ -5,7 +5,7 @@ import {
 } from '@angular/common/http/testing';
 import { ContextMenuService } from './context-menu.service';
 
-fdescribe('ContextMenuService', () => {
+describe('ContextMenuService', () => {
 
   let contextMenuSvc: ContextMenuService;
   let mockBackend: HttpTestingController;
