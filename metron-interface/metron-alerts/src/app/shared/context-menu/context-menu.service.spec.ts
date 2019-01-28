@@ -5,7 +5,7 @@ import {
 } from '@angular/common/http/testing';
 import { ContextMenuService } from './context-menu.service';
 
-describe('ContextMenuService', () => {
+fdescribe('ContextMenuService', () => {
 
   let contextMenuSvc: ContextMenuService;
   let mockBackend: HttpTestingController;
@@ -26,7 +26,28 @@ describe('ContextMenuService', () => {
     expect(contextMenuSvc).toBeTruthy();
   });
 
-  it('should invoke context menu endpoint', () => {
+  it('should invoke context menu endpoint only once', () => {
+    const req = mockBackend.expectOne(ContextMenuService.CONFIG_SVC_URL);
+    expect(req.request.method).toEqual('GET');
+  });
 
+  it('getConfig() should return with the result of config svc', () => {
+    const req = mockBackend.expectOne(ContextMenuService.CONFIG_SVC_URL);
+    req.flush({ menuKey: [] });
+
+    contextMenuSvc.getConfig().subscribe((result) => {
+      expect(result).toEqual({ menuKey: [] });
+    });
+  })
+
+  it('should cache the first response', () => {
+    const req = mockBackend.expectOne(ContextMenuService.CONFIG_SVC_URL);
+    req.flush({ menuKey: [] });
+
+    contextMenuSvc.getConfig().subscribe((first) => {
+      contextMenuSvc.getConfig().subscribe((second) => {
+        expect(first).toBe(second);
+      });
+    });
   })
 });
