@@ -1,8 +1,8 @@
 <ng-content></ng-content>
-<div #dropDown class="dropdown-menu">
+<div #contextMenuDropDown class="dropdown-menu" data-qe-id="cm-dropdown">
   <div class="card-header">{{ menuTitle || menuConfigId || 'Menu' }}</div>
   <a class="dropdown-item" *ngFor="let predefinedItem of predefinedItems" (click)="dispatchMenuEvent(predefinedItem.event)">{{ predefinedItem.label }}</a>
   <div *ngIf="dynamicMenuItems.length" class="dropdown-divider"></div>
   <a *ngFor="let dynamicItem of dynamicMenuItems" class="dropdown-item" (click)="dynamicItemClicked($event, dynamicItem.url)" >{{ dynamicItem.label }}</a>
 </div>
-<div #clickOutsideCanvas class="transparent viewport-sized"></div>
+<div #clickOutsideCanvas class="transparent viewport-sized" data-qe-id="cm-outside"></div>

@@ -44,7 +44,7 @@ export class DynamicMenuItem {
 })
 export class ContextMenuComponent implements OnInit, AfterContentInit, OnDestroy {
 
-  @ViewChild('dropDown') dropDown: ElementRef;
+  @ViewChild('contextMenuDropDown') dropDown: ElementRef;
   @ViewChild('clickOutsideCanvas') outside: ElementRef;
 
   @Input() predefinedItems: { label: string, event: string }[];
@@ -88,7 +88,7 @@ export class ContextMenuComponent implements OnInit, AfterContentInit, OnDestroy
       .subscribe(this.open.bind(this));
 
     fromEvent(this.outside.nativeElement, 'click')
-      // .pipe(takeUntil(this.destroyed$)) FIXME: why is this kills the subscription but not with the origin.click
+      .pipe(takeUntil(this.destroyed$))
       .subscribe(this.close.bind(this));
   }
 
@@ -116,8 +116,12 @@ export class ContextMenuComponent implements OnInit, AfterContentInit, OnDestroy
     if (this.popper) {
       this.popper.destroy();
     }
-    document.body.removeChild(this.dropDown.nativeElement);
-    document.body.removeChild(this.outside.nativeElement);
+
+    try {
+      document.body.removeChild(this.dropDown.nativeElement);
+      document.body.removeChild(this.outside.nativeElement);
+    } catch {}
+
     this.renderer.setStyle(this.dropDown.nativeElement, 'display', 'none');
     this.renderer.setStyle(this.outside.nativeElement, 'display', 'none');
   }
@@ -142,6 +146,8 @@ export class ContextMenuComponent implements OnInit, AfterContentInit, OnDestroy
   ngOnDestroy() {
     this.destroyed$.next(true);
     this.destroyed$.complete();
+
+    this.close();
   }
 
 }
