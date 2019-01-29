@@ -2,7 +2,6 @@
   "viewportWidth": 1435,
   "viewportHeight": 850,
   "video": false,
-  "supportFile": false,
   "pluginsFile": false,
   "baseUrl": "http://localhost:4200",
   "requestTimeout": 60000,
