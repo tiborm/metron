@@ -21,7 +21,9 @@
     <label class="label"> PASSWORD </label>
     <input type="password" name="password" class="form-control" [(ngModel)]="password" required>
     <div class="my-3" style="color:#a94442">
-      {{loginFailure}}
+      <span data-qe-id="error-message">
+        {{loginFailure}}
+      </span>
       <button class="btn btn-primary float-right" type="submit" (click)="login()">LOG IN</button>
     </div>
   </form>
