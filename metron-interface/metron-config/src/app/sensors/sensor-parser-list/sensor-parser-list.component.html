@@ -52,7 +52,12 @@
     </tr>
     </thead>
     <tbody>
-    <tr *ngFor="let sensor of sensors;" (click)="onSensorRowSelect(sensor, $event)" [ngClass]="{'active': (selectedSensors.indexOf(sensor) != -1 || selectedSensor == sensor)}">
+    <tr
+      *ngFor="let sensor of sensors;"
+      (click)="onSensorRowSelect(sensor, $event)"
+      [ngClass]="{'active': (selectedSensors.indexOf(sensor) != -1 || selectedSensor == sensor)}"
+      [attr.data-sensor-name]="sensor.sensorName"
+    >
       <td>{{ sensor.sensorName }}</td>
       <td>{{ getParserType(sensor.config) }}</td>
       <td [ngClass]="{'warning-text': (sensor.status == 'Stopped' || sensor.status == 'Disabled')}">{{ sensor.status }}</td>

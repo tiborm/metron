@@ -19,7 +19,7 @@ Cypress.Commands.add('login', () => {
   cy
     .server()
     .visit('login')
-    .route('GET', '/api/v1/sensor/parser/config', 'fixture:config.json')
+    .route('GET', '/api/v1/sensor/parser/config', 'fixture:config.json').as('config')
     .route({
       method: 'GET',
       url: '/api/v1/user',
