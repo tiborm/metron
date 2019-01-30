@@ -1,8 +1,17 @@
-import { Component, AfterContentInit, OnDestroy, ViewChild, ElementRef, Renderer2, Input, OnInit } from '@angular/core';
+import {
+  Component,
+  AfterContentInit,
+  OnDestroy,
+  ViewChild,
+  ElementRef,
+  Renderer2,
+  Input,
+  OnInit
+} from '@angular/core';
 import { ContextMenuService } from './context-menu.service';
-import { fromEvent, Subject, Observable } from 'rxjs';
+import { fromEvent, Subject } from 'rxjs';
 import Popper from 'popper.js';
-import { takeUntil, map } from 'rxjs/operators';
+import { takeUntil, map, take } from 'rxjs/operators';
 
 // TODO: extract this class
 export class DynamicMenuItem {
@@ -54,6 +63,8 @@ export class ContextMenuComponent implements OnInit, AfterContentInit, OnDestroy
   @Input() data: any;
   dynamicMenuItems: DynamicMenuItem[] = [];
 
+  isOpen = false;
+
   private destroyed$: Subject<boolean> = new Subject<boolean>();
 
   private popper: Popper;
@@ -86,25 +97,35 @@ export class ContextMenuComponent implements OnInit, AfterContentInit, OnDestroy
     fromEvent(this.host.nativeElement, 'click')
       .pipe(takeUntil(this.destroyed$))
       .subscribe(this.open.bind(this));
-
-    fromEvent(this.outside.nativeElement, 'click')
-      .pipe(takeUntil(this.destroyed$))
-      .subscribe(this.close.bind(this));
   }
 
   // TODO: make open/close to a toggleMenu Fn
   private open($event: MouseEvent) {
+    $event.stopPropagation();
     const origin = this.getContextMenuOrigin($event);
-    // TODO would be better to do this whith *ngIf (heavn't found a way to attach poper to it yet)
-    document.body.appendChild(this.dropDown.nativeElement); // somehow disappear after 2 sec without this
-    document.body.appendChild(this.outside.nativeElement); // somehow disappear after 2 sec without this
-    this.renderer.setStyle(this.dropDown.nativeElement, 'display', 'block');
-    this.renderer.setStyle(this.outside.nativeElement, 'display', 'block');
-    this.popper = new Popper(origin, this.dropDown.nativeElement, { placement: 'bottom-start' });
+    this.isOpen = true;
+
+    let mutationObserver = new MutationObserver((mutations) => {
+      if (document.body.contains(this.dropDown.nativeElement)) {
+        mutationObserver.disconnect();
+        mutationObserver = null;
+
+        this.popper = new Popper(origin, this.dropDown.nativeElement, { placement: 'bottom-start' });
+
+        fromEvent(this.outside.nativeElement, 'click')
+          .pipe(take(1))
+          .subscribe(this.close.bind(this));
+      }
+    });
+    mutationObserver.observe(document.body, {
+      attributes: false,
+      childList: true,
+      characterData: false,
+      subtree: true}
+    );
   }
 
   private getContextMenuOrigin($event: MouseEvent): HTMLElement {
-    $event.stopPropagation();
     if (($event.currentTarget as HTMLElement).contains($event.target as Node)) {
       return $event.target as HTMLElement;
     } else {
@@ -112,27 +133,25 @@ export class ContextMenuComponent implements OnInit, AfterContentInit, OnDestroy
     }
   }
 
-  private close() {
+  private close($event?: MouseEvent) {
+    if ($event) {
+      $event.stopPropagation();
+    }
+
     if (this.popper) {
       this.popper.destroy();
     }
 
-    try {
-      document.body.removeChild(this.dropDown.nativeElement);
-      document.body.removeChild(this.outside.nativeElement);
-    } catch {}
-
-    this.renderer.setStyle(this.dropDown.nativeElement, 'display', 'none');
-    this.renderer.setStyle(this.outside.nativeElement, 'display', 'none');
+    this.isOpen = false;
   }
 
-  dispatchMenuEvent(event: string) {
-    this.close();
-    this.host.nativeElement.dispatchEvent(new CustomEvent(event));
+  onPredefinedItemClicked($event: MouseEvent, eventName: string) {
+    this.close($event);
+    this.host.nativeElement.dispatchEvent(new CustomEvent(eventName));
   }
 
-  dynamicItemClicked($event: MouseEvent, url: string) {
-    this.close();
+  onDynamicItemClicked($event: MouseEvent, url: string) {
+    this.close($event);
     window.open(this.parseUrlPattern(url, this.data));
   }
 
@@ -149,5 +168,4 @@ export class ContextMenuComponent implements OnInit, AfterContentInit, OnDestroy
 
     this.close();
   }
-
 }
