@@ -14,7 +14,7 @@ import { Component } from '@angular/core';
 })
 class HostComponent {}
 
-fdescribe('ContextMenuComponent', () => {
+describe('ContextMenuComponent', () => {
   let component: ContextMenuComponent;
   let fixture: ComponentFixture<HostComponent>;
 

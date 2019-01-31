@@ -12,39 +12,7 @@ import { ContextMenuService } from './context-menu.service';
 import { fromEvent, Subject } from 'rxjs';
 import Popper from 'popper.js';
 import { takeUntil, map } from 'rxjs/operators';
-
-// TODO: extract this class
-export class DynamicMenuItem {
-
-  label: string;
-  private urlPattern: string;
-
-  constructor(readonly config: { label: string, urlPattern: string }) {
-    if (this.isValid(config)) {
-      this.label = config.label;
-      this.urlPattern = config.urlPattern;
-    };
-  }
-
-  get url() {
-    return this.urlPattern
-  }
-
-  /**
-   * Validating server respons and logging error if something required missing.
-   *
-   * @param config {} Menu config object received from and endpoint.
-   */
-  private isValid(config: {}) {
-    return ['label', 'urlPattern'].every((requiredField) => {
-      if (config.hasOwnProperty(requiredField)) {
-        return true;
-      } else {
-        console.error(`[context-menu] Service returned with a incomplete config object. Missing field: ${requiredField}`);
-      }
-    })
-  }
-}
+import { DynamicMenuItem } from './dynamic-item.model';
 
 @Component({
   selector: '[withContextMenu]',
@@ -87,9 +55,12 @@ export class ContextMenuComponent implements OnInit, AfterContentInit, OnDestroy
     this.contextMenuSvc.getConfig()
       .pipe(map((allConfigs: {}) => allConfigs[this.menuConfigId]))
       .subscribe((config: { label: string, urlPattern: string }[]) => {
-        this.dynamicMenuItems = config ? config.map(
-          menuConfig => new DynamicMenuItem(menuConfig)
-        ) : []
+        this.dynamicMenuItems = config ? config.reduce((validConfigs, configItem) => {
+          if (DynamicMenuItem.isConfigValid(configItem)) {
+            validConfigs.push(new DynamicMenuItem(configItem));
+          }
+          return validConfigs;
+        }, []) : []
       });
   }
 
