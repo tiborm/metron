@@ -1,6 +1,6 @@
 import { DynamicMenuItem } from './dynamic-item.model';
 
-fdescribe('dynamic-item.model', () => {
+describe('dynamic-item.model', () => {
 
   it('should return error if url pattern is missing', () => {
     expect(DynamicMenuItem.isConfigValid({ label: 'test' })).toBeFalsy();
