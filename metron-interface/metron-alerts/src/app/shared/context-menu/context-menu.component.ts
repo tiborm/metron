@@ -60,7 +60,7 @@ export class ContextMenuComponent implements OnInit, AfterContentInit, OnDestroy
             validConfigs.push(new DynamicMenuItem(configItem));
           }
           return validConfigs;
-        }, []) : []
+        }, []) : [];
       });
   }
 

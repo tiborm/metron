@@ -1,5 +1,5 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
-import { HttpClientTestingModule } from '@angular/common/http/testing';
+import { HttpClientTestingModule, HttpTestingController } from '@angular/common/http/testing';
 import { ContextMenuComponent } from './context-menu.component';
 import { ContextMenuService } from './context-menu.service';
 import { Component } from '@angular/core';
@@ -7,29 +7,38 @@ import { Component } from '@angular/core';
 
 @Component({
   template: `
-    <div id="hostComp" withContextMenu>
+    <div id="hostComp" withContextMenu
+      menuConfigId="testMenuConfigId"
+      menuTitle="This is a test"
+      [predefinedItems]="[{ label: 'Show details', event: 'menuEventShowDetails'}]"
+      (menuEventShowDetails)="showDetails($event, alert)"
+      [data]="{ testData: 'testValue' }">
       Context Menu Test In Progress...
     </div>
   `
 })
-class HostComponent {}
+class TestComponent {}
 
-describe('ContextMenuComponent', () => {
+fdescribe('ContextMenuComponent', () => {
   let component: ContextMenuComponent;
-  let fixture: ComponentFixture<HostComponent>;
+  let fixture: ComponentFixture<TestComponent>;
 
-  beforeEach(async(() => {
+  let mockBackend: HttpTestingController;
+
+  beforeEach(() => {
     TestBed.configureTestingModule({
       imports: [ HttpClientTestingModule ],
-      declarations: [ ContextMenuComponent, HostComponent ],
+      declarations: [ ContextMenuComponent, TestComponent ],
       providers: [ ContextMenuService ]
     })
     .compileComponents();
-  }));
 
-  beforeEach(() => {
-    fixture = TestBed.createComponent(HostComponent);
-    component = TestBed.createComponent(ContextMenuComponent).componentInstance;
+    // FIXME: Why there is no error message config svc returns undefined? It's only occures in test conditions.
+    // mockBackend = TestBed.get(HttpTestingController);
+    // const req = mockBackend.expectOne(ContextMenuService.CONFIG_SVC_URL);
+    // req.flush({ menuKey: [] });
+
+    fixture = TestBed.createComponent(TestComponent);
     fixture.detectChanges();
   });
 
@@ -39,28 +48,25 @@ describe('ContextMenuComponent', () => {
 
   it('should create', () => {
     expect(fixture).toBeTruthy();
-    expect(component).toBeTruthy();
   });
 
   it('should show context menu on left click', () => {
     fixture.nativeElement.querySelector('#hostComp').click();
 
-    expect(document.body.querySelector('.dropdown-menu'));
+    fixture.detectChanges();
+    expect(document.body.querySelector('[data-qe-id="cm-dropdown"]')).toBeTruthy();
   });
 
-  it('sould close context menu if user clicks outside of it', (done) => {
-    fixture.nativeElement.querySelector('[data-qe-id="cm-dropdown"]').click();
-    expect(document.body.querySelector('.dropdown-menu')).toBeTruthy();
+  it('sould close context menu if user clicks outside of it', () => {
+    fixture.nativeElement.querySelector('#hostComp').click();
+    fixture.detectChanges();
+
+    expect(document.body.querySelector('[data-qe-id="cm-dropdown"]')).toBeTruthy();
 
     (document.body.querySelector('[data-qe-id="cm-outside"]') as HTMLElement).click();
+    fixture.detectChanges();
 
-    setTimeout(() => {
-      // FIXME this not works even with the time out
-      // click handler of line #55 not invoked
-      expect(document.body.querySelector('.dropdown-menu')).toBeFalsy();
-      done();
-    }, 300);
-
+    expect(document.body.querySelector('.dropdown-menu')).toBeFalsy();
   });
 
   it('sould contains predefined menu items', () => {
