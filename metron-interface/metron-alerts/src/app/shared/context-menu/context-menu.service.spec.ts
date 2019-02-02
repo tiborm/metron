@@ -1,4 +1,4 @@
-import { TestBed } from '@angular/core/testing';
+import { TestBed, async } from '@angular/core/testing';
 import {
   HttpClientTestingModule,
   HttpTestingController
@@ -12,7 +12,7 @@ describe('ContextMenuService', () => {
 
   beforeEach(() => {
     TestBed.configureTestingModule({
-      imports: [HttpClientTestingModule],
+      imports: [ HttpClientTestingModule ],
       providers: [
         ContextMenuService
       ]
@@ -27,27 +27,31 @@ describe('ContextMenuService', () => {
   });
 
   it('should invoke context menu endpoint only once', () => {
+    contextMenuSvc.getConfig().subscribe((result) => {
+      expect(req.request.method).toEqual('GET');
+    });
+
     const req = mockBackend.expectOne(ContextMenuService.CONFIG_SVC_URL);
-    expect(req.request.method).toEqual('GET');
+    req.flush({ menuKey: [] });
   });
 
   it('getConfig() should return with the result of config svc', () => {
-    const req = mockBackend.expectOne(ContextMenuService.CONFIG_SVC_URL);
-    req.flush({ menuKey: [] });
-
     contextMenuSvc.getConfig().subscribe((result) => {
       expect(result).toEqual({ menuKey: [] });
     });
+
+    const req = mockBackend.expectOne(ContextMenuService.CONFIG_SVC_URL);
+    req.flush({ menuKey: [] });
   })
 
   it('should cache the first response', () => {
-    const req = mockBackend.expectOne(ContextMenuService.CONFIG_SVC_URL);
-    req.flush({ menuKey: [] });
-
     contextMenuSvc.getConfig().subscribe((first) => {
       contextMenuSvc.getConfig().subscribe((second) => {
         expect(first).toBe(second);
       });
     });
+
+    const req = mockBackend.expectOne(ContextMenuService.CONFIG_SVC_URL);
+    req.flush({ menuKey: [] });
   })
 });

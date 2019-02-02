@@ -19,7 +19,7 @@ import { Component } from '@angular/core';
 })
 class TestComponent {}
 
-fdescribe('ContextMenuComponent', () => {
+describe('ContextMenuComponent', () => {
   let component: ContextMenuComponent;
   let fixture: ComponentFixture<TestComponent>;
 
