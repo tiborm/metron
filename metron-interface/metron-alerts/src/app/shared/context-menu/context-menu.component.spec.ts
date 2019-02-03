@@ -19,7 +19,7 @@ import { Component } from '@angular/core';
 })
 class TestComponent {}
 
-describe('ContextMenuComponent', () => {
+fdescribe('ContextMenuComponent', () => {
   let component: ContextMenuComponent;
   let fixture: ComponentFixture<TestComponent>;
 
@@ -39,6 +39,7 @@ describe('ContextMenuComponent', () => {
     // req.flush({ menuKey: [] });
 
     fixture = TestBed.createComponent(TestComponent);
+    component = fixture.componentInstance as ContextMenuComponent;
     fixture.detectChanges();
   });
 
@@ -57,7 +58,7 @@ describe('ContextMenuComponent', () => {
     expect(document.body.querySelector('[data-qe-id="cm-dropdown"]')).toBeTruthy();
   });
 
-  it('sould close context menu if user clicks outside of it', () => {
+  it('should close context menu if user clicks outside of it', () => {
     fixture.nativeElement.querySelector('#hostComp').click();
     fixture.detectChanges();
 
@@ -69,13 +70,45 @@ describe('ContextMenuComponent', () => {
     expect(document.body.querySelector('.dropdown-menu')).toBeFalsy();
   });
 
-  it('sould contains predefined menu items', () => {
+  it('should render predefined menu items', () => {
+    fixture.nativeElement.querySelector('#hostComp').click();
+    fixture.detectChanges();
+
+    expect(document.body.querySelector('[data-qe-id="cm-predefined-item"]')).toBeTruthy();
+  });
+
+  it('should render multiple predefined menu items', () => {
+    component.predefinedItems = [
+      { label: 'test item #1', event: ''},
+      { label: 'test item #2', event: ''}
+    ];
+
+    fixture.detectChanges();
+
+    fixture.nativeElement.querySelector('#hostComp').click();
+    fixture.detectChanges();
+
+    expect(document.body.querySelectorAll('[data-qe-id="cm-predefined-item"]').length).toBe(2);
+  });
+
+  it('predefined menu item should render label', () => {
+    fixture.nativeElement.querySelector('#hostComp').click();
+    fixture.detectChanges();
+
+    expect(document.body.querySelector('[data-qe-id="cm-predefined-item"]').firstChild.textContent).toBe('Show details');
+  });
+
+  it('should emit the configured event if user clicks on predefined menu item', () => {
 
   });
 
-  it('sould contains dymamic menu items', () => {
+  it('should contains dymamic menu items', () => {
 
   });
+
+  // dynamic should render lable
+  // should invoke window.open
+  // should parse the url
 
   it('should destroy additional dom elements with the host component', () => {
 
