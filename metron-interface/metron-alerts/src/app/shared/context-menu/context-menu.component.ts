@@ -109,7 +109,7 @@ export class ContextMenuComponent implements OnInit, AfterContentInit, OnDestroy
   }
 
   onPredefinedItemClicked($event: MouseEvent, eventName: string) {
-    this.host.nativeElement.dispatchEvent(new CustomEvent(eventName));
+    this.host.nativeElement.dispatchEvent(new Event(eventName));
   }
 
   onDynamicItemClicked($event: MouseEvent, url: string) {

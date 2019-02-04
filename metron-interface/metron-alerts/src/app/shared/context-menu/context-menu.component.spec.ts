@@ -3,26 +3,31 @@ import { HttpClientTestingModule, HttpTestingController } from '@angular/common/
 import { ContextMenuComponent } from './context-menu.component';
 import { ContextMenuService } from './context-menu.service';
 import { Component } from '@angular/core';
-
+import { By } from '@angular/platform-browser';
 
 @Component({
   template: `
-    <div id="hostComp" withContextMenu
+    <div withContextMenu
       menuConfigId="testMenuConfigId"
       menuTitle="This is a test"
-      [predefinedItems]="[{ label: 'Show details', event: 'menuEventShowDetails'}]"
+      [predefinedItems]="[
+        { label: 'Test Label 01', event: 'customEventOne'},
+        { label: 'Test Label 02', event: 'customEventTwo'}
+      ]"
       (menuEventShowDetails)="showDetails($event, alert)"
-      [data]="{ testData: 'testValue' }">
+      [data]="{
+        testMenuConfigId: 'testValue',
+        customKey: 'customValue'
+      }">
       Context Menu Test In Progress...
     </div>
   `
 })
 class TestComponent {}
 
-fdescribe('ContextMenuComponent', () => {
-  let component: ContextMenuComponent;
+describe('ContextMenuComponent', () => {
   let fixture: ComponentFixture<TestComponent>;
-
+  let directiveHostEl: any;
   let mockBackend: HttpTestingController;
 
   beforeEach(() => {
@@ -33,13 +38,8 @@ fdescribe('ContextMenuComponent', () => {
     })
     .compileComponents();
 
-    // FIXME: Why there is no error message config svc returns undefined? It's only occures in test conditions.
-    // mockBackend = TestBed.get(HttpTestingController);
-    // const req = mockBackend.expectOne(ContextMenuService.CONFIG_SVC_URL);
-    // req.flush({ menuKey: [] });
-
     fixture = TestBed.createComponent(TestComponent);
-    component = fixture.componentInstance as ContextMenuComponent;
+    directiveHostEl = fixture.debugElement.query(By.directive(ContextMenuComponent)).nativeElement;
     fixture.detectChanges();
   });
 
@@ -52,14 +52,14 @@ fdescribe('ContextMenuComponent', () => {
   });
 
   it('should show context menu on left click', () => {
-    fixture.nativeElement.querySelector('#hostComp').click();
+    directiveHostEl.click();
 
     fixture.detectChanges();
     expect(document.body.querySelector('[data-qe-id="cm-dropdown"]')).toBeTruthy();
   });
 
   it('should close context menu if user clicks outside of it', () => {
-    fixture.nativeElement.querySelector('#hostComp').click();
+    directiveHostEl.click();
     fixture.detectChanges();
 
     expect(document.body.querySelector('[data-qe-id="cm-dropdown"]')).toBeTruthy();
@@ -71,51 +71,111 @@ fdescribe('ContextMenuComponent', () => {
   });
 
   it('should render predefined menu items', () => {
-    fixture.nativeElement.querySelector('#hostComp').click();
+    directiveHostEl.click();
     fixture.detectChanges();
 
     expect(document.body.querySelector('[data-qe-id="cm-predefined-item"]')).toBeTruthy();
   });
 
   it('should render multiple predefined menu items', () => {
-    component.predefinedItems = [
-      { label: 'test item #1', event: ''},
-      { label: 'test item #2', event: ''}
-    ];
-
-    fixture.detectChanges();
-
-    fixture.nativeElement.querySelector('#hostComp').click();
+    directiveHostEl.click();
     fixture.detectChanges();
 
     expect(document.body.querySelectorAll('[data-qe-id="cm-predefined-item"]').length).toBe(2);
   });
 
   it('predefined menu item should render label', () => {
-    fixture.nativeElement.querySelector('#hostComp').click();
+    directiveHostEl.click();
     fixture.detectChanges();
 
-    expect(document.body.querySelector('[data-qe-id="cm-predefined-item"]').firstChild.textContent).toBe('Show details');
+    expect(document.body
+      .querySelector('[data-qe-id="cm-predefined-item"]')
+      .firstChild.textContent
+    ).toBe('Test Label 01');
+  });
+
+  it('should fetch dymamic menu items', () => {
+    mockBackend = TestBed.get(HttpTestingController);
+    const req = mockBackend.expectOne(ContextMenuService.CONFIG_SVC_URL);
+    expect(req.request.method).toEqual('GET');
+  });
+
+  it('should render dymamic menu items', () => {
+    mockBackend = TestBed.get(HttpTestingController);
+    const req = mockBackend.expectOne(ContextMenuService.CONFIG_SVC_URL);
+    req.flush({ testMenuConfigId: [
+      { label: 'dynamic test item #4532', urlPattern: '/myTestUri/{}' },
+      { label: 'dynamic test item #756', urlPattern: '/myTestUri/{}' },
+    ] });
+
+    directiveHostEl.click();
+    fixture.detectChanges();
+
+    expect(document.body
+      .querySelectorAll('[data-qe-id="cm-dynamic-item"]')[0]
+      .firstChild.textContent
+    ).toBe('dynamic test item #4532');
+
+    expect(document.body
+      .querySelectorAll('[data-qe-id="cm-dynamic-item"]')[1]
+      .firstChild.textContent
+    ).toBe('dynamic test item #756');
   });
 
   it('should emit the configured event if user clicks on predefined menu item', () => {
+    directiveHostEl.addEventListener('customEventOne', (event) => {
+      expect(event.type).toBe('customEventOne');
+    });
 
+    directiveHostEl.click();
+    fixture.detectChanges();
+
+    fixture.nativeElement.querySelector('[data-qe-id="cm-predefined-item"]').click()
+    fixture.detectChanges();
   });
 
-  it('should contains dymamic menu items', () => {
+  it('should call window.open if user clicks on dynamic menu item', () => {
+    const RAW_URL = '/myTestUri/{}';
+    const EXPECTED_URL = '/myTestUri/testValue';
+    const DYNAMIC_ITEM = '[data-qe-id="cm-dynamic-item"]';
 
+    spyOn(window, 'open');
+
+    mockBackend = TestBed.get(HttpTestingController);
+    const req = mockBackend.expectOne(ContextMenuService.CONFIG_SVC_URL);
+    req.flush({ testMenuConfigId: [
+      { label: 'dynamic test item #98', urlPattern: RAW_URL },
+    ] });
+
+    directiveHostEl.click();
+    fixture.detectChanges();
+
+    fixture.nativeElement.querySelector(DYNAMIC_ITEM).click()
+    fixture.detectChanges();
+
+    expect(window.open).toHaveBeenCalledWith(EXPECTED_URL);
   });
 
-  // dynamic should render lable
-  // should invoke window.open
-  // should parse the url
+  it('urlPatter should be parsed and resolved when calling window.open', () => {
+    const RAW_URL = '/myTestUri/{}/customkeyshouldresolveto/{customKey}';
+    const EXPECTED_URL = '/myTestUri/testValue/customkeyshouldresolveto/customValue';
+    const DYNAMIC_ITEM = '[data-qe-id="cm-dynamic-item"]';
 
-  it('should destroy additional dom elements with the host component', () => {
+    spyOn(window, 'open');
 
-  });
+    mockBackend = TestBed.get(HttpTestingController);
+    const req = mockBackend.expectOne(ContextMenuService.CONFIG_SVC_URL);
+    req.flush({ testMenuConfigId: [
+      { label: 'dynamic test item #98', urlPattern: RAW_URL },
+    ] });
 
-  it('should destroy subscriptions with the host component', () => {
+    directiveHostEl.click();
+    fixture.detectChanges();
 
+    fixture.nativeElement.querySelector(DYNAMIC_ITEM).click()
+    fixture.detectChanges();
+
+    expect(window.open).toHaveBeenCalledWith(EXPECTED_URL);
   });
 
 });

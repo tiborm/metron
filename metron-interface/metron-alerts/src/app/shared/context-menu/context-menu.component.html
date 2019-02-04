@@ -6,6 +6,7 @@
     (click)="onPredefinedItemClicked($event, predefinedItem.event)">{{ predefinedItem.label }}</a>
   <div *ngIf="dynamicMenuItems.length" class="dropdown-divider"></div>
   <a *ngFor="let dynamicItem of dynamicMenuItems" class="dropdown-item"
+    data-qe-id="cm-dynamic-item"
     (click)="onDynamicItemClicked($event, dynamicItem.urlPattern)" >{{ dynamicItem.label }}</a>
 </div>
 <div *ngIf="isOpen" #clickOutsideCanvas class="transparent viewport-sized" data-qe-id="cm-outside"></div>
