@@ -7,15 +7,14 @@ import { By } from '@angular/platform-browser';
 
 @Component({
   template: `
-    <div withContextMenu
-      menuConfigId="testMenuConfigId"
-      menuTitle="This is a test"
-      [predefinedItems]="[
+    <div ctxMenu
+      ctxMenuId="testMenuConfigId"
+      ctxMenuTitle="This is a test"
+      [ctxMenuItems]="[
         { label: 'Test Label 01', event: 'customEventOne'},
         { label: 'Test Label 02', event: 'customEventTwo'}
       ]"
-      (menuEventShowDetails)="showDetails($event, alert)"
-      [data]="{
+      [ctxMenuData]="{
         testMenuConfigId: 'testValue',
         customKey: 'customValue'
       }">

@@ -1,7 +1,7 @@
 <ng-content></ng-content>
 <div *ngIf="isOpen" #contextMenuDropDown class="dropdown-menu" data-qe-id="cm-dropdown">
-  <div class="card-header">{{ menuTitle || menuConfigId || 'Menu' }}</div>
-  <a class="dropdown-item" *ngFor="let predefinedItem of predefinedItems"
+  <div class="card-header">{{ ctxMenuTitle || ctxMenuId || 'Menu' }}</div>
+  <a class="dropdown-item" *ngFor="let predefinedItem of ctxMenuItems"
     data-qe-id="cm-predefined-item"
     (click)="onPredefinedItemClicked($event, predefinedItem.event)">{{ predefinedItem.label }}</a>
   <div *ngIf="dynamicMenuItems.length" class="dropdown-divider"></div>

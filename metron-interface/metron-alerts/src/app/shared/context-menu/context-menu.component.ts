@@ -15,7 +15,7 @@ import { takeUntil, map } from 'rxjs/operators';
 import { DynamicMenuItem } from './dynamic-item.model';
 
 @Component({
-  selector: '[withContextMenu]',
+  selector: '[ctxMenu]',
   templateUrl: './context-menu.component.html',
   styleUrls: ['./context-menu.component.scss']
 })
@@ -24,11 +24,11 @@ export class ContextMenuComponent implements OnInit, AfterContentInit, OnDestroy
   @ViewChild('contextMenuDropDown') dropDown: ElementRef;
   @ViewChild('clickOutsideCanvas') outside: ElementRef;
 
-  @Input() predefinedItems: { label: string, event: string }[];
-  @Input() menuTitle: string;
-  @Input() menuConfigId: string;
+  @Input() ctxMenuItems: { label: string, event: string }[];
+  @Input() ctxMenuTitle: string;
+  @Input() ctxMenuId: string;
+  @Input() ctxMenuData: any;
 
-  @Input() data: any;
   dynamicMenuItems: DynamicMenuItem[] = [];
 
   isOpen = false;
@@ -53,7 +53,7 @@ export class ContextMenuComponent implements OnInit, AfterContentInit, OnDestroy
 
   private fetchContextMenuConfig() {
     this.contextMenuSvc.getConfig()
-      .pipe(map((allConfigs: {}) => allConfigs[this.menuConfigId]))
+      .pipe(map((allConfigs: {}) => allConfigs[this.ctxMenuId]))
       .subscribe((config: { label: string, urlPattern: string }[]) => {
         this.dynamicMenuItems = config ? config.reduce((validConfigs, configItem) => {
           if (DynamicMenuItem.isConfigValid(configItem)) {
@@ -113,11 +113,11 @@ export class ContextMenuComponent implements OnInit, AfterContentInit, OnDestroy
   }
 
   onDynamicItemClicked($event: MouseEvent, url: string) {
-    window.open(this.parseUrlPattern(url, this.data));
+    window.open(this.parseUrlPattern(url, this.ctxMenuData));
   }
 
   private parseUrlPattern(url = '', data = {}, delimeter: RegExp = /{|}/): string {
-    return url.replace('{}', `{${this.menuConfigId}}`)
+    return url.replace('{}', `{${this.ctxMenuId}}`)
       .split(delimeter).map((urlSegment) => {
         return data[urlSegment] || urlSegment;
     }).join('');
