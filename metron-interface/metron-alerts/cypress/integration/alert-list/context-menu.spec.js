@@ -1,0 +1,66 @@
+/// <reference types="Cypress" />
+/**
+ * Licensed to the Apache Software Foundation (ASF) under one
+ * or more contributor license agreements.  See the NOTICE file
+ * distributed with this work for additional information
+ * regarding copyright ownership.  The ASF licenses this file
+ * to you under the Apache License, Version 2.0 (the
+ * "License"); you may not use this file except in compliance
+ * with the License.  You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+context('Context Menu on Alerts', () => {
+
+  beforeEach(() => {
+    cy.server();
+    cy.route({
+      method: 'GET',
+      url: '/api/v1/user',
+      response: 'user'
+    });
+    cy.route({
+        method: 'POST',
+        url: '/api/v1/logout',
+        response: []
+    });
+
+    cy.route('GET', '/api/v1/global/config', 'fixture:config.json');
+    cy.route('POST', 'search', 'fixture:search.json').as('searchRequest');
+
+    cy.visit('login');
+    cy.get('[name="user"]').type('user');
+    cy.get('[name="password"]').type('password');
+    cy.contains('LOG IN').click();
+  });
+
+  it('clicking on a table cell should show context menu', () => {
+    cy.wait('@searchRequest');
+    cy.get('[data-qe-id="row-5"] > :nth-child(6) > a').click();
+    cy.get('[data-qe-id="cm-dropdown"]').should('be.visible');
+  });
+
+  it('clicking on "Add to search bar" should apply value to filter bar', () => {
+    cy.wait('@searchRequest');
+    cy.get('[data-qe-id="row-5"] > :nth-child(6) > a').click();
+    cy.get('[data-qe-id="cm-dropdown"]').should('be.visible');
+    cy.contains('Add to search bar').click();
+    cy.get('.ace_keyword').should('contain', 'ip_src_addr:');
+    cy.get('.ace_value').should('contain', '192.168.66.121');
+  });
+
+  it('clicking on "Add to search bar" should colose the dropdown of context menu', () => {
+    cy.wait('@searchRequest');
+    cy.get('[data-qe-id="row-5"] > :nth-child(6) > a').click();
+    cy.get('[data-qe-id="cm-dropdown"]').should('be.visible');
+    cy.contains('Add to search bar').click();
+    cy.get('[data-qe-id="cm-dropdown"]').should('not.be.visible');
+  });
+
+})
