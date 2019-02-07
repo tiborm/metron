@@ -1,0 +1,65 @@
+[
+    {
+        "id": "enrichment-1-1549379317",
+        "name": "enrichment",
+        "status": "ACTIVE",
+        "latency": 995.008,
+        "throughput": 7.663333333333333,
+        "emitted": 13985,
+        "acked": 4598
+    },
+    {
+        "id": "random_access_indexing-6-1549379763",
+        "name": "random_access_indexing",
+        "status": "ACTIVE",
+        "latency": 122.779,
+        "throughput": 7.68,
+        "emitted": 4354,
+        "acked": 4608
+    },
+    {
+        "id": "batch_indexing-5-1549379708",
+        "name": "batch_indexing",
+        "status": "ACTIVE",
+        "latency": 157.476,
+        "throughput": 7.715,
+        "emitted": 4200,
+        "acked": 4629
+    },
+    {
+        "id": "bro__snort__yaf-4-1549379622",
+        "name": "bro__snort__yaf",
+        "status": "ACTIVE",
+        "latency": 2600.901,
+        "throughput": 7.681666666666667,
+        "emitted": 4495,
+        "acked": 4609
+    },
+    {
+        "id": "websphere-9-1549383879",
+        "name": "websphere",
+        "status": "KILLED",
+        "latency": 0,
+        "throughput": 0,
+        "emitted": 0,
+        "acked": 0
+    },
+    {
+        "id": "pcap-2-1549379385",
+        "name": "pcap",
+        "status": "ACTIVE",
+        "latency": 0,
+        "throughput": 0,
+        "emitted": 0,
+        "acked": 0
+    },
+    {
+        "id": "profiler-3-1549379477",
+        "name": "profiler",
+        "status": "ACTIVE",
+        "latency": 3.478,
+        "throughput": 7.678333333333334,
+        "emitted": 4454,
+        "acked": 4607
+    }
+]
