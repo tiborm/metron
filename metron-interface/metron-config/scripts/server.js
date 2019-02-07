@@ -62,13 +62,13 @@ app.use('/logout', proxy(restUrl));
 
 // app.use(favicon(path.join(__dirname, '../dist/favicon.ico')));
 
-app.use(serveStatic(path.join(__dirname, '../dist'), {
+app.use(serveStatic(path.join(__dirname, '../' + uiConfig.dirPath), {
   maxAge: '1d',
   setHeaders: setCustomCacheControl
 }));
 
 app.get('*', function(req, res){
-  res.sendFile(path.join(__dirname, '../dist/index.html'));
+  res.sendFile(path.join(__dirname, '../' + uiConfig.dirPath + '/index.html'));
 });
 
 app.listen(uiConfig.port, function(){

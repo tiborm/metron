@@ -19,3 +19,5 @@ port: 4200
 rest:
   host: localhost
   port: 8080
+
+  dirPath: management-ui
