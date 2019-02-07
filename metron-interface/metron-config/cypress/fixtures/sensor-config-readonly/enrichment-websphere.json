@@ -1,0 +1,29 @@
+{
+    "enrichment": {
+        "fieldMap": {
+            "geo": [
+                "ip_src_addr"
+            ],
+            "host": [
+                "ip_src_addr"
+            ]
+        },
+        "fieldToTypeMap": {
+            "ip_src_addr": [
+                "playful_classification"
+            ]
+        },
+        "config": {}
+    },
+    "threatIntel": {
+        "fieldMap": {},
+        "fieldToTypeMap": {},
+        "config": {},
+        "triageConfig": {
+            "riskLevelRules": [],
+            "aggregator": "MAX",
+            "aggregationConfig": {}
+        }
+    },
+    "configuration": {}
+}

@@ -1,0 +1,32 @@
+{
+    "parserClassName": "org.apache.metron.parsers.websphere.GrokWebSphereParser",
+    "filterClassName": null,
+    "sensorTopic": "websphere",
+    "outputTopic": null,
+    "errorTopic": null,
+    "writerClassName": null,
+    "errorWriterClassName": null,
+    "readMetadata": false,
+    "mergeMetadata": false,
+    "numWorkers": null,
+    "numAckers": null,
+    "spoutParallelism": 1,
+    "spoutNumTasks": 1,
+    "parserParallelism": 1,
+    "parserNumTasks": 1,
+    "errorWriterParallelism": 1,
+    "errorWriterNumTasks": 1,
+    "spoutConfig": {},
+    "securityProtocol": null,
+    "stormConfig": {},
+    "parserConfig": {
+        "grokPath": "/patterns/websphere",
+        "patternLabel": "WEBSPHERE",
+        "timestampField": "timestamp_string",
+        "dateFormat": "yyyy MMM dd HH:mm:ss"
+    },
+    "fieldTransformations": [],
+    "cacheConfig": {},
+    "rawMessageStrategy": "DEFAULT",
+    "rawMessageStrategyConfig": {}
+}

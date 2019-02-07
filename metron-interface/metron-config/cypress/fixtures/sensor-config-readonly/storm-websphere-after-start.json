@@ -1,0 +1,9 @@
+{
+    "id": "websphere-10-1549384353",
+    "name": "websphere",
+    "status": "ACTIVE",
+    "latency": 0,
+    "throughput": 0,
+    "emitted": 0,
+    "acked": 0
+}

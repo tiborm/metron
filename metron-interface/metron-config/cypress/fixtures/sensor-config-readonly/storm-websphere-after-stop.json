@@ -1,0 +1,9 @@
+{
+    "id": "websphere-2-1549398342",
+    "name": "websphere",
+    "status": "KILLED",
+    "latency": 0,
+    "throughput": 0,
+    "emitted": 0,
+    "acked": 0
+}
