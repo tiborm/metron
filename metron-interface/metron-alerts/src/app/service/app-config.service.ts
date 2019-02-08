@@ -24,6 +24,10 @@ export class AppConfigService {
 
   private static appConfigStatic;
 
+  static getAppConfigStatic() {
+    return AppConfigService.appConfigStatic;
+  }
+
   constructor(private http: HttpClient) { }
 
   loadAppConfig() {
@@ -43,7 +47,7 @@ export class AppConfigService {
     return AppConfigService.appConfigStatic['loginPath'];
   }
 
-  static getAppConfigStatic() {
-    return AppConfigService.appConfigStatic;
+  getContextMenuConfigURL() {
+    return AppConfigService.appConfigStatic['contextMenuConfigURL'];
   }
 }

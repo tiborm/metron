@@ -2,8 +2,20 @@ import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 import { HttpClientTestingModule, HttpTestingController } from '@angular/common/http/testing';
 import { ContextMenuComponent } from './context-menu.component';
 import { ContextMenuService } from './context-menu.service';
-import { Component } from '@angular/core';
+import { Component, Injectable } from '@angular/core';
 import { By } from '@angular/platform-browser';
+import { AppConfigService } from 'app/service/app-config.service';
+
+const FAKE_CONFIG_SVC_URL = '/test/config/menu/url';
+
+@Injectable()
+class FakeAppConfigService {
+  constructor() {}
+
+  getContextMenuConfigURL() {
+    return FAKE_CONFIG_SVC_URL;
+  }
+}
 
 @Component({
   template: `
@@ -33,7 +45,10 @@ describe('ContextMenuComponent', () => {
     TestBed.configureTestingModule({
       imports: [ HttpClientTestingModule ],
       declarations: [ ContextMenuComponent, TestComponent ],
-      providers: [ ContextMenuService ]
+      providers: [
+        ContextMenuService,
+        { provide: AppConfigService, useClass: FakeAppConfigService }
+      ]
     })
     .compileComponents();
 
@@ -95,13 +110,13 @@ describe('ContextMenuComponent', () => {
 
   it('should fetch dymamic menu items', () => {
     mockBackend = TestBed.get(HttpTestingController);
-    const req = mockBackend.expectOne(ContextMenuService.CONFIG_SVC_URL);
+    const req = mockBackend.expectOne(FAKE_CONFIG_SVC_URL);
     expect(req.request.method).toEqual('GET');
   });
 
   it('should render dymamic menu items', () => {
     mockBackend = TestBed.get(HttpTestingController);
-    const req = mockBackend.expectOne(ContextMenuService.CONFIG_SVC_URL);
+    const req = mockBackend.expectOne(FAKE_CONFIG_SVC_URL);
     req.flush({ testMenuConfigId: [
       { label: 'dynamic test item #4532', urlPattern: '/myTestUri/{}' },
       { label: 'dynamic test item #756', urlPattern: '/myTestUri/{}' },
@@ -141,7 +156,7 @@ describe('ContextMenuComponent', () => {
     spyOn(window, 'open');
 
     mockBackend = TestBed.get(HttpTestingController);
-    const req = mockBackend.expectOne(ContextMenuService.CONFIG_SVC_URL);
+    const req = mockBackend.expectOne(FAKE_CONFIG_SVC_URL);
     req.flush({ testMenuConfigId: [
       { label: 'dynamic test item #98', urlPattern: RAW_URL },
     ] });
@@ -163,7 +178,7 @@ describe('ContextMenuComponent', () => {
     spyOn(window, 'open');
 
     mockBackend = TestBed.get(HttpTestingController);
-    const req = mockBackend.expectOne(ContextMenuService.CONFIG_SVC_URL);
+    const req = mockBackend.expectOne(FAKE_CONFIG_SVC_URL);
     req.flush({ testMenuConfigId: [
       { label: 'dynamic test item #98', urlPattern: RAW_URL },
     ] });

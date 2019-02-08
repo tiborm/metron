@@ -3,19 +3,17 @@ import { HttpClient } from '@angular/common/http';
 import { Observable, Subject } from 'rxjs';
 import { catchError, map } from 'rxjs/operators';
 import { HttpUtil } from 'app/utils/httpUtil';
+import { AppConfigService } from 'app/service/app-config.service';
 
 @Injectable()
 export class ContextMenuService {
-
-  public static readonly CONFIG_SVC_URL = '/assets/context-menu.conf.json';
-
   private cachedConfig$: Subject<{}>;
 
   getConfig(): Observable<{}> {
     if (!this.cachedConfig$) {
       this.cachedConfig$ = new Subject();
 
-      this.http.get(ContextMenuService.CONFIG_SVC_URL)
+      this.http.get(this.appConfig.getContextMenuConfigURL())
       .pipe(
         map(HttpUtil.extractData),
         catchError(HttpUtil.handleError)
@@ -27,6 +25,8 @@ export class ContextMenuService {
     return this.cachedConfig$;
   }
 
-  // FIXME: you cant mock a xhr call if it's initiated in an svc constructor
-  constructor(private http: HttpClient) {}
+  constructor(
+    private http: HttpClient,
+    private appConfig: AppConfigService
+    ) {}
 }

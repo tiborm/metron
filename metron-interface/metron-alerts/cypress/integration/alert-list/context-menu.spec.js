@@ -16,6 +16,8 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+import * as appConfigJSON from '../../../src/assets/app-config.json';
+
 context('Context Menu on Alerts', () => {
 
   beforeEach(() => {
@@ -32,7 +34,9 @@ context('Context Menu on Alerts', () => {
     });
 
     cy.route('GET', '/api/v1/global/config', 'fixture:config.json');
-    cy.route('POST', 'search', 'fixture:search.json').as('searchRequest');
+    cy.route('POST', 'search', 'fixture:search.json');
+
+    cy.route('GET', appConfigJSON.contextMenuConfigURL, 'fixture:context-menu.conf.json');
 
     cy.visit('login');
     cy.get('[name="user"]').type('user');
@@ -41,13 +45,11 @@ context('Context Menu on Alerts', () => {
   });
 
   it('clicking on a table cell should show context menu', () => {
-    cy.wait('@searchRequest');
     cy.get('[data-qe-id="row-5"] > :nth-child(6) > a').click();
     cy.get('[data-qe-id="cm-dropdown"]').should('be.visible');
   });
 
   it('clicking on "Add to search bar" should apply value to filter bar', () => {
-    cy.wait('@searchRequest');
     cy.get('[data-qe-id="row-5"] > :nth-child(6) > a').click();
     cy.get('[data-qe-id="cm-dropdown"]').should('be.visible');
     cy.contains('Add to search bar').click();
@@ -56,11 +58,16 @@ context('Context Menu on Alerts', () => {
   });
 
   it('clicking on "Add to search bar" should colose the dropdown of context menu', () => {
-    cy.wait('@searchRequest');
     cy.get('[data-qe-id="row-5"] > :nth-child(6) > a').click();
     cy.get('[data-qe-id="cm-dropdown"]').should('be.visible');
     cy.contains('Add to search bar').click();
     cy.get('[data-qe-id="cm-dropdown"]').should('not.be.visible');
+  });
+
+  it('dynamic items should be rendered', () => {
+    cy.get('[data-qe-id="row-5"] > :nth-child(6) > a').click();
+    cy.get('[data-qe-id="cm-dropdown"]').should('be.visible');
+    cy.get('[data-qe-id="cm-dropdown"]').contains('IP Investigation Notebook').should('be.visible');
   });
 
 })

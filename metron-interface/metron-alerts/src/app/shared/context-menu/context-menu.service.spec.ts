@@ -4,6 +4,19 @@ import {
   HttpTestingController
 } from '@angular/common/http/testing';
 import { ContextMenuService } from './context-menu.service';
+import { AppConfigService } from 'app/service/app-config.service';
+import { Injectable } from '@angular/core';
+
+const FAKE_CONFIG_SVC_URL = '/test/config/menu/url';
+
+@Injectable()
+class FakeAppConfigService {
+  constructor() {}
+
+  getContextMenuConfigURL() {
+    return FAKE_CONFIG_SVC_URL;
+  }
+}
 
 describe('ContextMenuService', () => {
 
@@ -14,7 +27,8 @@ describe('ContextMenuService', () => {
     TestBed.configureTestingModule({
       imports: [ HttpClientTestingModule ],
       providers: [
-        ContextMenuService
+        ContextMenuService,
+        { provide: AppConfigService, useClass: FakeAppConfigService }
       ]
     }).compileComponents();
 
@@ -31,7 +45,7 @@ describe('ContextMenuService', () => {
       expect(req.request.method).toEqual('GET');
     });
 
-    const req = mockBackend.expectOne(ContextMenuService.CONFIG_SVC_URL);
+    const req = mockBackend.expectOne(FAKE_CONFIG_SVC_URL);
     req.flush({ menuKey: [] });
   });
 
@@ -40,7 +54,7 @@ describe('ContextMenuService', () => {
       expect(result).toEqual({ menuKey: [] });
     });
 
-    const req = mockBackend.expectOne(ContextMenuService.CONFIG_SVC_URL);
+    const req = mockBackend.expectOne(FAKE_CONFIG_SVC_URL);
     req.flush({ menuKey: [] });
   })
 
@@ -51,7 +65,7 @@ describe('ContextMenuService', () => {
       });
     });
 
-    const req = mockBackend.expectOne(ContextMenuService.CONFIG_SVC_URL);
+    const req = mockBackend.expectOne(FAKE_CONFIG_SVC_URL);
     req.flush({ menuKey: [] });
   })
 });
