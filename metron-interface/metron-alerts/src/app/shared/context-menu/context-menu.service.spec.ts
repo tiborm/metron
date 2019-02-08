@@ -18,7 +18,7 @@ class FakeAppConfigService {
   }
 }
 
-describe('ContextMenuService', () => {
+fdescribe('ContextMenuService', () => {
 
   let contextMenuSvc: ContextMenuService;
   let mockBackend: HttpTestingController;
@@ -50,22 +50,26 @@ describe('ContextMenuService', () => {
   });
 
   it('getConfig() should return with the result of config svc', () => {
-    contextMenuSvc.getConfig().subscribe((result) => {
-      expect(result).toEqual({ menuKey: [] });
-    });
+    contextMenuSvc.getConfig().subscribe(); // returns the default value first
 
     const req = mockBackend.expectOne(FAKE_CONFIG_SVC_URL);
     req.flush({ menuKey: [] });
+
+    contextMenuSvc.getConfig().subscribe((result) => {
+      expect(result).toEqual({ menuKey: [] });
+    });
   })
 
   it('should cache the first response', () => {
+    contextMenuSvc.getConfig().subscribe(); // returns the default value first
+
+    const req = mockBackend.expectOne(FAKE_CONFIG_SVC_URL);
+    req.flush({ menuKey: [] });
+
     contextMenuSvc.getConfig().subscribe((first) => {
       contextMenuSvc.getConfig().subscribe((second) => {
         expect(first).toBe(second);
       });
     });
-
-    const req = mockBackend.expectOne(FAKE_CONFIG_SVC_URL);
-    req.flush({ menuKey: [] });
-  })
+  });
 });

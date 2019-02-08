@@ -4,12 +4,11 @@ import {
   OnDestroy,
   ViewChild,
   ElementRef,
-  Renderer2,
   Input,
   OnInit
 } from '@angular/core';
 import { ContextMenuService } from './context-menu.service';
-import { fromEvent, Subject } from 'rxjs';
+import { fromEvent, Subject, Observable } from 'rxjs';
 import Popper from 'popper.js';
 import { takeUntil, map } from 'rxjs/operators';
 import { DynamicMenuItem } from './dynamic-item.model';
@@ -39,11 +38,11 @@ export class ContextMenuComponent implements OnInit, AfterContentInit, OnDestroy
 
   constructor(
     private contextMenuSvc: ContextMenuService,
-    private host: ElementRef,
-    private renderer: Renderer2
+    private host: ElementRef
     ) {}
 
   ngOnInit() {
+    console.log('init? why?');
     this.fetchContextMenuConfig();
   }
 
@@ -124,6 +123,7 @@ export class ContextMenuComponent implements OnInit, AfterContentInit, OnDestroy
   }
 
   ngOnDestroy() {
+    console.log('destroy? why?');
     this.destroyed$.next(true);
     this.destroyed$.complete();
   }

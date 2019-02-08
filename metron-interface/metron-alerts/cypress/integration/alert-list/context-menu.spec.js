@@ -70,4 +70,18 @@ context('Context Menu on Alerts', () => {
     cy.get('[data-qe-id="cm-dropdown"]').contains('IP Investigation Notebook').should('be.visible');
   });
 
+  // this use case was a former bug caused by the behaviour of the rxjs Subject class
+  // here we pinning down the fix with a test
+  it('dynamic items should be rendered after a clicking a predefined item', () => {
+    cy.get('[data-qe-id="row-5"] > :nth-child(6) > a').click();
+    cy.get('[data-qe-id="cm-dropdown"]').should('be.visible');
+    cy.contains('Add to search bar').click();
+
+    cy.wait(300);
+
+    cy.get('[data-qe-id="row-5"] > :nth-child(6) > a').click();
+    cy.get('[data-qe-id="cm-dropdown"]').should('be.visible');
+    cy.get('[data-qe-id="cm-dropdown"]').contains('IP Investigation Notebook').should('be.visible');
+  });
+
 })

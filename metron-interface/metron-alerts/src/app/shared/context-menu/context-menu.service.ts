@@ -1,17 +1,17 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import { Observable, Subject } from 'rxjs';
+import { Observable, Subject, BehaviorSubject } from 'rxjs';
 import { catchError, map } from 'rxjs/operators';
 import { HttpUtil } from 'app/utils/httpUtil';
 import { AppConfigService } from 'app/service/app-config.service';
 
 @Injectable()
 export class ContextMenuService {
-  private cachedConfig$: Subject<{}>;
+  private cachedConfig$: BehaviorSubject<{}>;
 
   getConfig(): Observable<{}> {
     if (!this.cachedConfig$) {
-      this.cachedConfig$ = new Subject();
+      this.cachedConfig$ = new BehaviorSubject({});
 
       this.http.get(this.appConfig.getContextMenuConfigURL())
       .pipe(
