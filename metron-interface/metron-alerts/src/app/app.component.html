@@ -26,6 +26,7 @@
         </ul>
         <div class="logout ml-auto">Logged in as {{authService.currentUser}} - <span class="logout-link" (click)="authService.logout()">Logout</span></div>
     </nav>
+    <app-central-navigation></app-central-navigation>
     <div class="container-fluid">
         <router-outlet></router-outlet>
     </div>
