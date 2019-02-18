@@ -1,0 +1,625 @@
+/*
+ * Copyright (c) 2011-2018, Hortonworks Inc. All rights reserved.
+ * Except as expressly permitted in a written agreement between you
+ * or your company and Hortonworks, Inc, any use, reproduction,
+ * modification, redistribution, sharing, lending or other exploitation
+ * of all or any part of the contents of this file is strictly prohibited.
+ */
+
+// stylelint-disable selector-max-class, selector-max-compound-selectors, declaration-no-important
+
+@import '../../fluid-variables';
+@import '../../../../node_modules/bootstrap/scss/navbar';
+
+.navbar {
+  > .container,
+  > .container-fluid {
+    margin-right: $grid-gutter-width * -1;
+    margin-left: $grid-gutter-width * -1;
+
+    // test for IE
+    @media screen\0 {
+      display: block;
+    }
+  }
+
+  > .btn + .btn:not(.btn-link) {
+    margin-left: 10px;
+  }
+}
+
+.navbar.navbar-header {
+  min-width: $layout-min-width;
+  height: calc(#{$navbar-brand-height} + #{$border-width});
+  background-color: $white;
+  border-bottom: $border-width $body-bg solid;
+
+  + * {
+    padding-top: $navbar-brand-height;
+  }
+}
+
+.navbar.navbar-footer {
+  min-width: $layout-min-width;
+  border-top: $border-width $border-color solid;
+}
+
+.navbar.navbar-primary {
+  @extend .navbar-dark;
+  @include transition($transition-collapse-all);
+  position: fixed;
+  z-index: $zindex-fixed;
+  flex-direction: column;
+  align-items: normal;
+  justify-content: flex-start;
+  width: $navbar-width;
+  height: 100%;
+  padding: 0;
+  margin: 0;
+  overflow: hidden;
+  background-color: $navbar-bg;
+
+  // test for Safari
+  @media (-webkit-animation) {
+    overflow: visible; // Safari
+  }
+
+  * {
+    flex-shrink: 0;
+    align-items: normal;
+  }
+
+  &[class*='navbar-expand-'] {
+    * {
+      flex-direction: column;
+    }
+
+    .navbar-toggler {
+      display: block;
+    }
+  }
+
+  &.collapsing {
+    @extend .collapse;
+
+    .navbar-brand[data-toggle='collapse']::after {
+      opacity: 0;
+    }
+
+    .navbar-collapse {
+      width: $navbar-width;
+    }
+
+    // We use the [style] selector to determine the direction of the .collapsing behavior;
+    // when it is present, the menu is expanding.
+    &[style^='height']:not(.show) {
+      width: $navbar-width;
+
+      & ~ *:not(.popover):not(.tooltip):not(.modal) {
+        margin-left: $navbar-width;
+      }
+
+      .navbar-brand {
+        .icon:first-child {
+          margin-right: px(8);
+        }
+      }
+
+      .navbar-nav {
+        .nav-item.nav-link,
+        .nav-item > .nav-link {
+          width: $navbar-width;
+          height: $navbar-nav-link-height;
+          padding-left: $navbar-nav-link-icon-size !important; // !important ensures this remains set during collapse animation
+
+          &.status::before {
+            left: px(
+              30
+            ) !important; // !important ensures this remains set during collapse animation
+          }
+
+          .icon:first-child {
+            width: $navbar-nav-link-icon-size !important; // !important ensures this remains set during collapse animation
+            margin-right: px(
+              8
+            ) !important; // !important ensures this remains set during collapse animation
+            font-size: $navbar-nav-link-icon-size !important; // !important ensures this remains set during collapse animation
+            line-height: 0 !important; // !important ensures this remains set during collapse animation
+          }
+        }
+
+        &.collapse.show {
+          position: static;
+          display: block;
+        }
+      }
+    }
+  }
+
+  &.collapse {
+    & ~ *:not(.popover):not(.tooltip):not(.modal) {
+      @include transition($transition-collapse-all);
+    }
+
+    &.show ~ *:not(.popover):not(.tooltip):not(.modal) {
+      margin-left: $navbar-width;
+    }
+
+    &:not(.show) {
+      display: flex;
+      width: $navbar-width-sm;
+
+      & ~ *:not(.popover):not(.tooltip):not(.modal) {
+        margin-left: $navbar-width-sm;
+      }
+
+      .navbar-brand {
+        &[data-toggle='collapse']::after {
+          position: absolute;
+          top: px(-18);
+          left: px(32);
+          margin: 0;
+          font-size: px(16);
+          -ms-transform: translateY(
+            px(29)
+          ); /* IE */ // stylelint-disable-line property-no-vendor-prefix
+        }
+
+        .icon:first-child {
+          margin-right: px(16);
+        }
+      }
+
+      .navbar-nav {
+        width: $navbar-width-sm;
+
+        &.collapse {
+          position: relative;
+          top: $navbar-nav-link-height-collapsed * -1;
+          left: $navbar-nav-link-height-collapsed;
+          width: $navbar-width - px(14);
+          overflow: visible;
+          background-color: $navbar-bg;
+          transition: none;
+
+          &.show {
+            display: none;
+          }
+
+          .nav-item.nav-link,
+          .nav-item > .nav-link {
+            height: $navbar-nav-link-height;
+            padding-left: px(26);
+            overflow: hidden;
+
+            &.status::before {
+              left: px(16);
+            }
+
+            .icon:first-child {
+              width: 0;
+              margin: 0;
+            }
+          }
+        }
+
+        &[data-toggle='collapse'] {
+          &:hover + .navbar-nav.collapse,
+          &:hover + .navbar-nav.collapsing,
+          & + .navbar-nav.collapse:hover {
+            position: fixed;
+            display: block;
+          }
+        }
+
+        .nav-item.nav-link,
+        .nav-item > .nav-link {
+          height: $navbar-nav-link-height-collapsed;
+          overflow: visible;
+
+          &::after {
+            opacity: 0;
+          }
+
+          .icon:first-child {
+            width: px(19);
+            margin-right: px(16);
+            font-size: px(19);
+            line-height: px(14);
+          }
+        }
+
+        .dropdown-toggle::after {
+          opacity: 0;
+        }
+      }
+
+  //     .navbar-toggler-icon::before {
+  //       content: theme-icon('navbar-expand');
+  //     }
+    }
+  }
+
+  .navbar-nav {
+    width: $navbar-width;
+
+    &.collapsing {
+      position: static;
+    }
+
+    &[data-toggle='collapse'] {
+      .nav-item {
+        &.nav-link,
+        & > .nav-link {
+          padding-right: px(32);
+
+          &::after {
+            position: absolute;
+            top: px(10);
+            right: px(12);
+            font-family: fluidicons, system-ui;
+            font-size: px(20);
+            content: theme-icon('collapse');
+            //@include transition($transition-collapse-all);
+          }
+        }
+
+        &.dropdown {
+          &.nav-link,
+          & > .nav-link {
+            padding-right: px(40);
+          }
+
+          & .dropdown-toggle {
+            right: px(28);
+          }
+        }
+      }
+
+      &.collapsed {
+        .nav-item.nav-link::after,
+        .nav-item > .nav-link::after {
+          content: theme-icon('expand');
+        }
+      }
+    }
+
+    .nav-item {
+      color: $navbar-color;
+
+      &:hover,
+      &:hover > .nav-link,
+      &:active,
+      &.active {
+        color: $navbar-active-color;
+        background-color: $navbar-active-bg;
+      }
+
+      &.nav-link,
+      > .nav-link {
+        @include transition($transition-collapse-all);
+        position: relative;
+        height: $navbar-nav-link-height;
+        padding: px(12) px(16);
+        overflow: hidden;
+        line-height: 1;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+
+        &.active::before {
+          position: absolute;
+          top: 50%;
+          left: px(-7);
+          content: ' ';
+          border: solid transparent;
+          border-width: px(14);
+          border-left-color: theme-color('primary');
+          transform: translateY(-50%);
+        }
+
+        &.status::before {
+          left: px(30);
+        }
+
+        .icon:first-child {
+          @include transition($transition-collapse-all);
+          width: $navbar-nav-link-icon-size;
+          margin-top: px(8);
+          margin-right: px(8);
+          font-size: $navbar-nav-link-icon-size;
+          line-height: 0;
+          vertical-align: text-top;
+        }
+      }
+
+      &.dropdown {
+        &.nav-link,
+        & > .nav-link {
+          padding-right: px(24);
+        }
+
+        .dropdown-toggle {
+          position: absolute;
+          top: 0;
+          right: px(8);
+          width: px(19);
+          height: $navbar-nav-link-height;
+          color: inherit;
+
+          &::after {
+            margin-left: px(4);
+            font-family: fluidicons, system-ui;
+            line-height: 1.15;
+            vertical-align: middle;
+            content: ':';
+            border: 0;
+          }
+        }
+
+        &.show .dropdown-toggle {
+          color: $navbar-active-color;
+        }
+
+        .dropdown-menu {
+          position: fixed;
+          top: px(36);
+          left: px(154);
+        }
+      }
+
+      /* Uncomment to make the dropdown menu items hover/active color use theme-color("primary") instead of the default. */
+      // .dropdown-item {
+      //   @include hover-focus {
+      //     color: color-yiq(theme-color("primary"));
+      //     @include gradient-bg(theme-color("primary"));
+      //   }
+      //
+      //   &.active,
+      //   &:active {
+      //     @include gradient-bg(darken(theme-color("primary"), 10%));
+      //   }
+      // }
+    }
+  }
+
+
+  .navbar-brand {
+    @include transition($transition-collapse-all);
+    z-index: $zindex-fixed;
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    width: 100%; // set explicitly for IE
+    height: $navbar-brand-height;
+    padding: 0;
+    padding-left: px(12.5);
+    margin: 0;
+    line-height: $navbar-brand-height;
+    color: $navbar-brand-color;
+    text-transform: uppercase;
+    white-space: nowrap;
+    background-color: $navbar-brand-bg;
+
+    &[data-toggle='collapse'] {
+      &::after {
+        position: absolute;
+        right: px(12.5);
+        z-index: $zindex-fixed; // Edge
+        font-family: fluidicons, system-ui;
+        font-size: px(30);
+        line-height: px(60); // IE
+        color: theme-color('primary');
+        content: theme-icon('collapse');
+      }
+
+      &.collapsed::after {
+        content: theme-icon('expand');
+      }
+    }
+
+    &:hover,
+    &:active,
+    &.active {
+      color: $navbar-brand-hover-color;
+      background-color: $navbar-brand-hover-bg;
+    }
+
+    .icon:first-child {
+      @include transition($transition-collapse-all);
+      flex-shrink: 0;
+      width: $navbar-nav-link-icon-size-collapsed;
+      margin-right: px(8);
+      font-size: $navbar-nav-link-icon-size-collapsed;
+    }
+
+    & ~ .navbar-collapse {
+      padding-top: $navbar-brand-height + $navbar-nav-padding;
+    }
+  }
+
+  .navbar-collapse {
+    position: absolute;
+    top: 0; // set explicitly for IE
+    left: 0; // set explicitly for IE
+    display: flex;
+    height: 100%;
+    padding-top: $navbar-nav-padding;
+    padding-bottom: $navbar-nav-padding;
+    overflow-y: scroll;
+
+    &::-webkit-scrollbar {
+      display: none;
+    }
+  }
+
+  .navbar-toggler {
+    position: absolute;
+    bottom: 0;
+    left: 0; // set explicitly for IE
+    z-index: $zindex-sticky;
+    display: block;
+    width: 100%;
+    height: px(48);
+    padding: 0;
+    background-color: $navbar-brand-bg;
+    border: 0;
+    border-radius: 0;
+
+    // Create a fade out effect as menu items overflow vertically
+    &::before {
+      position: absolute;
+      bottom: 100%;
+      left: 0;
+      width: 100%;
+      height: $navbar-nav-link-height-collapsed;
+      pointer-events: none;
+      content: ' ';
+      background: linear-gradient(
+        to bottom,
+        rgba($navbar-bg, 0) 0%,
+        $navbar-bg 100%
+      );
+    }
+
+    &:hover,
+    &:active {
+      background-color: $navbar-active-bg;
+
+      .navbar-toggler-icon::before {
+        color: $navbar-active-color;
+      }
+    }
+
+    &:focus {
+      outline-style: none;
+    }
+
+    .navbar-toggler-icon {
+      line-height: px(48);
+      background-image: none;
+
+      &::before {
+        position: absolute; /* Firefox, Safari */
+        bottom: 0; /* Firefox, Safari */
+        font-family: fluidicons, system-ui;
+        font-size: px(20);
+        color: theme-color('primary');
+        content: theme-icon('navbar-collapse');
+        transform: translateX(-50%); /* Firefox, Safari */
+        -ms-transform: translateX(
+          50%
+        ); /* IE */ // stylelint-disable-line property-no-vendor-prefix, order/properties-order
+      }
+    }
+
+    & ~ .navbar-collapse {
+      // Padding is on last child rather than on parent due to IE
+      > *:last-child {
+        padding-bottom: $navbar-nav-link-height-collapsed * 2;
+      }
+    }
+  }
+}
+
+.brand-menu,
+.brand-menu.show {
+  @extend .dropdown-menu;
+  position: fixed;
+  top: $navbar-brand-height;
+  display: flex;
+  flex-direction: row !important; // !important ensures this remains set during collapse animation
+  flex-wrap: wrap;
+  align-items: center;
+  max-width: px(617);
+  padding: 0;
+  padding-right: $navbar-brand-menu-spacing;
+  padding-left: $navbar-brand-menu-spacing;
+
+  // This provides top and bottom padding but can be collapsed like content,
+  // thus avoiding a noticeable pause at the end of the animation.
+  &::before,
+  &::after {
+    display: block; // IE
+    width: 100%;
+    height: $navbar-brand-menu-spacing;
+    content: ' ';
+  }
+
+  &::after {
+    height: $navbar-brand-menu-spacing - px(3); // 3 less px to compensate for font line height
+  }
+
+  .brand-menu-item {
+    width: $navbar-brand-menu-item-size;
+    margin: $navbar-brand-menu-spacing;
+    line-height: $font-size-base;
+    text-align: center;
+    white-space: nowrap;
+
+    .icon {
+      display: block;
+      width: $navbar-brand-menu-item-size;
+      height: $navbar-brand-menu-item-size;
+      margin-bottom: $navbar-brand-menu-spacing / 2;
+      font-size: px(40);
+      line-height: px(75);
+      color: color('white');
+      background-color: color('blue');
+      border-radius: $border-radius;
+
+      &::before {
+        font-size: px(40);
+        line-height: $navbar-brand-menu-item-size;
+      }
+    }
+
+    &:hover {
+      .icon {
+        background-color: lighten(color('blue'), 10%);
+      }
+    }
+  }
+}
+
+
+// .navbar.navbar-primary .navbar-toggler {
+//   position: absolute;
+//   bottom: 0;
+//   left: 0; // set explicitly for IE
+//   z-index: $zindex-sticky;
+//   display: block;
+//   width: 100%;
+//   height: px(48);
+//   padding: 0;
+//   background-color: $navbar-brand-bg;
+//   border: 0;
+//   border-radius: 0;
+
+//   // Create a fade out effect as menu items overflow vertically
+//   &::before {
+//     position: absolute;
+//     bottom: 100%;
+//     left: 0;
+//     width: 100%;
+//     height: $navbar-nav-link-height-collapsed;
+//     pointer-events: none;
+//     content: ' ';
+//     background: linear-gradient(
+//       to bottom,
+//       rgba($navbar-bg, 0) 0%,
+//       $navbar-bg 100%
+//     );
+//   }
+
+//   .navbar-toggler-icon { color: yellow; }
+//   .navbar-toggler-icon::before {
+//     content: theme-icon('navbar-expand');
+//   }
+// }
+
+// .navbar-toggler-icon::before {
+//   content: "Look at this orange box.";
+//   background-color: #FFBA10;
+//   border-color: black;
+//   border-style: dotted;
+// }
