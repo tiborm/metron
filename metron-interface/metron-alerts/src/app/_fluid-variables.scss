@@ -11,7 +11,6 @@
 // Variables should follow the `$component-state-property-size` formula for
 // consistent naming. Ex: $nav-link-disabled-color and $modal-content-box-shadow-xs.
 @import "../../node_modules/bootstrap/scss/functions";
-@import "../../node_modules/bootstrap/scss/variables";
 @import "../../node_modules/bootstrap/scss/mixins";
 @import "./fluid-functions";
 // $root-font-size is assigned as the font-size of the root <html> element in _reboot.scss,
@@ -174,9 +173,9 @@ $icon-help:             "\3f"; /* '?' */
 $icon-sort-down:        "\5c"; /* '\' */
 $icon-collapse:         "\5e"; /* '^' */
 $icon-expand:           "\5f"; /* '_' */
-$icon-navbar-collapse:  "\7b"; /* '{' */
+$icon-navbar-collapse:  "\f100"; /* '{' */
 $icon-unsorted:         "\7c"; /* '|' */
-$icon-navbar-expand:    "\7d"; /* '}' */
+$icon-navbar-expand:    "\f101"; /* '}' */
 $icon-filter:           "\7e"; /* '~' */
 
 
@@ -1127,3 +1126,5 @@ $dashrows-row-padding: px(10);
 $dashrows-row-primary-font-size: px(20);
 $dashrows-row-secondary-font-size: px(12);
 $dashrows-row-details-padding: px(10);
+
+@import "../../node_modules/bootstrap/scss/variables";
