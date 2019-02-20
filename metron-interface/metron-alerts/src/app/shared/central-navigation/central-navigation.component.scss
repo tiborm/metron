@@ -11,18 +11,7 @@
 @import '../../fluid-variables';
 @import '../../../../node_modules/bootstrap/scss/navbar';
 
-/*
- * Copyright (c) 2011-2018, Hortonworks Inc. All rights reserved.
- * Except as expressly permitted in a written agreement between you
- * or your company and Hortonworks, Inc, any use, reproduction,
- * modification, redistribution, sharing, lending or other exploitation
- * of all or any part of the contents of this file is strictly prohibited.
- */
-
-// stylelint-disable selector-max-class, selector-max-compound-selectors, declaration-no-important
-
 .navbar {
-
   > .container,
   > .container-fluid {
     margin-right: $grid-gutter-width * -1;
@@ -80,8 +69,7 @@
     align-items: normal;
   }
 
-  &[class*="navbar-expand-"] {
-
+  &[class*='navbar-expand-'] {
     * {
       flex-direction: column;
     }
@@ -94,7 +82,7 @@
   &.collapsing {
     @extend .collapse;
 
-    .navbar-brand[data-toggle="collapse"]::after {
+    .navbar-brand[data-toggle='collapse']::after {
       opacity: 0;
     }
 
@@ -104,7 +92,7 @@
 
     // We use the [style] selector to determine the direction of the .collapsing behavior;
     // when it is present, the menu is expanding.
-    &[style^="height"]:not(.show) {
+    &[style^='height']:not(.show) {
       width: $navbar-width;
 
       & ~ *:not(.popover):not(.tooltip):not(.modal) {
@@ -112,14 +100,12 @@
       }
 
       .navbar-brand {
-
         .icon:first-child {
           margin-right: px(8);
         }
       }
 
       .navbar-nav {
-
         .nav-item.nav-link,
         .nav-item > .nav-link {
           width: $navbar-width;
@@ -127,14 +113,18 @@
           padding-left: $navbar-nav-link-icon-size !important; // !important ensures this remains set during collapse animation
 
           &.status::before {
-            left: px(30) !important; // !important ensures this remains set during collapse animation
+            left: px(
+              30
+            ) !important; // !important ensures this remains set during collapse animation
           }
 
           .icon:first-child {
-            width: $navbar-nav-link-icon-size !important;      // !important ensures this remains set during collapse animation
-            margin-right: px(8) !important;                    // !important ensures this remains set during collapse animation
-            font-size: $navbar-nav-link-icon-size !important;  // !important ensures this remains set during collapse animation
-            line-height: 0 !important;                         // !important ensures this remains set during collapse animation
+            width: $navbar-nav-link-icon-size !important; // !important ensures this remains set during collapse animation
+            margin-right: px(
+              8
+            ) !important; // !important ensures this remains set during collapse animation
+            font-size: $navbar-nav-link-icon-size !important; // !important ensures this remains set during collapse animation
+            line-height: 0 !important; // !important ensures this remains set during collapse animation
           }
         }
 
@@ -147,7 +137,6 @@
   }
 
   &.collapse {
-
     & ~ *:not(.popover):not(.tooltip):not(.modal) {
       @include transition($transition-collapse-all);
     }
@@ -165,14 +154,15 @@
       }
 
       .navbar-brand {
-
-        &[data-toggle="collapse"]::after {
+        &[data-toggle='collapse']::after {
           position: absolute;
           top: px(-18);
           left: px(32);
           margin: 0;
           font-size: px(16);
-          -ms-transform: translateY(px(29)); /* IE */ // stylelint-disable-line property-no-vendor-prefix
+          -ms-transform: translateY(
+            px(29)
+          ); /* IE */ // stylelint-disable-line property-no-vendor-prefix
         }
 
         .icon:first-child {
@@ -213,11 +203,10 @@
           }
         }
 
-        &[data-toggle="collapse"] {
-
+        &[data-toggle='collapse'] {
           &:hover + .navbar-nav.collapse,
           &:hover + .navbar-nav.collapsing,
-          & + .navbar-nav.collapse:hover  {
+          & + .navbar-nav.collapse:hover {
             position: fixed;
             display: block;
           }
@@ -246,7 +235,7 @@
       }
 
       .navbar-toggler-icon::before {
-        content: theme-icon("navbar-expand");
+        content: theme-icon('navbar-expand');
       }
     }
   }
@@ -258,10 +247,8 @@
       position: static;
     }
 
-    &[data-toggle="collapse"] {
-
+    &[data-toggle='collapse'] {
       .nav-item {
-
         &.nav-link,
         & > .nav-link {
           padding-right: px(32);
@@ -272,13 +259,12 @@
             right: px(12);
             font-family: FontAwesome;
             font-size: px(20);
-            content: theme-icon("collapse");
+            content: theme-icon('collapse');
             //@include transition($transition-collapse-all);
           }
         }
 
         &.dropdown {
-
           &.nav-link,
           & > .nav-link {
             padding-right: px(40);
@@ -291,10 +277,9 @@
       }
 
       &.collapsed {
-
         .nav-item.nav-link::after,
         .nav-item > .nav-link::after {
-          content: theme-icon("expand");
+          content: theme-icon('expand');
         }
       }
     }
@@ -325,10 +310,10 @@
           position: absolute;
           top: 50%;
           left: px(-7);
-          content: " ";
+          content: ' ';
           border: solid transparent;
           border-width: px(14);
-          border-left-color: theme-color("primary");
+          border-left-color: theme-color('primary');
           transform: translateY(-50%);
         }
 
@@ -348,7 +333,6 @@
       }
 
       &.dropdown {
-
         &.nav-link,
         & > .nav-link {
           padding-right: px(24);
@@ -367,7 +351,7 @@
             font-family: FontAwesome;
             line-height: 1.15;
             vertical-align: middle;
-            content: ":";
+            content: ':';
             border: 0;
           }
         }
@@ -415,8 +399,7 @@
     white-space: nowrap;
     background-color: $navbar-brand-bg;
 
-    &[data-toggle="collapse"] {
-
+    &[data-toggle='collapse'] {
       &::after {
         position: absolute;
         right: px(12.5);
@@ -424,12 +407,12 @@
         font-family: FontAwesome;
         font-size: px(30);
         line-height: px(60); // IE
-        color: theme-color("primary");
-        content: theme-icon("collapse");
+        color: theme-color('primary');
+        content: theme-icon('collapse');
       }
 
       &.collapsed::after {
-        content: theme-icon("expand");
+        content: theme-icon('expand');
       }
     }
 
@@ -489,8 +472,12 @@
       width: 100%;
       height: $navbar-nav-link-height-collapsed;
       pointer-events: none;
-      content: " ";
-      background: linear-gradient(to bottom, rgba($navbar-bg, 0) 0%, $navbar-bg 100%);
+      content: ' ';
+      background: linear-gradient(
+        to bottom,
+        rgba($navbar-bg, 0) 0%,
+        $navbar-bg 100%
+      );
     }
 
     &:hover,
@@ -515,15 +502,16 @@
         bottom: 0; /* Firefox, Safari */
         font-family: FontAwesome;
         font-size: px(20);
-        color: theme-color("primary");
-        content: theme-icon("navbar-collapse");
+        color: theme-color('primary');
+        content: theme-icon('navbar-collapse');
         transform: translateX(-50%); /* Firefox, Safari */
-        -ms-transform: translateX(50%); /* IE */ // stylelint-disable-line property-no-vendor-prefix, order/properties-order
+        -ms-transform: translateX(
+          50%
+        ); /* IE */ // stylelint-disable-line property-no-vendor-prefix, order/properties-order
       }
     }
 
     & ~ .navbar-collapse {
-
       // Padding is on last child rather than on parent due to IE
       > *:last-child {
         padding-bottom: $navbar-nav-link-height-collapsed * 2;
@@ -553,7 +541,7 @@
     display: block; // IE
     width: 100%;
     height: $navbar-brand-menu-spacing;
-    content: " ";
+    content: ' ';
   }
 
   &::after {
@@ -574,8 +562,8 @@
       margin-bottom: $navbar-brand-menu-spacing / 2;
       font-size: px(40);
       line-height: px(75);
-      color: color("white");
-      background-color: color("blue");
+      color: color('white');
+      background-color: color('blue');
       border-radius: $border-radius;
 
       &::before {
@@ -585,9 +573,8 @@
     }
 
     &:hover {
-
       .icon {
-        background-color: lighten(color("blue"), 10%);
+        background-color: lighten(color('blue'), 10%);
       }
     }
   }
