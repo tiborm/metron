@@ -1,20 +1,37 @@
 <nav id="navbarToggle" class="navbar navbar-primary navbar-expand-sm collapse show">
-  <a class="navbar-brand collapsed" href="#top" data-toggle="collapse" data-target="#navbarBrandToggle" aria-controls="navbarBrandToggle"
+  <a class="navbar-brand" href="#top"
     aria-expanded="true" aria-label="Toggle product navigation">
     <i class="icon fa fa-cube"></i>
-    <div style="line-height: 1.15">Fluid<br />Bootstrap</div>
+    <div style="line-height: 1.15">Apache<br />Metron</div>
   </a>
 
   <div class="navbar-nav">
-    <div id="navbarItemsToggle" class="navbar-nav collapse">
-      <a class="nav-item nav-link status status-success" href="#" target="_blank" data-toggle="tooltip" data-placement="right" data-condition="truncated" title="test">
-        <span class="icon"></span>
-        TEST
-      </a>
-      <a class="nav-item nav-link status status-danger" href="#" target="_blank" data-toggle="tooltip" data-placement="right" data-condition="truncated" title="test">
-        <span class="icon"></span>
-        TEST 2
-      </a>
+    <div *ngFor="let link of links">
+      <div class="navbar-nav dropdown"
+            data-toggle="collapse"
+            href="#navbarItemsToggle"
+            aria-controls="navbarToggle"
+            role="button"
+            aria-expanded="true">
+        <span class="nav-item nav-link">
+          <i class="icon fa fa-exclamation-triangle" aria-hidden="true"></i> {{ link.linkName }}
+        </span>
+      </div>
+      <div class="collapse show" id="navbarItemsToggle" *ngIf="link.subLinks">
+        <ul class="navbar-nav">
+          <li *ngFor="let subLink of link.subLinks">
+            <a class="nav-item nav-link"
+                [routerLink]="subLink.routerLink"
+                routerLinkActive="active"
+                data-toggle="tooltip"
+                data-placement="right"
+                data-condition="truncated"
+                title="Alerts">
+                <i class="icon fa" aria-hidden="true"></i> {{ subLink.linkName }}
+            </a>
+          </li>
+        </ul>
+      </div>
     </div>
   </div>
 
