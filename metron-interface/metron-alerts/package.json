@@ -5,16 +5,16 @@
   "angular-cli": {},
   "scripts": {
     "build": "./node_modules/@angular/cli/bin/ng build --prod",
-    "start": "ng serve --aot",
+    "start": "ng serve --aot --prod",
+    "start:prod": "ng serve --prod",
     "lint": "tslint \"src/**/*.ts\"",
     "test": "ng test --browsers=Chrome",
-    "testCI": "ng test --watch=false --browsers=ChromeHeadless && npm run cypress:ci",
-    "pree2e": "webdriver-manager update",
-    "e2e": "protractor-flake --protractor-path=./node_modules/.bin/protractor --max-attempts=3 -- ./protractor.conf.js",
-    "cypress:run": "cypress run",
+    "test:ci": "ng test --watch=false --browsers=ChromeHeadless && npm run cypress:ci",
+    "cypress": "cypress run",
     "cypress:open": "cypress open",
-    "cypress:ci": "ng build --prod && run-p --race start:ci cypress:run",
-    "start:ci": "node ./scripts/alerts-server.js -c alerts_ui_cypress.yml"
+    "cypress:ci": "start-server-and-test start:prod http-get://localhost:4200 cypress",
+    "pree2e": "webdriver-manager update",
+    "e2e": "protractor-flake --protractor-path=./node_modules/.bin/protractor --max-attempts=3 -- ./protractor.conf.js"
   },
   "private": true,
   "dependencies": {
