@@ -61,23 +61,23 @@
                         </configuration>
                     </execution>
                     <execution>
-                        <phase>generate-resources</phase>
-                        <id>npm run build</id>
+                        <phase>test</phase>
+                        <id>npm test:ci</id>
                         <goals>
                             <goal>npm</goal>
                         </goals>
                         <configuration>
-                            <arguments>run build</arguments>
+                            <arguments>run test:ci</arguments>
                         </configuration>
                     </execution>
                     <execution>
                         <phase>test</phase>
-                        <id>npm testCI</id>
+                        <id>npm cypress:ci</id>
                         <goals>
                             <goal>npm</goal>
                         </goals>
                         <configuration>
-                            <arguments>run testCI</arguments>
+                            <arguments>run cypress:ci</arguments>
                         </configuration>
                     </execution>
                 </executions>
