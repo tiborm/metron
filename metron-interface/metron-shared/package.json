@@ -1,7 +1,9 @@
 {
   "name": "metron-shared",
   "version": "0.0.0",
+  "main": "dist/metron-shared/main.js",
   "scripts": {
+    "postinstall": "ng build metron-shared",
     "ng": "ng",
     "start": "ng serve",
     "build": "ng build",
