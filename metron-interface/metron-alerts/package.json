@@ -35,7 +35,7 @@
     "core-js": "^2.4.1",
     "font-awesome": "^4.7.0",
     "jquery": "^3.3.1",
-    "metron-shared-lib": "file:../metron-shared/projects/metron-shared-lib",
+    "metron-shared": "file:../metron-shared/dist/metron-shared",
     "moment": "^2.22.2",
     "ng2-dragula": "^1.5.0",
     "pikaday-time": "^1.6.1",
