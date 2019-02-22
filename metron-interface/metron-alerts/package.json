@@ -2,7 +2,6 @@
   "name": "metron-alerts",
   "version": "0.7.2",
   "license": "Apache-2.0",
-  "angular-cli": {},
   "scripts": {
     "build": "ng build --prod",
     "start": "ng serve --aot",
