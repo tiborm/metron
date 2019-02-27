@@ -20,11 +20,11 @@ addons:
   chrome: stable
 
 env:
-#  - SCRIPT="mvn surefire:test@unit-tests -T 2C"
-#  - SCRIPT="mvn surefire:test@integration-tests"
-#  - SCRIPT="mvn clean site --projects site-book"
+  - SCRIPT="mvn surefire:test@unit-tests -T 2C"
+  - SCRIPT="mvn surefire:test@integration-tests"
+  - SCRIPT="mvn clean site --projects site-book"
   - SCRIPT="./metron-interface/scripts/run-all-ui-test.sh"
-#  - SCRIPT="./dev-utilities/build-utils/verify_licenses.sh"
+  - SCRIPT="./dev-utilities/build-utils/verify_licenses.sh"
 
 install: true
 language: java
