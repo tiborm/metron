@@ -15,6 +15,8 @@
 #  See the License for the specific language governing permissions and
 #  limitations under the License.
 #
+current_path=$( cd "$(dirname "${BASH_SOURCE[0]}")" ; pwd -P )
+cd "$current_path/.."
 
 echo ""
 echo "      _/_/    _/                        _/                    _/    _/  _/_/_/   "
