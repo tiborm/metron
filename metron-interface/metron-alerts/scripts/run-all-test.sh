@@ -27,7 +27,7 @@ npm run cypress:ci
 
 # licence check needs an initial build step
 npm run build
-echo "┌───────────────────────────────────┐"
-echo "| Running license header check...   |"
-echo "└───────────────────────────────────┘"
+echo "┌─────────────────────────────────────┐"
+echo "| Checking Apache license headers...  |"
+echo "└─────────────────────────────────────┘"
 ./scripts/prepend_license_header.sh
