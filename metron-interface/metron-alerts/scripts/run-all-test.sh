@@ -18,7 +18,7 @@
 current_path=$( cd "$(dirname "${BASH_SOURCE[0]}")" ; pwd -P )
 cd "$current_path/.."
 
-nvm install
+source ~/.nvm/nvm.sh; nvm install; node --version
 
 npm ci
 
