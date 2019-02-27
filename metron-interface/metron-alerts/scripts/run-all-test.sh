@@ -26,5 +26,5 @@ npm run test:ci
 npm run cypress:ci
 
 # licence check needs an initial build step
-npm run build
+# npm run build
 ./scripts/prepend_license_header.sh
