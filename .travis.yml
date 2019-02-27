@@ -20,8 +20,8 @@ addons:
   chrome: stable
 
 env:
-  - SCRIPT="mvn install -T 2C -q -DskipTests=true -Dmaven.javadoc.skip=true -B -V && mvn surefire:test@unit-tests -T 2C"
-  - SCRIPT="mvn install -T 2C -q -DskipTests=true -Dmaven.javadoc.skip=true -B -V && mvn surefire:test@integration-tests"
+  - SCRIPT="mvn install -T 2C -q -DskipTests=true -Dmaven.javadoc.skip=true -B -V surefire:test@unit-tests -T 2C"
+  - SCRIPT="mvn install -T 2C -q -DskipTests=true -Dmaven.javadoc.skip=true -B -V surefire:test@integration-tests"
   - SCRIPT="mvn clean site --projects site-book"
   - SCRIPT="./metron-interface/scripts/run-all-ui-test.sh"
   - SCRIPT="./dev-utilities/build-utils/verify_licenses.sh"
