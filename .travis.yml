@@ -35,8 +35,8 @@ before_install:
   - unzip -qq apache-maven-3.3.9-bin.zip
   - export M2_HOME=$PWD/apache-maven-3.3.9
   - export PATH=$M2_HOME/bin:$PATH
-  - npm config set cache $HOME/.npm-cache --global
-  - npm config set prefix $HOME/.npm-prefix --global
+#  - npm config set cache $HOME/.npm-cache --global
+#  - npm config set prefix $HOME/.npm-prefix --global
 
 # install:
 #  - time mvn install -T 2C -q -DskipTests=true -Dmaven.javadoc.skip=true -B -V
