@@ -18,6 +18,8 @@
 current_path=$( cd "$(dirname "${BASH_SOURCE[0]}")" ; pwd -P )
 cd "$current_path/.."
 
+nvm install
+
 npm ci
 
 npm run test:ci
