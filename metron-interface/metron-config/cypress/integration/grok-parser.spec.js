@@ -78,7 +78,7 @@ describe('Grok Parser Creation', function() {
 
     cy.get('metron-config-sensor-grok button').contains('SAVE').click();
 
-    const expectedStatement = '%{NUMBER:timestamp} %{INT:elapsed} '
+    const expectedStatement = '%{NUMBER:timestamp} %{INT:elapsed} BROKEN'
 
     cy.get('[formcontrolname="grokStatement"]').should('have.value', expectedStatement);
   });
