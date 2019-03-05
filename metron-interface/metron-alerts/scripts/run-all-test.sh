@@ -15,6 +15,8 @@
 #  See the License for the specific language governing permissions and
 #  limitations under the License.
 #
+set -e
+
 current_path=$( cd "$(dirname "${BASH_SOURCE[0]}")" ; pwd -P )
 cd "$current_path/.."
 
