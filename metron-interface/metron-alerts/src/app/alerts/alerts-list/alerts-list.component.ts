@@ -51,10 +51,10 @@ export class AlertsListComponent implements OnInit, OnDestroy {
   selectedAlerts: Alert[] = [];
   alerts: any[] = [];
   colNumberTimerId: number;
-  refreshInterval = RefreshInterval.ONE_MIN;
+  refreshInterval = RefreshInterval.TEN_MIN;
   refreshTimer: Subscription;
-  pauseRefresh = false;
-  lastPauseRefreshValue = false;
+  pauseRefresh = true;
+  lastPauseRefreshValue = true;
   threatScoreFieldName = 'threat:triage:score';
 
   @ViewChild('table') table: ElementRef;
@@ -131,8 +131,15 @@ export class AlertsListComponent implements OnInit, OnDestroy {
       this.configureTableService.getTableMetadata(),
       this.clusterMetaDataService.getDefaultColumns()
     ).subscribe((response: any) => {
-      this.prepareData(response[0], response[1], resetPaginationForSearch);
+      this.prepareData(response[0], response[1]);
+      this.refreshAlertData(resetPaginationForSearch);
     });
+  }
+
+  private refreshAlertData(resetPaginationForSearch: boolean) {
+    if (this.alerts.length) {
+      this.search(resetPaginationForSearch);
+    }
   }
 
   getCollapseComponentData(data: any) {
@@ -240,15 +247,13 @@ export class AlertsListComponent implements OnInit, OnDestroy {
     this.calcColumnsToDisplay();
   }
 
-  prepareData(tableMetaData: TableMetadata, defaultColumns: ColumnMetadata[], resetPagination: boolean) {
+  prepareData(tableMetaData: TableMetadata, defaultColumns: ColumnMetadata[]) {
     this.tableMetaData = tableMetaData;
     this.pagingData.size = this.tableMetaData.size;
     this.refreshInterval = this.tableMetaData.refreshInterval;
 
     this.updateConfigRowsSettings();
     this.prepareColumnData(tableMetaData.tableColumns, defaultColumns);
-
-    this.search(resetPagination);
   }
 
   processEscalate() {
