@@ -18,7 +18,7 @@ class FakeAppConfigService {
   }
 }
 
-fdescribe('ContextMenuService', () => {
+describe('ContextMenuService', () => {
 
   let contextMenuSvc: ContextMenuService;
   let mockBackend: HttpTestingController;
