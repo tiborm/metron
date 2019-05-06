@@ -373,9 +373,9 @@ export class SensorParserListComponent implements OnInit, OnDestroy {
               });
           } else {
             // otherwise we want to add the item to a certain group IF it's allowed
-            this.store.pipe(select(fromReducers.getGroupByName), first())
-              .subscribe((getGroup) => {
-                const group = getGroup(groupName);
+            this.store.pipe(select(fromReducers.getMergedConfigs), first())
+              .subscribe((parsers) => {
+                const group = parsers.find(parser => parser.config instanceof ParserGroupModel && parser.config.name === groupName);
                 if (!group.isRunning && !group.isDeleted && !group.startStopInProgress) {
                   this.store.dispatch(new fromActions.AddToGroup({
                     groupName: group.config.getName(),
@@ -397,23 +397,44 @@ export class SensorParserListComponent implements OnInit, OnDestroy {
           }
         }
       } else {
-        if (referenceMetaInfo.isGroup
-          && !referenceMetaInfo.isDeleted
-          && !referenceMetaInfo.isRunning
-          && !referenceMetaInfo.startStopInProgress) {
-
-          this.store.dispatch(new fromActions.AddToGroup({
-            groupName: referenceMetaInfo.config.getName(),
-            parserIds: [dragged.config.getName()]
-          }));
-          this.store.dispatch(new fromActions.InjectAfter({
-            reference: referenceMetaInfo.config.getName(),
-            parserId: dragged.config.getName(),
-          }));
+        if (referenceMetaInfo.isGroup) {
+          if (
+               !referenceMetaInfo.isDeleted
+            && !referenceMetaInfo.isRunning
+            && !referenceMetaInfo.startStopInProgress
+          ) {
+            this.store.dispatch(new fromActions.AddToGroup({
+              groupName: referenceMetaInfo.config.getName(),
+              parserIds: [dragged.config.getName()]
+            }));
+            this.store.dispatch(new fromActions.InjectAfter({
+              reference: referenceMetaInfo.config.getName(),
+              parserId: dragged.config.getName(),
+            }));
+          }
         } else {
-          this.store.dispatch(new fromActions.SetDropTarget(referenceMetaInfo.config.getName()));
-          this.store.dispatch(new fromActions.SetTargetGroup(referenceMetaInfo.config.group || ''));
-          this.router.navigateByUrl('/sensors(dialog:sensor-aggregate)');
+          if (!referenceMetaInfo.isRunning) {
+
+            const groupName = this.hasGroup(referenceMetaInfo)
+              ? referenceMetaInfo.config.group
+              : '';
+
+            if (!groupName) {
+              this.store.dispatch(new fromActions.SetDropTarget(referenceMetaInfo.config.getName()));
+              this.store.dispatch(new fromActions.SetTargetGroup(referenceMetaInfo.config.group || ''));
+              this.router.navigateByUrl('/sensors(dialog:sensor-aggregate)');
+            } else {
+              this.store.pipe(select(fromReducers.getMergedConfigs), first())
+                .subscribe((parsers) => {
+                  const group = parsers.find(parser => parser.config instanceof ParserGroupModel && parser.config.name === groupName);
+                  if (!group.isRunning && !group.isDeleted && !group.startStopInProgress) {
+                    this.store.dispatch(new fromActions.SetDropTarget(referenceMetaInfo.config.getName()));
+                    this.store.dispatch(new fromActions.SetTargetGroup(referenceMetaInfo.config.group || ''));
+                    this.router.navigateByUrl('/sensors(dialog:sensor-aggregate)');
+                  }
+                });
+            }
+          }
         }
       }
 
