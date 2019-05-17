@@ -15,31 +15,5 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import {FieldTransformer} from './field-transformer';
-export class SensorParserConfig {
-  parserClassName: string;
-  filterClassName: string;
-  sensorTopic: string;
-  writerClassName: string;
-  errorWriterClassName: string;
-  invalidWriterClassName: string;
-  parserConfig: {};
-  fieldTransformations: FieldTransformer[];
-  numWorkers: number;
-  numAckers: number;
-  spoutParallelism: number;
-  spoutNumTasks: number;
-  parserParallelism: number;
-  parserNumTasks: number;
-  errorWriterParallelism: number;
-  errorWriterNumTasks: number;
-  spoutConfig: {};
-  stormConfig: {};
 
-  constructor() {
-    this.parserConfig = {};
-    this.fieldTransformations = [];
-    this.spoutConfig = {};
-    this.stormConfig = {};
-  }
-}
+export * from './sensors.actions';

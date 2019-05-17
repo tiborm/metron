@@ -15,6 +15,14 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-export * from './environment';
-export * from './app.component';
-export * from './app.routes';
+import { Pipe, PipeTransform } from '@angular/core';
+import { TopologyStatus } from '../../model/topology-status';
+
+@Pipe({ name: 'latency' })
+export class SensorParserLatencyPipe implements PipeTransform {
+  transform(status: TopologyStatus): string {
+    return status && status.status === 'ACTIVE' && status.throughput != null
+      ? (status.latency + 'ms')
+      : '-';
+  }
+}

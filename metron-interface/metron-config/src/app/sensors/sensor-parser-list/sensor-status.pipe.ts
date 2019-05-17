@@ -15,6 +15,24 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-export * from './environment';
-export * from './app.component';
-export * from './app.routes';
+import { Pipe, PipeTransform } from '@angular/core';
+
+@Pipe({ name: 'sensorStatus' })
+export class SensorStatusPipe implements PipeTransform {
+  transform(status: string): string {
+    switch (status) {
+      case 'ACTIVE':
+        return 'Running';
+      case 'KILLED':
+        return 'Stopped';
+      case 'INACTIVE':
+        return 'Disabled';
+      case 'STOPPING':
+        return 'Stopping';
+      case 'ERROR':
+        return 'Error';
+      default:
+      return 'Stopped';
+    }
+  }
+}

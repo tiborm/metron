@@ -15,6 +15,18 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-export * from './environment';
-export * from './app.component';
-export * from './app.routes';
+import { NgModule } from '@angular/core';
+import { routing } from './sensor-parser-aggregate-sidebar.routing';
+import { SensorParserAggregateSidebarComponent } from './sensor-parser-aggregate-sidebar.component';
+import { SharedModule } from '../../shared/shared.module';
+
+@NgModule({
+  imports: [
+    routing,
+    SharedModule
+  ],
+  declarations: [
+    SensorParserAggregateSidebarComponent
+  ],
+})
+export class SensorParserAggregateSidebarModule {}
