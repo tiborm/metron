@@ -15,6 +15,9 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-export * from './environment';
-export * from './app.component';
-export * from './app.routes';
+
+ import { SensorsEffects } from './sensors.effects';
+
+ export * from './sensors.effects';
+
+ export const effects = [ SensorsEffects ];

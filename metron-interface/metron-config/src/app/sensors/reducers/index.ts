@@ -15,6 +15,25 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-export * from './environment';
-export * from './app.component';
-export * from './app.routes';
+import { ActionReducerMap } from '@ngrx/store';
+import * as fromSensors from './sensors.reducers';
+
+export * from './sensors.reducers';
+
+export interface State {
+  sensors: SensorState
+}
+
+export interface SensorState {
+  parsers: fromSensors.ParserState;
+  groups: fromSensors.GroupState;
+  statuses: fromSensors.StatusState;
+  layout: fromSensors.LayoutState
+}
+
+export const reducers: ActionReducerMap<SensorState> = {
+  parsers: fromSensors.parserConfigsReducer,
+  groups: fromSensors.groupConfigsReducer,
+  statuses: fromSensors.parserStatusReducer,
+  layout: fromSensors.layoutReducer
+}

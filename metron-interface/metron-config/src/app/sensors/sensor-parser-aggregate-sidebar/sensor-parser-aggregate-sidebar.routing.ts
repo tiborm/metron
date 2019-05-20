@@ -15,6 +15,14 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-export * from './environment';
-export * from './app.component';
-export * from './app.routes';
+import { ModuleWithProviders }  from '@angular/core';
+import { Routes, RouterModule } from '@angular/router';
+import { SensorParserAggregateSidebarComponent } from './sensor-parser-aggregate-sidebar.component';
+import { AuthGuard } from '../../shared/auth-guard';
+
+const routes: Routes = [
+  { path: 'sensor-aggregate', component: SensorParserAggregateSidebarComponent, canActivate: [ AuthGuard ], outlet: 'dialog'},
+  { path: 'sensor-aggregate/:id', component: SensorParserAggregateSidebarComponent, canActivate: [ AuthGuard ], outlet: 'dialog'}
+];
+
+export const routing: ModuleWithProviders = RouterModule.forChild(routes);
