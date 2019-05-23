@@ -8,7 +8,7 @@ import {
   OnInit
 } from '@angular/core';
 import { ContextMenuService } from './context-menu.service';
-import { fromEvent, Subject } from 'rxjs';
+import { fromEvent, Subject, merge } from 'rxjs';
 import Popper from 'popper.js';
 import { takeUntil, map } from 'rxjs/operators';
 import { DynamicMenuItem } from './dynamic-item.model';
@@ -66,6 +66,17 @@ export class ContextMenuComponent implements OnInit, AfterContentInit, OnDestroy
     fromEvent(this.host.nativeElement, 'click')
       .pipe(takeUntil(this.destroyed$))
       .subscribe(this.toggle.bind(this));
+
+    merge(
+      fromEvent(this.host.nativeElement, 'mouseover'),
+      fromEvent(this.host.nativeElement, 'mouseout'),
+    )
+      .pipe(takeUntil(this.destroyed$))
+      .subscribe((event: MouseEvent) => {
+        if (this.isOpen) {
+          event.stopPropagation();
+        }
+      });
   }
 
   private toggle($event: MouseEvent) {
