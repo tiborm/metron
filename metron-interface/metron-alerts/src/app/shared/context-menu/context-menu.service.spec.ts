@@ -1,7 +1,8 @@
 import { TestBed, async } from '@angular/core/testing';
 import {
   HttpClientTestingModule,
-  HttpTestingController
+  HttpTestingController,
+  TestRequest
 } from '@angular/common/http/testing';
 import { ContextMenuService } from './context-menu.service';
 import { AppConfigService } from 'app/service/app-config.service';
@@ -41,12 +42,13 @@ describe('ContextMenuService', () => {
   });
 
   it('should invoke context menu endpoint only once', () => {
-    contextMenuSvc.getConfig().subscribe((result) => {
-      expect(req.request.method).toEqual('GET');
-    });
+    contextMenuSvc.getConfig().subscribe();
 
-    const req = mockBackend.expectOne(FAKE_CONFIG_SVC_URL);
+    const req: TestRequest = mockBackend.expectOne(FAKE_CONFIG_SVC_URL);
     req.flush({ menuKey: [] });
+
+    expect(req.request.method).toEqual('GET');
+    mockBackend.verify();
   });
 
   it('getConfig() should return with the result of config svc', () => {
