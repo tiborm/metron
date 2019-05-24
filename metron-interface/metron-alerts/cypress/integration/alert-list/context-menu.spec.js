@@ -42,6 +42,8 @@ context('Context Menu on Alerts', () => {
     cy.get('[name="user"]').type('user');
     cy.get('[name="password"]').type('password');
     cy.contains('LOG IN').click();
+
+    cy.get('[data-qe-id="alert-search-btn"]').click();
   });
 
   it('clicking on a table cell should show context menu', () => {
