@@ -39,7 +39,7 @@
         <dependency>
             <groupId>org.apache.curator</groupId>
             <artifactId>curator-client</artifactId>
-            <version>2.10.0</version>
+            <version>4.2.0</version>
         </dependency>
         <dependency>
             <groupId>org.apache.storm</groupId>
@@ -266,8 +266,7 @@
                             </relocations>
                             <transformers>
                                 <transformer implementation="org.atteo.classindex.ClassIndexTransformer"/>
-                                <transformer
-                                  implementation="org.apache.maven.plugins.shade.resource.DontIncludeResourceTransformer">
+                                <transformer implementation="org.apache.maven.plugins.shade.resource.DontIncludeResourceTransformer">
                                      <resources>
                                         <resource>.yaml</resource>
                                         <resource>LICENSE.txt</resource>
@@ -280,11 +279,9 @@
                                     <addHeader>false</addHeader>
                                     <projectName>${project.name}</projectName>
                                 </transformer-->
-                                <transformer
-                                        implementation="org.apache.maven.plugins.shade.resource.ServicesResourceTransformer" />
-                                <transformer
-                                        implementation="org.apache.maven.plugins.shade.resource.ManifestResourceTransformer">
-                                    <mainClass></mainClass>
+                                <transformer implementation="org.apache.maven.plugins.shade.resource.ServicesResourceTransformer"/>
+                                <transformer implementation="org.apache.maven.plugins.shade.resource.ManifestResourceTransformer">
+                                    <mainClass/>
                                 </transformer>
                             </transformers>
                         </configuration>
