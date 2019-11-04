@@ -70,6 +70,7 @@
         (drop)="onDrop(sensor, $event)"
         (dragenter)="onDragEnter(sensor, $event)"
         (dragleave)="onDragLeave(sensor, $event)"
+        attr.data-qe-id="{{ 'drag-handle-' + sensor.config.getName() }}"
       >
       <td
         class="drag-handle"
