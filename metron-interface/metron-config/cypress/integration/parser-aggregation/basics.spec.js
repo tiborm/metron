@@ -18,6 +18,18 @@
  */
 describe('PCAP Tab', () => {
 
+  const startDrag = (sensorName) => {
+    return cy.get(`[data-qe-id="drag-handle-${sensorName}"]`).then(el => {
+      const event = new MouseEvent('dragstart');
+      event.dataTransfer = new DataTransfer();
+      el[0].dispatchEvent(event);
+    });
+  }
+
+  const dropOn = (sensorName) => {
+    cy.get(`[data-qe-id="drag-handle-${sensorName}"]`).then(el => el[0].dispatchEvent(new MouseEvent('drop')));
+  }
+
   beforeEach(() => {
     cy.server();
     cy.route({
@@ -40,12 +52,8 @@ describe('PCAP Tab', () => {
   });
 
   it('Parser aggregate creation', () => {
-    cy.get('[data-qe-id="drag-handle-snort"]').then(el => {
-      const event = new MouseEvent('dragstart');
-      event.dataTransfer = new DataTransfer();
-      el[0].dispatchEvent(event);
-    });
-    cy.get('[data-qe-id="drag-handle-bro"]').then(el => el[0].dispatchEvent(new MouseEvent('drop')));
+    startDrag('snort');
+    dropOn('bro');
   });
 
 });
