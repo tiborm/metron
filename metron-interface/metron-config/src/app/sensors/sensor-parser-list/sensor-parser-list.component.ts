@@ -52,7 +52,7 @@ export class SensorParserListComponent implements OnInit, OnDestroy {
 
   private mergedConfigSub: Subscription;
   private isStatusPolling: boolean;
-  private draggedElement: ParserMetaInfoModel;
+  private dragSourceSensorName: string;
 
   constructor(private stormService: StormService,
               private router: Router,
@@ -251,20 +251,26 @@ export class SensorParserListComponent implements OnInit, OnDestroy {
     this.selectedSensors = [];
   }
 
-  onDragStart(metaInfo: ParserMetaInfoModel, e: DragEvent) {
-    this.draggedElement = metaInfo;
-    e.dataTransfer.setDragImage((e.target as HTMLElement).parentElement, 10, 17);
-    this.store.dispatch(new fromActions.SetDragged(metaInfo.config.getName()));
+  private getSensorMetaByName(sensorName: string, sensors = this.sensors) {
+    return sensors.find((sensorMeta) => {
+      return sensorMeta.config.getName() === sensorName;
+    });
   }
 
-  onDragOver(sensor: ParserMetaInfoModel, e: DragEvent) {
+  onDragStart(sensorName: string, e: DragEvent) {
+    this.dragSourceSensorName = sensorName;
+    e.dataTransfer.setDragImage((e.target as HTMLElement).parentElement, 10, 17);
+    this.store.dispatch(new fromActions.SetDragged(sensorName));
+  }
+
+  onDragOver(sensorName: string, e: DragEvent) {
     const el = (e.currentTarget as HTMLElement);
     const rect = el.getBoundingClientRect();
     const mouseX = e.pageX;
     const mouseY = e.pageY;
 
     if (mouseX > rect.left + 8 && mouseY > rect.top + 8 && mouseX <= (rect.right - 8) && mouseY <= (rect.bottom - 8)) {
-      this.setDraggedOver(sensor.config.getName());
+      this.setDraggedOver(sensorName);
     } else {
       this.removeDraggedOver();
     }
@@ -283,11 +289,14 @@ export class SensorParserListComponent implements OnInit, OnDestroy {
     e.preventDefault();
   }
 
-  onDragEnter(sensor: ParserMetaInfoModel) {
+  onDragEnter(sensorName: string) {
+    const sensor = this.getSensorMetaByName(sensorName);
     const groupName = sensor.config.group;
+
     if (!groupName) {
       return;
     }
+
     setTimeout(() => {
       if (!sensor.isRunning && !sensor.isDeleted && !sensor.startStopInProgress) {
         this.setHighlighted(groupName);
@@ -295,7 +304,8 @@ export class SensorParserListComponent implements OnInit, OnDestroy {
     });
   }
 
-  onDragLeave(sensor: ParserMetaInfoModel, e: DragEvent) {
+  onDragLeave(sensorName: string, e: DragEvent) {
+    const sensor = this.getSensorMetaByName(sensorName);
     const el = e.currentTarget as HTMLElement;
     const rect = el.getBoundingClientRect();
     const mouseX = e.pageX;
@@ -316,58 +326,59 @@ export class SensorParserListComponent implements OnInit, OnDestroy {
     }
   }
 
-  onDrop(referenceMetaInfo: ParserMetaInfoModel, e: DragEvent) {
+  onDrop(dragTargetSensorName: string, e: DragEvent) {
     this.removeDraggedOver();
     this.removeHighlighted();
 
     const el = e.currentTarget as HTMLElement;
-    const dragged = this.draggedElement;
+    const dragSourceMeta = this.getSensorMetaByName(this.dragSourceSensorName);
+    const dragTargetMeta = this.getSensorMetaByName(dragTargetSensorName);
 
     // If not dropping it on itself
-    if (dragged.config.getName() !== referenceMetaInfo.config.getName()) {
+    if (this.dragSourceSensorName !== dragTargetSensorName) {
 
       // If being about to drop after of before a certan row item
       if (el.classList.contains('drop-before') || el.classList.contains('drop-after')) {
 
         // if being a group OR the dragged element is not in the same group as the reference
-        if (referenceMetaInfo.isGroup || dragged.config.group !== referenceMetaInfo.config.group) {
+        if (dragTargetMeta.isGroup || dragSourceMeta.config.group !== dragTargetMeta.config.group) {
 
           // If the reference item has a group --> put the dragged element to the same group
           // If the reference item is a group --> put the dragged element to that group
           // Otherwise remove the dragged element from any group
-          const groupName = this.hasGroup(referenceMetaInfo)
-              ? referenceMetaInfo.config.group
-              : referenceMetaInfo.isGroup
-                ? referenceMetaInfo.config.getName()
+          const groupName = this.hasGroup(dragTargetMeta)
+              ? dragTargetMeta.config.group
+              : dragTargetMeta.isGroup
+                ? dragTargetSensorName
                 : '';
           const unsetGroup = groupName === '';
 
-          if (unsetGroup && dragged.config.group) {
+          if (unsetGroup && dragSourceMeta.config.group) {
             // In case of unsetting the group...
             this.store.pipe(select(fromReducers.getGroupByName), first())
               .subscribe((getGroup) => {
-                const group = getGroup(dragged.config.group);
+                const group = getGroup(dragSourceMeta.config.group);
                 // We have to check if the group has any other items remaining
                 if ((group.config as ParserGroupModel).sensors.length === 0) {
                   // If not, we have to remove the group too
                   this.store.dispatch(new fromActions.MarkAsDeleted({
-                    parserIds: [dragged.config.group]
+                    parserIds: [dragSourceMeta.config.group]
                   }));
                 }
                 // and then remove the dragged element from any group
                 this.store.dispatch(new fromActions.AddToGroup({
                   groupName: '', // <-- it's removing from any groups
-                  parserIds: [dragged.config.getName()]
+                  parserIds: [this.dragSourceSensorName]
                 }));
                 if (el.classList.contains('drop-before')) {
                   this.store.dispatch(new fromActions.InjectBefore({
-                    reference: referenceMetaInfo.config.getName(),
-                    parserId: dragged.config.getName(),
+                    reference: dragTargetSensorName,
+                    parserId: this.dragSourceSensorName,
                   }));
                 } else if (el.classList.contains('drop-after')) {
                   this.store.dispatch(new fromActions.InjectAfter({
-                    reference: referenceMetaInfo.config.getName(),
-                    parserId: dragged.config.getName(),
+                    reference: dragTargetSensorName,
+                    parserId: this.dragSourceSensorName,
                   }));
                 }
               });
@@ -379,17 +390,17 @@ export class SensorParserListComponent implements OnInit, OnDestroy {
                 if (!group.isRunning && !group.isDeleted && !group.startStopInProgress) {
                   this.store.dispatch(new fromActions.AddToGroup({
                     groupName: group.config.getName(),
-                    parserIds: [dragged.config.getName()]
+                    parserIds: [this.dragSourceSensorName]
                   }));
                   if (el.classList.contains('drop-before')) {
                     this.store.dispatch(new fromActions.InjectBefore({
-                      reference: referenceMetaInfo.config.getName(),
-                      parserId: dragged.config.getName(),
+                      reference: dragTargetSensorName,
+                      parserId: this.dragSourceSensorName,
                     }));
                   } else if (el.classList.contains('drop-after')) {
                     this.store.dispatch(new fromActions.InjectAfter({
-                      reference: referenceMetaInfo.config.getName(),
-                      parserId: dragged.config.getName(),
+                      reference: dragTargetSensorName,
+                      parserId: this.dragSourceSensorName,
                     }));
                   }
                 }
@@ -397,39 +408,39 @@ export class SensorParserListComponent implements OnInit, OnDestroy {
           }
         }
       } else {
-        if (referenceMetaInfo.isGroup) {
+        if (dragTargetMeta.isGroup) {
           if (
-               !referenceMetaInfo.isDeleted
-            && !referenceMetaInfo.isRunning
-            && !referenceMetaInfo.startStopInProgress
+               !dragTargetMeta.isDeleted
+            && !dragTargetMeta.isRunning
+            && !dragTargetMeta.startStopInProgress
           ) {
             this.store.dispatch(new fromActions.AddToGroup({
-              groupName: referenceMetaInfo.config.getName(),
-              parserIds: [dragged.config.getName()]
+              groupName: dragTargetSensorName,
+              parserIds: [this.dragSourceSensorName]
             }));
             this.store.dispatch(new fromActions.InjectAfter({
-              reference: referenceMetaInfo.config.getName(),
-              parserId: dragged.config.getName(),
+              reference: dragTargetSensorName,
+              parserId: this.dragSourceSensorName,
             }));
           }
         } else {
-          if (!referenceMetaInfo.isRunning) {
+          if (!dragTargetMeta.isRunning) {
 
-            const groupName = this.hasGroup(referenceMetaInfo)
-              ? referenceMetaInfo.config.group
+            const groupName = this.hasGroup(dragTargetMeta)
+              ? dragTargetMeta.config.group
               : '';
 
             if (!groupName) {
-              this.store.dispatch(new fromActions.SetDropTarget(referenceMetaInfo.config.getName()));
-              this.store.dispatch(new fromActions.SetTargetGroup(referenceMetaInfo.config.group || ''));
+              this.store.dispatch(new fromActions.SetDropTarget(dragTargetSensorName));
+              this.store.dispatch(new fromActions.SetTargetGroup(dragTargetMeta.config.group || ''));
               this.router.navigateByUrl('/sensors(dialog:sensor-aggregate)');
             } else {
               this.store.pipe(select(fromReducers.getMergedConfigs), first())
                 .subscribe((parsers) => {
                   const group = parsers.find(parser => parser.config instanceof ParserGroupModel && parser.config.name === groupName);
                   if (!group.isRunning && !group.isDeleted && !group.startStopInProgress) {
-                    this.store.dispatch(new fromActions.SetDropTarget(referenceMetaInfo.config.getName()));
-                    this.store.dispatch(new fromActions.SetTargetGroup(referenceMetaInfo.config.group || ''));
+                    this.store.dispatch(new fromActions.SetDropTarget(dragTargetSensorName));
+                    this.store.dispatch(new fromActions.SetTargetGroup(dragTargetMeta.config.group || ''));
                     this.router.navigateByUrl('/sensors(dialog:sensor-aggregate)');
                   }
                 });

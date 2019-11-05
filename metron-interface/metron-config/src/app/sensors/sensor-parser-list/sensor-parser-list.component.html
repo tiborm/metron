@@ -65,11 +65,11 @@
           'deleted': sensor.isDeleted,
           'phantom': sensor.isPhantom
         }"
-        (dragstart)="onDragStart(sensor, $event)"
-        (dragover)="onDragOver(sensor, $event)"
-        (drop)="onDrop(sensor, $event)"
-        (dragenter)="onDragEnter(sensor, $event)"
-        (dragleave)="onDragLeave(sensor, $event)"
+        (dragstart)="onDragStart(sensor.config.getName(), $event)"
+        (dragover)="onDragOver(sensor.config.getName(), $event)"
+        (drop)="onDrop(sensor.config.getName(), $event)"
+        (dragenter)="onDragEnter(sensor.config.getName(), $event)"
+        (dragleave)="onDragLeave(sensor.config.getName(), $event)"
         attr.data-qe-id="{{ 'drag-handle-' + sensor.config.getName() }}"
       >
       <td
