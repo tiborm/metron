@@ -40,17 +40,12 @@ describe('PCAP Tab', () => {
   });
 
   it('Parser aggregate creation', () => {
-    // cy.get('[data-qe-id="drag-handle-snort"]')
-    //   .trigger('mousedown', { which: 1 })
-    //   .trigger('mousemove', { clientX: 10, clientY: 50 })
-    //   .trigger('mouseup', { force: true });
-
-    cy.get('[data-qe-id="drag-handle-snort"]')
-      .trigger('dragstart')
-      .trigger('mousemove', { clientX: 10, clientY: 50 });
-
-    // cy.get('[data-qe-id="drag-handle-bro"]')
-    //   .trigger('drop');
+    cy.get('[data-qe-id="drag-handle-snort"]').then(el => {
+      const event = new MouseEvent('dragstart');
+      event.dataTransfer = new DataTransfer();
+      el[0].dispatchEvent(event);
+    });
+    cy.get('[data-qe-id="drag-handle-bro"]').then(el => el[0].dispatchEvent(new MouseEvent('drop')));
   });
 
-})
+});
