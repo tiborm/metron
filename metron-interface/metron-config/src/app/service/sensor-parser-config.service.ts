@@ -69,7 +69,7 @@ export class SensorParserConfigService {
   }
 
   public saveGroup(name: string, group: ParserGroupModel | ParserModel): Observable<RestError | ParserGroupModel> {
-    return this.http.post(`${this.getParserGroupSvcUrl()}`, group).pipe(
+    return this.http.post(`${this.getParserGroupSvcUrl()}/${group.getName()}`, group).pipe(
       map(HttpUtil.extractData),
       catchError(HttpUtil.handleError)
     );
