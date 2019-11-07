@@ -18,16 +18,25 @@
  */
 describe('PCAP Tab', () => {
 
-  const startDrag = (parserName) => {
-    return cy.get(`[data-qe-id="parser-row-${parserName}"]`).then(el => {
-      const event = new MouseEvent('dragstart');
-      event.dataTransfer = new DataTransfer();
+  const triggerEventOn = (parserName, event) => {
+    cy.get(`[data-qe-id="parser-row-${parserName}"]`).then(el => {
       el[0].dispatchEvent(event);
     });
   }
 
+  const startDrag = (parserName) => {
+    const event = new MouseEvent('dragstart');
+    event.dataTransfer = new DataTransfer();
+    triggerEventOn(parserName, event);
+  }
+
+  const dragOver = (parserName, insertTo) => {
+    const event = new MouseEvent('dragstart', { clientX: 20, clientY: insertTo === 'before' ? 4 : 54 });
+    triggerEventOn(parserName, event);
+  }
+
   const dropOn = (parserName) => {
-    cy.get(`[data-qe-id="parser-row-${parserName}"]`).then(el => el[0].dispatchEvent(new MouseEvent('drop')));
+    triggerEventOn(parserName, new MouseEvent('drop'));
   }
 
   beforeEach(() => {
@@ -57,12 +66,12 @@ describe('PCAP Tab', () => {
   // });
 
   it('Stopping and disassembling defult bro__snort__yaf group', () => {
-    cy.get('[data-qe-id*="parser-row"]:nth-of-type(1) [data-qe-id="stop-parser-button"]').click();
-    cy.contains('[data-qe-id*="parser-row"]:nth-of-type(1) td:nth-of-type(4)', 'Stopped');
+    // cy.get('[data-qe-id*="parser-row"]:nth-of-type(1) [data-qe-id="stop-parser-button"]').click();
+    // cy.contains('[data-qe-id*="parser-row"]:nth-of-type(1) td:nth-of-type(4)', 'Stopped');
 
-    // cy.get(`[data-qe-id="parser-row-bro"]`).then(el => el[0].dispatchEvent(new MouseEvent('mousemove', { clientX: 10, clientY: 50 })));
-
-    cy.get(`[data-qe-id="parser-row-bro"]`).trigger('mousemove', { clientX: 10, clientY: 50 });
+    startDrag('bro');
+    dragOver('jsonMapQuery', 'before');
+    dropOn('jsonMapQuery');
   });
 
 });
