@@ -268,7 +268,7 @@ export class SensorParserListComponent implements OnInit, OnDestroy {
     const rect = el.getBoundingClientRect();
     const mouseX = e.pageX;
     const mouseY = e.pageY;
-    debugger;
+
     if (mouseX > rect.left + 8 && mouseY > rect.top + 8 && mouseX <= (rect.right - 8) && mouseY <= (rect.bottom - 8)) {
       this.setDraggedOver(sensorName);
     } else {

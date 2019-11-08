@@ -31,8 +31,15 @@ describe('PCAP Tab', () => {
   }
 
   const dragOver = (parserName, insertTo) => {
-    const event = new MouseEvent('dragstart', { clientX: 20, clientY: insertTo === 'before' ? 4 : 54 });
-    triggerEventOn(parserName, event);
+    cy.get(`[data-qe-id="parser-row-${parserName}"]`).then(el => {
+      const clientRects = el[0].getClientRects()[0];
+      const event = new MouseEvent('dragover', {
+        clientX: clientRects.left + 20,
+        clientY: insertTo === 'before' ? clientRects.top + 4 : clientRects.bottom - 4
+      });
+
+      triggerEventOn(parserName, event);
+    });
   }
 
   const dropOn = (parserName) => {
@@ -66,12 +73,20 @@ describe('PCAP Tab', () => {
   // });
 
   it('Stopping and disassembling defult bro__snort__yaf group', () => {
-    // cy.get('[data-qe-id*="parser-row"]:nth-of-type(1) [data-qe-id="stop-parser-button"]').click();
-    // cy.contains('[data-qe-id*="parser-row"]:nth-of-type(1) td:nth-of-type(4)', 'Stopped');
-
     startDrag('bro');
-    dragOver('jsonMapQuery', 'before');
+    dragOver('jsonMapQuery', 'after');
     dropOn('jsonMapQuery');
+
+    cy.wait(500);
+
+    startDrag('snort');
+    dragOver('jsonMapQuery', 'after');
+    dropOn('jsonMapQuery');
+
+    startDrag('yaf');
+    dragOver('jsonMapQuery', 'after');
+    dropOn('jsonMapQuery');
+
   });
 
 });
