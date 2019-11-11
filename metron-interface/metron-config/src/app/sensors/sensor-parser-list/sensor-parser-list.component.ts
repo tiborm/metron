@@ -298,7 +298,7 @@ export class SensorParserListComponent implements OnInit, OnDestroy {
     }
 
     setTimeout(() => {
-      if (!sensor.isRunning && !sensor.isDeleted && !sensor.startStopInProgress) {
+      if (this.isDropAllowed(sensor)) {
         this.setHighlighted(groupName);
       }
     });
@@ -387,7 +387,7 @@ export class SensorParserListComponent implements OnInit, OnDestroy {
             this.store.pipe(select(fromReducers.getMergedConfigs), first())
               .subscribe((parsers) => {
                 const group = parsers.find(parser => parser.config instanceof ParserGroupModel && parser.config.name === groupName);
-                if (!group.isRunning && !group.isDeleted && !group.startStopInProgress) {
+                if (this.isDropAllowed(group)) {
                   this.store.dispatch(new fromActions.AddToGroup({
                     groupName: group.config.getName(),
                     parserIds: [this.dragSourceSensorName]
@@ -409,11 +409,7 @@ export class SensorParserListComponent implements OnInit, OnDestroy {
         }
       } else {
         if (dragTargetMeta.isGroup) {
-          if (
-               !dragTargetMeta.isDeleted
-            && !dragTargetMeta.isRunning
-            && !dragTargetMeta.startStopInProgress
-          ) {
+          if (this.isDropAllowed(dragTargetMeta)) {
             this.store.dispatch(new fromActions.AddToGroup({
               groupName: dragTargetSensorName,
               parserIds: [this.dragSourceSensorName]
@@ -424,27 +420,24 @@ export class SensorParserListComponent implements OnInit, OnDestroy {
             }));
           }
         } else {
-          if (!dragTargetMeta.isRunning) {
+          const groupName = this.hasGroup(dragTargetMeta)
+            ? dragTargetMeta.config.group
+            : '';
 
-            const groupName = this.hasGroup(dragTargetMeta)
-              ? dragTargetMeta.config.group
-              : '';
-
-            if (!groupName) {
-              this.store.dispatch(new fromActions.SetDropTarget(dragTargetSensorName));
-              this.store.dispatch(new fromActions.SetTargetGroup(dragTargetMeta.config.group || ''));
-              this.router.navigateByUrl('/sensors(dialog:sensor-aggregate)');
-            } else {
-              this.store.pipe(select(fromReducers.getMergedConfigs), first())
-                .subscribe((parsers) => {
-                  const group = parsers.find(parser => parser.config instanceof ParserGroupModel && parser.config.name === groupName);
-                  if (!group.isRunning && !group.isDeleted && !group.startStopInProgress) {
-                    this.store.dispatch(new fromActions.SetDropTarget(dragTargetSensorName));
-                    this.store.dispatch(new fromActions.SetTargetGroup(dragTargetMeta.config.group || ''));
-                    this.router.navigateByUrl('/sensors(dialog:sensor-aggregate)');
-                  }
-                });
-            }
+          if (!groupName) {
+            this.store.dispatch(new fromActions.SetDropTarget(dragTargetSensorName));
+            this.store.dispatch(new fromActions.SetTargetGroup(dragTargetMeta.config.group || ''));
+            this.router.navigateByUrl('/sensors(dialog:sensor-aggregate)');
+          } else {
+            this.store.pipe(select(fromReducers.getMergedConfigs), first())
+              .subscribe((parsers) => {
+                const group = parsers.find(parser => parser.config instanceof ParserGroupModel && parser.config.name === groupName);
+                if (this.isDropAllowed(group)) {
+                  this.store.dispatch(new fromActions.SetDropTarget(dragTargetSensorName));
+                  this.store.dispatch(new fromActions.SetTargetGroup(dragTargetMeta.config.group || ''));
+                  this.router.navigateByUrl('/sensors(dialog:sensor-aggregate)');
+                }
+              });
           }
         }
       }
@@ -452,6 +445,10 @@ export class SensorParserListComponent implements OnInit, OnDestroy {
     }
     el.classList.remove('drop-before');
     el.classList.remove('drop-after');
+  }
+
+  private isDropAllowed(dragTarget: ParserMetaInfoModel) {
+    return !dragTarget.isDeleted && !dragTarget.startStopInProgress;
   }
 
   onApply() {
