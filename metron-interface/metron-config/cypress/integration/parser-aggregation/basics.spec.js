@@ -72,12 +72,17 @@ describe('PCAP Tab', () => {
   //   dropOn('bro');
   // });
 
-  it('Stopping and disassembling defult bro__snort__yaf group', () => {
+  it('Stopping bro__snort__yaf group', () => {
+    cy.get('[data-qe-id*="parser-row"]:nth-of-type(1) [data-qe-id="stop-parser-button"]').click();
+    cy.contains('[data-qe-id*="parser-row"]:nth-of-type(1) td:nth-of-type(4)', 'Stopped');
+  });
+
+
+  it('Disassembling bro__snort__yaf group', () => {
+    cy.log('Dragging BRO parser out from bro__snort__yaf');
     startDrag('bro');
     dragOver('jsonMapQuery', 'after');
     dropOn('jsonMapQuery');
-
-    cy.wait(500);
 
     startDrag('snort');
     dragOver('jsonMapQuery', 'after');
@@ -86,6 +91,23 @@ describe('PCAP Tab', () => {
     startDrag('yaf');
     dragOver('jsonMapQuery', 'after');
     dropOn('jsonMapQuery');
+
+    cy.contains('APPLY').click();
+    cy.wait(5000);
+
+    cy.route('GET', '/api/v1/sensor/parser/config').as('getParserConfigs');
+    cy.route('GET', '/api/v1/sensor/parser/group').as('getParserGroups');
+
+    cy.reload();
+
+    cy.log('Asserting parser/config API response');
+    cy.wait('@getParserConfigs').then((xhr) => {
+      // FIXME this type of assertation not works
+      cy.wrap(xhr.response.body.bro.group, ).should('be', 'kaka');
+      cy.wrap(xhr.response.body.yaf.group, ).should('be', '');
+      cy.wrap(xhr.response.body.snort.group, ).should('be', '');
+      // debugger;
+    })
 
   });
 
